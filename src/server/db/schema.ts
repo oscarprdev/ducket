@@ -12,27 +12,50 @@ import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
+export type Files = typeof files.$inferInsert;
+export const files = createTable('files', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  projectId: varchar('project_id', { length: 255 })
+    .notNull()
+    .references(() => projects.id),
+  fileUrl: text('file_url').notNull(),
+  fileName: varchar('file_name', { length: 255 }),
+  type: varchar('type', { length: 255 }),
+  createdAt: timestamp('created_at', {
+    mode: 'date',
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export type Projects = typeof projects.$inferInsert;
 export const projects = createTable('projects', {
   id: varchar('id', { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .default(sql`gen_random_uuid()`),
   ownerId: varchar('owner_id', { length: 255 })
-      .notNull()
-      .references(() => users.id),
+    .notNull()
+    .references(() => users.id),
   title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
   api_key: text('api_key'),
-})
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
 
-export const projectsRelations = relations(projects, ({one}) => ({
-  users: one(users, { fields: [projects.ownerId], references: [users.id] }),
-}));
-
+export type Users = typeof users.$inferInsert;
 export const users = createTable('user', {
   id: varchar('id', { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .default(sql`gen_random_uuid()`),
   name: varchar('name', { length: 255 }),
   email: varchar('email', { length: 255 }).notNull(),
   emailVerified: timestamp('email_verified', {
@@ -41,10 +64,6 @@ export const users = createTable('user', {
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar('image', { length: 255 }),
 });
-
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-}));
 
 export const accounts = createTable(
   'account',
@@ -73,10 +92,6 @@ export const accounts = createTable(
   })
 );
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
-}));
-
 export const sessions = createTable(
   'session',
   {
@@ -94,10 +109,6 @@ export const sessions = createTable(
   })
 );
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
-}));
-
 export const verificationTokens = createTable(
   'verification_token',
   {
@@ -112,3 +123,27 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+export const filesRelations = relations(files, ({ one }) => ({
+  project: one(projects, {
+    fields: [files.projectId],
+    references: [projects.id],
+  }),
+}));
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  users: one(users, { fields: [projects.ownerId], references: [users.id] }),
+  files: many(files),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  accounts: many(accounts),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, { fields: [accounts.userId], references: [users.id] }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));

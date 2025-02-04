@@ -30,11 +30,11 @@ export default function CreateProject() {
 
         if (!safeInput.success) return;
 
-        await MUTATIONS.createProject(
-          safeInput.data.ownerId,
-          safeInput.data.title,
-          safeInput.data.apiKey
-        );
+        await MUTATIONS.createProject({
+          ownerId: safeInput.data.ownerId,
+          title: safeInput.data.title,
+          apiKey: safeInput.data.apiKey,
+        });
 
         revalidatePath('/dashboard');
       }}>
