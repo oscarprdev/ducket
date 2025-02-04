@@ -20,3 +20,4 @@ Ducket is a web application that allows users store their files in an easy way.
 - [ ] Add user settings screen (manage user roles and api-key)
 - [ ] Add landing page
 - [ ] Add e2e tests
+- [ ] Add google and credentials authentication
