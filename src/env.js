@@ -9,6 +9,8 @@ export const env = createEnv({
   server: {
     AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string() : z.string().optional(),
     DATABASE_URL: z.string().url(),
+    AUTH_GITHUB_ID: z.string(),
+    AUTH_GITHUB_SECRET: z.string(),
     API_URL: z.string().url(),
     ACCESS_KEY_ID: z.string(),
     SECRET_ACCESS_KEY: z.string(),
@@ -32,6 +34,8 @@ export const env = createEnv({
   runtimeEnv: {
     AUTH_SECRET: process.env.AUTH_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
+    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
+    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     API_URL: process.env.API_URL,
     ACCESS_KEY_ID: process.env.ACCESS_KEY_ID,
