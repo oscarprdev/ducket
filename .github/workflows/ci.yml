@@ -10,12 +10,6 @@ on:
 env:
   CI: true
   CI_JOB_NUMBER: 1
-  AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  API_URL: ${{ secrets.API_URL }}
-  ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
-  SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
-  BUCKET: ${{ secrets.BUCKET }}
 
 jobs:
   avoid_redundancy:
@@ -49,6 +43,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Load .env file
+        run: cat .env >> $GITHUB_ENV
+        
       - name: Run Lint
         run: pnpm lint
 
