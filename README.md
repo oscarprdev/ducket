@@ -10,11 +10,11 @@ Ducket is a web application that allows users store their files in an easy way.
 - [Drizzle](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
 
-
 ## Roadmap
+
 - [x] Add user registration
-- [ ] Add api-key generation
-- [ ] Add authentication
+- [x] Add api-key generation
+- [ ] Add authentication on ducket endpoints
 - [ ] Add api endpoints to store, get and delete files
 - [ ] Add dashboard to view files
 - [ ] Add user settings screen (manage user roles and api-key)
