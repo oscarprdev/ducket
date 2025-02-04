@@ -37,8 +37,11 @@ jobs:
         shell: bash
         run: find . -type f -name ".env.example" -exec sh -c 'cp "$1" "${1%.*}"' _ {} \;
 
-      - name: Run Lint
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
         run: pnpm lint
 
-      - name: Run Build
+      - name: Build
         run: pnpm build
