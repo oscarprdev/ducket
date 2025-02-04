@@ -12,6 +12,22 @@ import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
+export const projects = createTable('projects', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  ownerId: varchar('owner_id', { length: 255 })
+      .notNull()
+      .references(() => users.id),
+  title: varchar('title', { length: 255 }).notNull(),
+  api_key: text('api_key'),
+})
+
+export const projectsRelations = relations(projects, ({one}) => ({
+  users: one(users, { fields: [projects.ownerId], references: [users.id] }),
+}));
+
 export const users = createTable('user', {
   id: varchar('id', { length: 255 })
     .notNull()
