@@ -9,11 +9,17 @@ export const QUERIES = {
   getProject: function ({ projectId }: { projectId: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.id, projectId));
   },
+  getProjectByApiKey: function ({ apiKey }: { apiKey: string }) {
+    return db.select().from(projects).where(eq(projects.api_key, apiKey));
+  },
   getProjectByTitle: function ({ title }: { title: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.title, title));
   },
   getFileByName: function ({ name }: { name: string }): Promise<Files[]> {
     return db.select().from(files).where(eq(files.fileName, name));
+  },
+  getFilesByProjectId: function ({ projectId }: { projectId: string }): Promise<Files[]> {
+    return db.select().from(files).where(eq(files.projectId, projectId));
   },
 };
 
