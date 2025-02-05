@@ -44,4 +44,8 @@ export const MUTATIONS = {
       fileUrl,
     });
   },
+  deleteFileByName: function (input: { name: string }): Promise<Files[]> {
+    const { name } = input;
+    return db.delete(files).where(eq(files.fileName, name));
+  },
 };
