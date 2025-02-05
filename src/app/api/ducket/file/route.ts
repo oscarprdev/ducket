@@ -57,8 +57,15 @@ async function uploadFileToBucket(
 
 export async function POST(request: Request) {
   try {
+    /**
+     * Validate bearer auth and form data
+     */
     const apiKey = await validateBearerAuth(request);
     const { file, fileId, type, projectTitle } = await validateFormData(request);
+    
+    /**
+     * Validate project
+     */
     const [project] = await QUERIES.getProjectByTitle({ title: projectTitle });
     if (!project?.id) {
       return new Response('Project not found', { status: 404 });
@@ -67,11 +74,17 @@ export async function POST(request: Request) {
       return new Response('Invalid api key', { status: 401 });
     }
 
+    /**
+     * Upload file to bucket
+     */
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const bucketResponse = await uploadFileToBucket(buffer, type, fileId, projectTitle);
     const fileUrl = `https://pub-3a1b1ef37a894643bf2137184d00dd0a.r2.dev/${bucketResponse}`;
 
+    /**
+     * Create file in database
+     */
     await MUTATIONS.createFile({
       projectId: project.id,
       fileName: fileId,
@@ -79,6 +92,9 @@ export async function POST(request: Request) {
       fileUrl,
     });
 
+    /**
+     * Return file url
+     */
     return new Response(JSON.stringify({ fileUrl }), { status: 200 });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
