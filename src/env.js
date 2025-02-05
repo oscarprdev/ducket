@@ -11,7 +11,7 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     AUTH_GITHUB_ID: z.string(),
     AUTH_GITHUB_SECRET: z.string(),
-    S3_PUBLIC_URL: z.string().url(),
+    S3_PUBLIC_URL: z.string(),
     S3_API_URL: z.string().url(),
     S3_ACCESS_KEY_ID: z.string(),
     S3_SECRET_ACCESS_KEY: z.string(),
