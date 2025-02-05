@@ -2,17 +2,13 @@ import { Bucket } from 'ducket';
 import { env } from '~/env';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
-async function validateBearerAuth(request: Request): Promise<string> {
+async function validateBearerAuth(request: Request): Promise<string | undefined> {
   const bearer = request.headers.get('Authorization');
-  const apiKey = bearer?.split(' ')[1];
-  if (!apiKey) {
-    throw new Error('No api key provided');
-  }
-  return apiKey;
+  return bearer?.split(' ')[1];
 }
 
 async function validateFormData(request: Request): Promise<{
-  file: Blob;
+  file: FormDataEntryValue | null;
   fileId: string;
   type: string;
   projectTitle: string;
@@ -20,17 +16,9 @@ async function validateFormData(request: Request): Promise<{
   const formData = await request.formData();
 
   const file = formData.get('file');
-  if (!file || !(file instanceof Blob)) {
-    throw new Error('No file uploaded');
-  }
-
   const fileId = formData.get('id') as string;
   const type = formData.get('type') as string;
   const projectTitle = formData.get('project') as string;
-
-  if (!fileId || !type || !projectTitle) {
-    throw new Error('No id, type or project provided');
-  }
 
   return { file, fileId, type, projectTitle };
 }
@@ -40,29 +28,37 @@ async function uploadFileToBucket(
   type: string,
   id: string,
   project: string
-): Promise<string> {
+): Promise<string | void> {
   const bucket = new Bucket({
-    apiUrl: env.API_URL,
-    accessId: env.ACCESS_KEY_ID,
-    secret: env.SECRET_ACCESS_KEY,
-    bucketName: env.BUCKET,
+    apiUrl: env.S3_API_URL,
+    accessId: env.S3_ACCESS_KEY_ID,
+    secret: env.S3_SECRET_ACCESS_KEY,
+    bucketName: env.S3_BUCKET,
   });
 
-  const bucketResponse = await bucket.uploadFile({ file: buffer, type, id, project });
-  if (!bucketResponse) {
-    throw new Error('Error uploading file');
-  }
-  return bucketResponse;
+  return await bucket.uploadFile({ file: buffer, type, id, project });
 }
 
 export async function POST(request: Request) {
   try {
     /**
-     * Validate bearer auth and form data
+     * Validate bearer auth
      */
     const apiKey = await validateBearerAuth(request);
+    if (!apiKey) {
+      return new Response('Invalid bearer auth', { status: 401 });
+    }
+
+    /**
+     * Validate form data
+     */
     const { file, fileId, type, projectTitle } = await validateFormData(request);
-    
+    if (!file || !(file instanceof Blob)) {
+      return new Response('No file provided', { status: 400 });
+    }
+    if (!fileId || !type || !projectTitle) {
+      return new Response('Invalid form data', { status: 400 });
+    }
     /**
      * Validate project
      */
@@ -80,7 +76,10 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const bucketResponse = await uploadFileToBucket(buffer, type, fileId, projectTitle);
-    const fileUrl = `https://pub-3a1b1ef37a894643bf2137184d00dd0a.r2.dev/${bucketResponse}`;
+    if (!bucketResponse) {
+      return new Response('Error uploading file', { status: 500 });
+    }
+    const fileUrl = `${env.S3_PUBLIC_URL}/${bucketResponse}`;
 
     /**
      * Create file in database
