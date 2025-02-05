@@ -11,16 +11,14 @@ async function validateFormData(request: Request): Promise<{
   file: FormDataEntryValue | null;
   fileId: string;
   type: string;
-  projectTitle: string;
 }> {
   const formData = await request.formData();
 
   const file = formData.get('file');
   const fileId = formData.get('id') as string;
   const type = formData.get('type') as string;
-  const projectTitle = formData.get('project') as string;
 
-  return { file, fileId, type, projectTitle };
+  return { file, fileId, type };
 }
 
 async function uploadFileToBucket(
@@ -52,22 +50,19 @@ export async function POST(request: Request) {
     /**
      * Validate form data
      */
-    const { file, fileId, type, projectTitle } = await validateFormData(request);
+    const { file, fileId, type } = await validateFormData(request);
     if (!file || !(file instanceof Blob)) {
       return new Response('No file provided', { status: 400 });
     }
-    if (!fileId || !type || !projectTitle) {
+    if (!fileId || !type) {
       return new Response('Invalid form data', { status: 400 });
     }
     /**
      * Validate project
      */
-    const [project] = await QUERIES.getProjectByTitle({ title: projectTitle });
+    const [project] = await QUERIES.getProjectByApiKey({ apiKey });
     if (!project?.id) {
       return new Response('Project not found', { status: 404 });
-    }
-    if (project.api_key !== apiKey) {
-      return new Response('Invalid api key', { status: 401 });
     }
 
     /**
@@ -75,7 +70,7 @@ export async function POST(request: Request) {
      */
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const bucketResponse = await uploadFileToBucket(buffer, type, fileId, projectTitle);
+    const bucketResponse = await uploadFileToBucket(buffer, type, fileId, project.title);
     if (!bucketResponse) {
       return new Response('Error uploading file', { status: 500 });
     }
