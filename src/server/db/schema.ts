@@ -12,7 +12,7 @@ import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
-export type Files = typeof files.$inferInsert;
+export type Files = typeof files.$inferSelect;
 export const files = createTable('files', {
   id: varchar('id', { length: 255 })
     .notNull()
@@ -30,7 +30,7 @@ export const files = createTable('files', {
   }).default(sql`CURRENT_TIMESTAMP`),
 });
 
-export type Projects = typeof projects.$inferInsert;
+export type Projects = typeof projects.$inferSelect;
 export const projects = createTable('projects', {
   id: varchar('id', { length: 255 })
     .notNull()
@@ -50,7 +50,7 @@ export const projects = createTable('projects', {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export type Users = typeof users.$inferInsert;
+export type Users = typeof users.$inferSelect;
 export const users = createTable('user', {
   id: varchar('id', { length: 255 })
     .notNull()

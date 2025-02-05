@@ -1,8 +1,10 @@
 import { db } from '.';
-import { type Files, type Projects, files, projects } from './schema';
+import { type Files, type Projects, Users, files, projects, users } from './schema';
 import { eq } from 'drizzle-orm';
+import { get } from 'http';
 
 export const QUERIES = {
+  // PROJECTS
   getProjects: function ({ ownerId }: { ownerId: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.ownerId, ownerId)).limit(10).offset(0);
   },
@@ -15,11 +17,16 @@ export const QUERIES = {
   getProjectByTitle: function ({ title }: { title: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.title, title));
   },
+  // FILES
   getFileByName: function ({ name }: { name: string }): Promise<Files[]> {
     return db.select().from(files).where(eq(files.fileName, name));
   },
   getFilesByProjectId: function ({ projectId }: { projectId: string }): Promise<Files[]> {
     return db.select().from(files).where(eq(files.projectId, projectId));
+  },
+  // USERS
+  getUserById: function ({ id }: { id: string }): Promise<Users[]> {
+    return db.select().from(users).where(eq(users.id, id));
   },
 };
 
