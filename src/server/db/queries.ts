@@ -1,7 +1,6 @@
 import { db } from '.';
-import { type Files, type Projects, Users, files, projects, users } from './schema';
+import { type Files, type Projects, type Users, files, projects, users } from './schema';
 import { eq } from 'drizzle-orm';
-import { get } from 'http';
 
 export const QUERIES = {
   // PROJECTS

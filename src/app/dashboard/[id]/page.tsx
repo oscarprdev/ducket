@@ -1,14 +1,14 @@
-import Link from 'next/link';
-import UploadFile from '~/components/upload-file';
+import DashboardLayout from '~/components/dashboard-layout';
+import ProjectSidebar from '~/components/project-sidebar';
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
-    <main>
-      {id}
-      <UploadFile projectId={id} />
-      <Link href="/dashboard">Go back</Link>
-      <Link href={`/dashboard/${id}/api-keys`}>Go to api keys</Link>
-    </main>
+    <DashboardLayout sidebarContent={<ProjectSidebar projectId={id} />}>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Project Details</h1>
+      </div>
+      <p>Project ID: {id}</p>
+    </DashboardLayout>
   );
 }

@@ -1,4 +1,6 @@
 import { PlusCircle } from 'lucide-react';
+import DashboardLayout from '~/components/dashboard-layout';
+import DashboardSidebar from '~/components/dashboard-sidebar';
 import ProjectCard from '~/components/project-card';
 import { Button } from '~/components/ui/button';
 import { auth } from '~/server/auth';
@@ -11,7 +13,7 @@ export default async function Dashboard() {
   const projects = await QUERIES.getProjects({ ownerId: session?.user.id });
 
   return (
-    <>
+    <DashboardLayout sidebarContent={<DashboardSidebar />}>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Projects</h1>
         <Button>
@@ -33,6 +35,6 @@ export default async function Dashboard() {
           />
         ))}
       </div>
-    </>
+    </DashboardLayout>
   );
 }

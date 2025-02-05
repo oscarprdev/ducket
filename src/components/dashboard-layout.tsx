@@ -1,10 +1,17 @@
-import { LayoutDashboard, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
+import type React from 'react';
 import { Button } from '~/components/ui/button';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+  sidebarContent: React.ReactNode;
+}
+
+export default function DashboardLayout({ children, sidebarContent }: DashboardLayoutProps) {
   return (
     <div className="bg-background flex min-h-screen flex-col">
+      {/* Header */}
       <header className="bg-background sticky top-0 z-40 w-full border-b">
         <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
           <div className="flex gap-6 md:gap-10">
@@ -24,22 +31,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </header>
 
       <div className="flex flex-1">
-        <aside className="w-64 bg-gray-100 p-4">
-          <nav className="space-y-2">
-            <Link
-              href="/dashboard"
-              className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-              <LayoutDashboard className="h-4 w-4" />
-              <span>Projects</span>
-            </Link>
-            <Link
-              href="/account"
-              className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-              <User className="h-4 w-4" />
-              <span>Account</span>
-            </Link>
-          </nav>
-        </aside>
+        {/* Sidebar */}
+        <aside className="w-64 bg-gray-100 p-4">{sidebarContent}</aside>
+
+        {/* Main content */}
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
