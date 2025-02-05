@@ -8,7 +8,7 @@ export default async function Dashboard() {
   const session = await auth();
   if (!session) return null;
 
-  const projects = await QUERIES.getProjects(session?.user.id);
+  const projects = await QUERIES.getProjects({ ownerId: session?.user.id });
 
   return (
     <main>
