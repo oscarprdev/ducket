@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     if (!bucketResponse) {
       return new Response('Error uploading file', { status: 500 });
     }
-    const fileUrl = `${env.S3_PUBLIC_URL}/${bucketResponse}`;
+    const fileUrl = `${env.S3_PUBLIC_URL}${bucketResponse}`;
 
     /**
      * Create file in database
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
     /**
      * Return file url
      */
-    return new Response(JSON.stringify({ fileUrl }), { status: 200 });
+    return new Response(JSON.stringify({ fileUrl }), { status: 201 });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
     return new Response(errorMessage, { status: 500 });
