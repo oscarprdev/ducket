@@ -1,3 +1,4 @@
+import { env } from '~/env';
 import { QUERIES } from '~/server/db/queries';
 
 export default function UploadFile({ projectId }: { projectId: string }) {
@@ -13,7 +14,7 @@ export default function UploadFile({ projectId }: { projectId: string }) {
         formData.append('project', project.title);
         formData.append('type', file.type);
 
-        const response = await fetch(`http://localhost:3000/api/ducket/file`, {
+        const response = await fetch(`${env.API_URL}/api/ducket/file`, {
           method: 'POST',
           body: formData,
           headers: {
