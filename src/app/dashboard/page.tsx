@@ -1,8 +1,7 @@
-import { PlusCircle } from 'lucide-react';
+import { CreateProjectDialog } from '~/components/create-project-dialog';
 import DashboardLayout from '~/components/dashboard-layout';
 import DashboardSidebar from '~/components/dashboard-sidebar';
 import ProjectCard from '~/components/project-card';
-import { Button } from '~/components/ui/button';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
@@ -16,10 +15,7 @@ export default async function Dashboard() {
     <DashboardLayout sidebarContent={<DashboardSidebar />}>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Projects</h1>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Project
-        </Button>
+        <CreateProjectDialog />
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {projects.map(project => (

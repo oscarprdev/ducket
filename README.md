@@ -12,24 +12,24 @@ Ducket is a web application that allows users store their files in an easy way.
 
 ## Roadmap
 
-- [x] Add user registration (04/02/2025)
-- [x] Add api-key generation (04/02/2025)
-- [x] Add authentication on ducket endpoints (05/02/2025)
-- [x] Add api endpoints to store, get and delete files (05/02/2025)
-- [x] Add get all files endpoint (05/02/2025)
-- [x] Add upload file form (05/02/2025)
-- [WIP] Add dashboard screen 
-  - [x] Add dashboard layout (05/02/2025)
-  - [x] Add sidebar (05/02/2025)
-  - [x] Add project card (05/02/2025)
-  - [ ] Add create project modal
-- [ ] Add project screen
-- [ ] Add Files screen
-- [ ] Add api-key screen
-- [ ] Add Account screen
-- [ ] Add user settings screen (manage user roles and api-key)
-- [ ] Add header (dark/light theme)
-- [ ] Add internationalization
-- [ ] Add landing page
-- [ ] Add e2e tests
-- [ ] Add google and credentials authentication
+- [x] User registration (04/02/2025)
+- [x] Api-key generation (04/02/2025)
+- [x] Authentication on ducket endpoints (05/02/2025)
+- [x] Api endpoints to store, get and delete files (05/02/2025)
+- [x] Get all files endpoint (05/02/2025)
+- [x] Upload file form (05/02/2025)
+- [x] Dashboard screen
+  - [x] Dashboard layout (05/02/2025)
+  - [x] Sidebar (05/02/2025)
+  - [x] Project card (05/02/2025)
+  - [x] Create project modal (06/02/2025)
+- [ ] Project screen
+- [ ] Files screen
+- [ ] Api-key screen
+- [ ] Account screen
+- [ ] User settings screen (manage user roles and api-key)
+- [ ] Header (dark/light theme)
+- [ ] Internationalization
+- [ ] Landing page
+- [ ] E2e tests
+- [ ] Google and credentials authentication
