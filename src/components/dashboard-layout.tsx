@@ -10,9 +10,9 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, sidebarContent }: DashboardLayoutProps) {
   return (
-    <div className="bg-background flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
-      <header className="bg-background sticky top-0 z-40 w-full border-b">
+      <header className="sticky top-0 z-40 w-full border-b bg-background">
         <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
           <div className="flex gap-6 md:gap-10">
             <Link href="/" className="flex items-center space-x-2">
@@ -35,7 +35,7 @@ export default function DashboardLayout({ children, sidebarContent }: DashboardL
         <aside className="w-64 bg-gray-100 p-4">{sidebarContent}</aside>
 
         {/* Main content */}
-        <main className="flex-1 p-6">{children}</main>
+        <main className="relative flex-1 p-6">{children}</main>
       </div>
     </div>
   );

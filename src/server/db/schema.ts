@@ -24,6 +24,7 @@ export const files = createTable('files', {
   fileUrl: text('file_url').notNull(),
   fileName: varchar('file_name', { length: 255 }),
   type: varchar('type', { length: 255 }),
+  size: integer('size').notNull(),
   createdAt: timestamp('created_at', {
     mode: 'date',
     withTimezone: true,

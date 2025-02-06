@@ -9,32 +9,36 @@ async function validateBearerAuth(request: Request): Promise<string | undefined>
 
 async function validateFormData(request: Request): Promise<{
   file: FormDataEntryValue | null;
-  fileId: string;
+  fileName: string;
   type: string;
 }> {
   const formData = await request.formData();
 
   const file = formData.get('file');
-  const fileId = formData.get('id') as string;
+  const fileName = formData.get('name') as string;
   const type = formData.get('type') as string;
 
-  return { file, fileId, type };
+  return { file, fileName, type };
 }
 
 async function uploadFileToBucket(
   buffer: Buffer,
   type: string,
-  id: string,
+  name: string,
   project: string
 ): Promise<string | void> {
-  const bucket = new Bucket({
-    apiUrl: env.S3_API_URL,
-    accessId: env.S3_ACCESS_KEY_ID,
-    secret: env.S3_SECRET_ACCESS_KEY,
-    bucketName: env.S3_BUCKET,
-  });
+  try {
+    const bucket = new Bucket({
+      apiUrl: env.S3_API_URL,
+      accessId: env.S3_ACCESS_KEY_ID,
+      secret: env.S3_SECRET_ACCESS_KEY,
+      bucketName: env.S3_BUCKET,
+    });
 
-  return await bucket.uploadFile({ file: buffer, type, id, project });
+    return await bucket.uploadFile({ file: buffer, type, name, project });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function POST(request: Request) {
@@ -50,11 +54,11 @@ export async function POST(request: Request) {
     /**
      * Validate form data
      */
-    const { file, fileId, type } = await validateFormData(request);
+    const { file, fileName, type } = await validateFormData(request);
     if (!file || !(file instanceof Blob)) {
       return new Response('No file provided', { status: 400 });
     }
-    if (!fileId || !type) {
+    if (!fileName || !type) {
       return new Response('Invalid form data', { status: 400 });
     }
     /**
@@ -70,7 +74,7 @@ export async function POST(request: Request) {
      */
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const bucketResponse = await uploadFileToBucket(buffer, type, fileId, project.title);
+    const bucketResponse = await uploadFileToBucket(buffer, type, fileName, project.title);
     if (!bucketResponse) {
       return new Response('Error uploading file', { status: 500 });
     }
@@ -81,9 +85,10 @@ export async function POST(request: Request) {
      */
     await MUTATIONS.createFile({
       projectId: project.id,
-      fileName: fileId,
+      fileName,
       type,
       fileUrl,
+      size: file.size,
     });
 
     /**

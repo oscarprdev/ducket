@@ -47,13 +47,15 @@ export const MUTATIONS = {
     fileName: string;
     type: string;
     fileUrl: string;
+    size: number;
   }): Promise<Projects[]> {
-    const { projectId, fileName, type, fileUrl } = input;
+    const { projectId, fileName, type, fileUrl, size } = input;
     return db.insert(files).values({
       projectId,
       fileName,
       type,
       fileUrl,
+      size,
     });
   },
   deleteFileByName: function (input: { name: string }): Promise<Files[]> {
