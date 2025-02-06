@@ -1,6 +1,7 @@
 'use client';
 
-import { Download, File, FileText, Image, Trash2 } from 'lucide-react';
+import FileDeleteDialog from './file-delete-dialog';
+import { Download, File, FileText, Image } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
@@ -28,35 +29,24 @@ const iconMap = {
   text: FileText,
 };
 
-export default function FileTable({ files }: { files: FileData[] }) {
+export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey: string }) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
-  const handleSelectFile = (fileId: string) => {
+  const handleSelectFile = (fileName: string) => {
     setSelectedFiles(prev =>
-      prev.includes(fileId) ? prev.filter(id => id !== fileId) : [...prev, fileId]
+      prev.includes(fileName) ? prev.filter(name => name !== fileName) : [...prev, fileName]
     );
   };
 
   const handleSelectAll = () => {
-    setSelectedFiles(selectedFiles.length === files.length ? [] : files.map(file => file.id));
-  };
-
-  const handleDelete = () => {
-    console.log('Deleting files:', selectedFiles);
-    // Implement delete logic here
+    setSelectedFiles(selectedFiles.length === files.length ? [] : files.map(file => file.name));
   };
 
   return (
     <>
       {selectedFiles.length > 0 && (
         <div className="absolute right-48 top-[1.5rem] mb-4 flex justify-end">
-          <Button
-            variant="outline"
-            className="border-destructive text-destructive hover:bg-destructive-foreground hover:text-destructive"
-            onClick={handleDelete}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete Selected
-          </Button>
+          <FileDeleteDialog apiKey={apiKey} selectedFiles={selectedFiles} />
         </div>
       )}
       <Table>
@@ -90,8 +80,8 @@ export default function FileTable({ files }: { files: FileData[] }) {
                 <TableRow key={file.id}>
                   <TableCell>
                     <Checkbox
-                      checked={selectedFiles.includes(file.id)}
-                      onCheckedChange={() => handleSelectFile(file.id)}
+                      checked={selectedFiles.includes(file.name)}
+                      onCheckedChange={() => handleSelectFile(file.name)}
                     />
                   </TableCell>
                   <TableCell className="font-medium">

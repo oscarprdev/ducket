@@ -7,7 +7,7 @@ async function validateBearerAuth(request: Request): Promise<string | undefined>
   return bearer?.split(' ')[1];
 }
 
-async function deleteFileFromBucket(id: string, project: string): Promise<string | void> {
+async function deleteFileFromBucket(name: string, project: string): Promise<string | void> {
   const bucket = new Bucket({
     apiUrl: env.S3_API_URL,
     accessId: env.S3_ACCESS_KEY_ID,
@@ -15,7 +15,7 @@ async function deleteFileFromBucket(id: string, project: string): Promise<string
     bucketName: env.S3_BUCKET,
   });
 
-  return await bucket.deleteFile({ id, project });
+  return await bucket.deleteFile({ name, project });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -72,8 +72,8 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     /**
      * Get file by param id
      */
-    const { id } = await context.params;
-    const [file] = await QUERIES.getFileByName({ name: id });
+    const { id: name } = await context.params;
+    const [file] = await QUERIES.getFileByName({ name });
     if (!file) {
       return new Response('File not found', { status: 404 });
     }
@@ -96,12 +96,12 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     /**
      * Delete file from bucket
      */
-    await deleteFileFromBucket(id, project.title);
+    await deleteFileFromBucket(name, project.title);
 
     /**
      * Delete file in database
      */
-    await MUTATIONS.deleteFileByName({ name: id });
+    await MUTATIONS.deleteFileByName({ name });
 
     return new Response('File deleted successfully', { status: 201 });
   } catch (error) {

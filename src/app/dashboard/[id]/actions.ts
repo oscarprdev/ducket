@@ -42,7 +42,30 @@ export const uploadFile = validatedActionWithUser(uploadFileSchema, async (_, fo
 
     return { success: 'File uploaded successfully' };
   } catch (error: unknown) {
-    console.log(error);
     return { error: error instanceof Error ? error.message : 'Error uploading file' };
+  }
+});
+
+const deleteFileSchema = z.object({
+  selectedFiles: z.array(z.string()),
+  apiKey: z.string(),
+});
+
+export const deleteFile = validatedActionWithUser(deleteFileSchema, async (data, _) => {
+  try {
+    const { selectedFiles, apiKey } = data;
+    console.log(selectedFiles);
+    // const promises = selectedFiles.map(fileName =>
+    //   fetch(`${env.API_URL}/api/ducket/file/${fileName}`, {
+    //     method: 'DELETE',
+    //     headers: {
+    //       Authorization: `Bearer ${apiKey}`,
+    //     },
+    //   })
+    // );
+    // await Promise.all(promises);
+    return { success: 'File deleted successfully' };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Error deleting file' };
   }
 });
