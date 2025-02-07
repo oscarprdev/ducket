@@ -42,11 +42,17 @@ export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey
     setSelectedFiles(selectedFiles.length === files.length ? [] : files.map(file => file.name));
   };
 
+  const handleCleanSelectedFiles = () => setSelectedFiles([]);
+
   return (
     <>
       {selectedFiles.length > 0 && (
         <div className="absolute right-48 top-[1.5rem] mb-4 flex justify-end">
-          <FileDeleteDialog apiKey={apiKey} selectedFiles={selectedFiles} />
+          <FileDeleteDialog
+            apiKey={apiKey}
+            selectedFiles={selectedFiles}
+            cleanSelectedFiles={handleCleanSelectedFiles}
+          />
         </div>
       )}
       <Table>

@@ -1,6 +1,15 @@
 import { db } from '.';
-import { type Files, type Projects, type Users, files, projects, users } from './schema';
-import { eq } from 'drizzle-orm';
+import {
+  type ApiKeys,
+  type Files,
+  type Projects,
+  type Users,
+  apiKeys,
+  files,
+  projects,
+  users,
+} from './schema';
+import { and, eq } from 'drizzle-orm';
 
 export const QUERIES = {
   // PROJECTS
@@ -11,7 +20,12 @@ export const QUERIES = {
     return db.select().from(projects).where(eq(projects.id, projectId));
   },
   getProjectByApiKey: function ({ apiKey }: { apiKey: string }) {
-    return db.select().from(projects).where(eq(projects.api_key, apiKey));
+    return db
+      .select()
+      .from(projects)
+      .innerJoin(apiKeys, eq(apiKeys.projectId, projects.id))
+      .where(eq(apiKeys.secret, apiKey))
+      .then(result => result[0]);
   },
   getProjectByTitle: function ({ title }: { title: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.title, title));
@@ -27,20 +41,76 @@ export const QUERIES = {
   getUserById: function ({ id }: { id: string }): Promise<Users[]> {
     return db.select().from(users).where(eq(users.id, id));
   },
+  // API KEYS
+  getApikey: function ({ apiKey }: { apiKey: string }): Promise<ApiKeys[]> {
+    return db.select().from(apiKeys).where(eq(apiKeys.secret, apiKey));
+  },
+  getApiKeysByProject: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<{ projects: Projects[]; apiKeys: ApiKeys[] }> {
+    const [response] = await db
+      .select()
+      .from(apiKeys)
+      .innerJoin(projects, eq(apiKeys.projectId, projects.id))
+      .where(eq(apiKeys.projectId, projectId));
+
+    if (!response) return { projects: [], apiKeys: [] };
+
+    return {
+      projects: [response.projects],
+      apiKeys: [response.api_keys],
+    };
+  },
+  getApiKeyByProjectAndUser: async function ({
+    projectId,
+    userId,
+  }: {
+    projectId: string;
+    userId: string;
+  }): Promise<ApiKeys[]> {
+    const [response] = await db
+      .select()
+      .from(apiKeys)
+      .innerJoin(projects, eq(apiKeys.projectId, projects.id))
+      .innerJoin(users, eq(apiKeys.userId, users.id))
+      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.userId, userId)));
+
+    if (!response) return [];
+
+    return [response.api_keys];
+  },
 };
 
 export const MUTATIONS = {
-  createProject: function (input: {
+  createProject: async function (input: {
     ownerId: string;
     title: string;
     apiKey: string;
   }): Promise<Projects[]> {
     const { ownerId, title, apiKey } = input;
-    return db.insert(projects).values({
-      ownerId,
-      title,
-      api_key: apiKey,
+    const [project] = await db
+      .insert(projects)
+      .values({
+        ownerId,
+        title,
+      })
+      .returning();
+
+    if (!project) {
+      throw new Error('Failed to create project');
+    }
+
+    await db.insert(apiKeys).values({
+      projectId: project.id,
+      name: title,
+      secret: apiKey,
+      permissions: 'all',
+      userId: ownerId,
     });
+
+    return [project];
   },
   createFile: function (input: {
     projectId: string;

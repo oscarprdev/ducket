@@ -2,15 +2,41 @@ import { relations, sql } from 'drizzle-orm';
 import {
   index,
   integer,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   text,
   timestamp,
   varchar,
+  unique,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
+
+export const permissionsEnum = pgEnum('permissions', ['read', 'write', 'delete', 'all']);
+export type ApiKeys = typeof apiKeys.$inferSelect;
+export const apiKeys = createTable(
+  'api_keys',
+  {
+    id: varchar('id', { length: 255 })
+      .notNull()
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    name: varchar('name', { length: 255 }).notNull().unique(),
+    secret: varchar('secret', { length: 255 }).notNull(),
+    permissions: permissionsEnum('permissions').notNull(),
+    projectId: varchar('project_id', { length: 255 })
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    userId: varchar('user_id', { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+  },
+  table => ({
+    uniqueApiKey: unique('unique_api_key').on(table.projectId, table.userId),
+  })
+);
 
 export type Files = typeof files.$inferSelect;
 export const files = createTable('files', {
@@ -42,7 +68,6 @@ export const projects = createTable('projects', {
     .references(() => users.id),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  api_key: text('api_key'),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -65,6 +90,22 @@ export const users = createTable('user', {
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar('image', { length: 255 }),
 });
+
+export const projectUsers = createTable(
+  'project_users',
+  {
+    projectId: varchar('project_id', { length: 255 })
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    userId: varchar('user_id', { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    role: permissionsEnum('role').notNull().default('read'),
+  },
+  table => ({
+    pk: primaryKey({ columns: [table.projectId, table.userId] }),
+  })
+);
 
 export const accounts = createTable(
   'account',
@@ -133,12 +174,15 @@ export const filesRelations = relations(files, ({ one }) => ({
 }));
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
-  users: one(users, { fields: [projects.ownerId], references: [users.id] }),
+  owner: one(users, { fields: [projects.ownerId], references: [users.id] }),
   files: many(files),
+  apiKeys: many(apiKeys),
+  users: many(projectUsers),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  projects: many(projectUsers),
 }));
 
 export const accountsRelations = relations(accounts, ({ one }) => ({

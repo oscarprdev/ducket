@@ -2,6 +2,8 @@ import { Bucket } from 'ducket';
 import { env } from '~/env';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
+const PERMISSIONS_ALLOWED = ['all', 'write'];
+
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
   const bearer = request.headers.get('Authorization');
   return bearer?.split(' ')[1];
@@ -46,6 +48,21 @@ export async function POST(request: Request) {
     if (!apiKey) {
       return new Response('Invalid bearer auth', { status: 401 });
     }
+    /**
+     * Validate api key permissions
+     */
+    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    if (!apiKeyStored) {
+      return new Response('Invalid bearer auth', { status: 402 });
+    }
+    if (!PERMISSIONS_ALLOWED.includes(apiKeyStored.permissions)) {
+      return new Response('Api key permissions not allowed', { status: 403 });
+    }
+
+    const [project] = await QUERIES.getProject({ projectId: apiKeyStored.projectId });
+    if (!project?.id) {
+      return new Response('Project not found for api key provided', { status: 404 });
+    }
 
     /**
      * Validate form data
@@ -56,13 +73,6 @@ export async function POST(request: Request) {
     }
     if (!fileName || !type) {
       return new Response('Invalid form data', { status: 400 });
-    }
-    /**
-     * Validate project
-     */
-    const [project] = await QUERIES.getProjectByApiKey({ apiKey });
-    if (!project?.id) {
-      return new Response('Project not found', { status: 404 });
     }
 
     /**

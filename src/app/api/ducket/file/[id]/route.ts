@@ -17,7 +17,7 @@ async function deleteFileFromBucket(name: string, project: string): Promise<stri
 
   return await bucket.deleteFile({ name, project });
 }
-
+const GET_PERMISSIONS_ALLOWED = ['all', 'read'];
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     /**
@@ -26,6 +26,22 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     const apiKey = await validateBearerAuth(request);
     if (!apiKey) {
       return new Response('Invalid bearer auth', { status: 401 });
+    }
+
+    /**
+     * Validate api key permissions
+     */
+    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    if (!apiKeyStored) {
+      return new Response('Invalid bearer auth', { status: 402 });
+    }
+    if (!GET_PERMISSIONS_ALLOWED.includes(apiKeyStored.permissions)) {
+      return new Response('Api key permissions not allowed', { status: 403 });
+    }
+
+    const [projectResponse] = await QUERIES.getProject({ projectId: apiKeyStored.projectId });
+    if (!projectResponse?.id) {
+      return new Response('Project not found for api key provided', { status: 404 });
     }
 
     /**
@@ -43,13 +59,8 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     const [project] = await QUERIES.getProject({ projectId: file?.projectId });
     if (!project) {
       return new Response('Project not found', { status: 404 });
-    }
-
-    /**
-     * Validate authorization by api key
-     */
-    if (project.api_key !== apiKey) {
-      return new Response('Api key not valid', { status: 401 });
+    } else if (projectResponse.id !== project.id) {
+      return new Response('Project not found for api key provided', { status: 404 });
     }
 
     return new Response(JSON.stringify({ fileUrl: file.fileUrl }), { status: 200 });
@@ -59,6 +70,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   }
 }
 
+const DELETE_PERMISSIONS_ALLOWED = ['all', 'delete'];
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     /**
@@ -69,6 +81,21 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       return new Response('Invalid bearer auth', { status: 401 });
     }
 
+    /**
+     * Validate api key permissions
+     */
+    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    if (!apiKeyStored) {
+      return new Response('Invalid bearer auth', { status: 402 });
+    }
+    if (!DELETE_PERMISSIONS_ALLOWED.includes(apiKeyStored.permissions)) {
+      return new Response('Api key permissions not allowed', { status: 403 });
+    }
+
+    const [projectResponse] = await QUERIES.getProject({ projectId: apiKeyStored.projectId });
+    if (!projectResponse?.id) {
+      return new Response('Project not found for api key provided', { status: 404 });
+    }
     /**
      * Get file by param id
      */
@@ -84,13 +111,8 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     const [project] = await QUERIES.getProject({ projectId: file?.projectId });
     if (!project) {
       return new Response('Project not found', { status: 404 });
-    }
-
-    /**
-     * Validate authorization by api key
-     */
-    if (project.api_key !== apiKey) {
-      return new Response('Api key not valid', { status: 401 });
+    } else if (projectResponse.id !== project.id) {
+      return new Response('Project not found for api key provided', { status: 404 });
     }
 
     /**

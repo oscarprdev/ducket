@@ -17,11 +17,19 @@ import {
 interface FileDeleteDialogProps {
   apiKey: string;
   selectedFiles: string[];
+  cleanSelectedFiles: () => void;
 }
 
-export default function FileDeleteDialog({ apiKey, selectedFiles }: FileDeleteDialogProps) {
+export default function FileDeleteDialog({
+  apiKey,
+  selectedFiles,
+  cleanSelectedFiles,
+}: FileDeleteDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const handleCloseDialog = () => setIsOpen(false);
+  const handleCloseDialog = () => {
+    setIsOpen(false);
+    cleanSelectedFiles();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
