@@ -27,7 +27,7 @@ Ducket is a web application that allows users store their files in an easy way.
   - [x] Files table (06/02/2025)
   - [x] Upload file (06/02/2025)
   - [x] Delete file (07/02/2025)
-  - [ ] Download file
+  - [x] Download file (07/02/2025)
 - [ ] Api-key screen
 - [ ] Account screen
 - [ ] User settings screen (manage user roles and api-key)

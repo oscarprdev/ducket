@@ -1,9 +1,9 @@
 'use client';
 
 import FileDeleteDialog from './file-delete-dialog';
-import { Download, File, FileText, Image } from 'lucide-react';
+import FileDownloadButton from './file-donwload-button';
+import { File, FileText, Image } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
 import {
   Table,
@@ -94,9 +94,7 @@ export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey
                   <TableCell>{file.type}</TableCell>
                   <TableCell>{file.size}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">
-                      <Download className="h-4 w-4" />
-                    </Button>
+                    <FileDownloadButton fileUrl={file.url} />
                   </TableCell>
                 </TableRow>
               );
