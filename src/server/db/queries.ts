@@ -21,13 +21,17 @@ export const QUERIES = {
   getProject: function ({ projectId }: { projectId: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.id, projectId));
   },
-  getProjectByApiKey: function ({ apiKey }: { apiKey: string }) {
-    return db
+  getProjectByApiKey: async function ({ apiKey }: { apiKey: string }): Promise<Projects[]> {
+    const response = await db
       .select()
       .from(projects)
       .innerJoin(apiKeys, eq(apiKeys.projectId, projects.id))
-      .where(eq(apiKeys.secret, apiKey))
-      .then(result => result[0]);
+      .where(eq(apiKeys.secret, apiKey));
+
+    const projectsResult = response[0]?.projects;
+    if (!projectsResult) return [];
+
+    return [projectsResult];
   },
   getProjectByTitle: function ({ title }: { title: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.title, title));
