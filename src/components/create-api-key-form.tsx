@@ -1,9 +1,9 @@
+import LoaderCircle from './icons/loader-circle';
 import { Button } from './ui/button';
 import { DialogFooter } from './ui/dialog';
 import { Input } from './ui/input';
 import { Switch } from './ui/switch';
 import { Label } from '@radix-ui/react-label';
-import { LoaderCircle } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';

@@ -89,6 +89,7 @@ export const QUERIES = {
 };
 
 export const MUTATIONS = {
+  // PROJECTS
   createProject: async function (input: {
     ownerId: string;
     title: string;
@@ -120,6 +121,7 @@ export const MUTATIONS = {
 
     return [project];
   },
+  // FILES
   createFile: function (input: {
     projectId: string;
     fileName: string;
@@ -140,6 +142,7 @@ export const MUTATIONS = {
     const { name } = input;
     return db.delete(files).where(eq(files.fileName, name));
   },
+  // API KEYS
   updateApiKeyUsage: function (input: { projectId: string; apiKey: string }): Promise<ApiKeys[]> {
     const { projectId, apiKey } = input;
     return db
@@ -163,5 +166,11 @@ export const MUTATIONS = {
       userId,
       secret: generateApiKey(),
     });
+  },
+  deleteApiKey: function (input: { projectId: string; apiKey: string }): Promise<ApiKeys[]> {
+    const { projectId, apiKey } = input;
+    return db
+      .delete(apiKeys)
+      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
   },
 };

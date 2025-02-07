@@ -54,3 +54,18 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
 
   return { success: 'API key created successfully' };
 });
+
+const deleteApiKeySchema = z.object({
+  projectId: z.string(),
+  apiKey: z.string(),
+});
+
+export const deleteApiKey = validatedActionWithUser(deleteApiKeySchema, async data => {
+  const { projectId, apiKey } = data;
+
+  await MUTATIONS.deleteApiKey({ projectId, apiKey });
+
+  revalidatePath(`/dashboard/${projectId}/api-keys`);
+
+  return { success: 'API key deleted successfully' };
+});
