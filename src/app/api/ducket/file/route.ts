@@ -27,18 +27,14 @@ async function uploadFileToBucket(
   name: string,
   project: string
 ): Promise<string | void> {
-  try {
-    const bucket = new Bucket({
-      apiUrl: env.S3_API_URL,
-      accessId: env.S3_ACCESS_KEY_ID,
-      secret: env.S3_SECRET_ACCESS_KEY,
-      bucketName: env.S3_BUCKET,
-    });
+  const bucket = new Bucket({
+    apiUrl: env.S3_API_URL,
+    accessId: env.S3_ACCESS_KEY_ID,
+    secret: env.S3_SECRET_ACCESS_KEY,
+    bucketName: env.S3_BUCKET,
+  });
 
-    return await bucket.uploadFile({ file: buffer, type, name, project });
-  } catch (error) {
-    console.log(error);
-  }
+  return await bucket.uploadFile({ file: buffer, type, name, project });
 }
 
 export async function POST(request: Request) {

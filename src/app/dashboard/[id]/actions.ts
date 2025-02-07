@@ -47,23 +47,26 @@ export const uploadFile = validatedActionWithUser(uploadFileSchema, async (_, fo
 });
 
 const deleteFileSchema = z.object({
-  selectedFiles: z.array(z.string()),
+  selectedFile: z.string(),
   apiKey: z.string(),
 });
 
 export const deleteFile = validatedActionWithUser(deleteFileSchema, async (data, _) => {
   try {
-    const { selectedFiles, apiKey } = data;
-    console.log(selectedFiles);
-    // const promises = selectedFiles.map(fileName =>
-    //   fetch(`${env.API_URL}/api/ducket/file/${fileName}`, {
-    //     method: 'DELETE',
-    //     headers: {
-    //       Authorization: `Bearer ${apiKey}`,
-    //     },
-    //   })
-    // );
-    // await Promise.all(promises);
+    const { selectedFile, apiKey } = data;
+
+    const response = await fetch(`${env.API_URL}/api/ducket/file/${selectedFile}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+    if (!response.ok) throw new Error(response.statusText);
+
+    const json = (await response.json()) as { fileDeleted: string; projectId: string };
+
+    revalidatePath(`/dashboard/${json.projectId}`);
+
     return { success: 'File deleted successfully' };
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Error deleting file' };

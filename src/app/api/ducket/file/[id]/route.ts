@@ -103,7 +103,9 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
      */
     await MUTATIONS.deleteFileByName({ name });
 
-    return new Response('File deleted successfully', { status: 201 });
+    return new Response(JSON.stringify({ fileDeleted: name, projectId: project.id }), {
+      status: 201,
+    });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
     return new Response(errorMessage, { status: 500 });

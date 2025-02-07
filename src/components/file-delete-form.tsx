@@ -23,7 +23,7 @@ export default function FileDeleteForm({
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      toast({ title: 'Project created', description: 'Your project has been created' });
+      toast({ title: 'File deleted', description: 'Your file has been deleted successfully' });
       onActionFinished?.();
     },
     onError: () => {
@@ -31,20 +31,23 @@ export default function FileDeleteForm({
     },
   });
 
-  const handleSubmit = (formData: FormData) => {
-    formData.append('apiKey', apiKey);
-    selectedFiles.forEach(fileName => {
-      formData.append('selectedFiles[]', fileName);
-    });
-    formAction(formData);
+  const handleSubmit = async () => {
+    await Promise.all(
+      selectedFiles.map(fileName => {
+        const formData = new FormData();
+        formData.append('apiKey', apiKey);
+        formData.append('selectedFile', fileName);
+        return formAction(formData);
+      })
+    );
   };
 
   return (
-    <form action={handleSubmit} className="flex w-full justify-center gap-4">
-      {children}
-      <div className="space-y-2">
-        {state.error && <p className="text-xs text-destructive">{state.error}</p>}
-        <Button type="submit" disabled={pending}>
+    <form action={handleSubmit} className="flex w-full flex-col justify-center gap-4">
+      {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
+      <div className="flex items-center gap-2">
+        {children}
+        <Button type="submit" disabled={pending} className="w-full">
           {pending && (
             <span className="animate-spin">
               <LoaderCircle />

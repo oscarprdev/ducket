@@ -8,10 +8,11 @@ import ProjectSidebar from '~/components/project-sidebar';
 import { VALID_FILE_TYPES } from '~/lib/constants';
 import { QUERIES } from '~/server/db/queries';
 
-async function ProjectFiles({ projectId }: { projectId: string }) {
+async function ProjectFiles({ projectId, apiKey }: { projectId: string; apiKey: string }) {
   const files = await QUERIES.getFilesByProjectId({ projectId });
   return (
     <FileTable
+      apiKey={apiKey}
       files={files.map(file => ({
         id: file.id,
         name: file.fileName ?? '-',
@@ -42,7 +43,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <FileUploadDialog apiKey={project.api_key} projectId={id} />
       </div>
       <Suspense fallback={<FileTableSkeleton />}>
-        <ProjectFiles projectId={id} />
+        <ProjectFiles projectId={id} apiKey={project.api_key} />
       </Suspense>
     </DashboardLayout>
   );
