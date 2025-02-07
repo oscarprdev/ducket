@@ -7,8 +7,8 @@ import {
   primaryKey,
   text,
   timestamp,
-  varchar,
   unique,
+  varchar,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
 
@@ -32,6 +32,12 @@ export const apiKeys = createTable(
     userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+    lastUsed: timestamp('last_used', { withTimezone: true })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
   },
   table => ({
     uniqueApiKey: unique('unique_api_key').on(table.projectId, table.userId),

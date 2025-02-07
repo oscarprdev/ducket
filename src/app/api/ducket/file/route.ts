@@ -89,13 +89,19 @@ export async function POST(request: Request) {
     /**
      * Create file in database
      */
-    await MUTATIONS.createFile({
-      projectId: project.id,
-      fileName,
-      type,
-      fileUrl,
-      size: file.size,
-    });
+    await Promise.all([
+      MUTATIONS.createFile({
+        projectId: project.id,
+        fileName,
+        type,
+        fileUrl,
+        size: file.size,
+      }),
+      MUTATIONS.updateApiKeyUsage({
+        projectId: project.id,
+        apiKey: apiKey,
+      }),
+    ]);
 
     /**
      * Return file url

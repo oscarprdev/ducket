@@ -48,19 +48,15 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
      * Get file by param id
      */
     const { id } = await context.params;
-    const [file] = await QUERIES.getFileByName({ name: id });
+    const [[file]] = await Promise.all([
+      QUERIES.getFileByName({ name: id }),
+      MUTATIONS.updateApiKeyUsage({
+        projectId: projectResponse.id,
+        apiKey: apiKeyStored.secret,
+      }),
+    ]);
     if (!file) {
       return new Response('File not found', { status: 404 });
-    }
-
-    /**
-     * Validate if project does exist based on projectId from file
-     */
-    const [project] = await QUERIES.getProject({ projectId: file?.projectId });
-    if (!project) {
-      return new Response('Project not found', { status: 404 });
-    } else if (projectResponse.id !== project.id) {
-      return new Response('Project not found for api key provided', { status: 404 });
     }
 
     return new Response(JSON.stringify({ fileUrl: file.fileUrl }), { status: 200 });
@@ -123,7 +119,13 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     /**
      * Delete file in database
      */
-    await MUTATIONS.deleteFileByName({ name });
+    await Promise.all([
+      MUTATIONS.deleteFileByName({ name }),
+      MUTATIONS.updateApiKeyUsage({
+        projectId: project.id,
+        apiKey: apiKey,
+      }),
+    ]);
 
     return new Response(JSON.stringify({ fileDeleted: name, projectId: project.id }), {
       status: 201,

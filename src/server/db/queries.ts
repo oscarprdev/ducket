@@ -9,7 +9,7 @@ import {
   projects,
   users,
 } from './schema';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 
 export const QUERIES = {
   // PROJECTS
@@ -131,5 +131,14 @@ export const MUTATIONS = {
   deleteFileByName: function (input: { name: string }): Promise<Files[]> {
     const { name } = input;
     return db.delete(files).where(eq(files.fileName, name));
+  },
+  updateApiKeyUsage: function (input: { projectId: string; apiKey: string }): Promise<ApiKeys[]> {
+    const { projectId, apiKey } = input;
+    return db
+      .update(apiKeys)
+      .set({
+        lastUsed: sql`CURRENT_TIMESTAMP`,
+      })
+      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
   },
 };
