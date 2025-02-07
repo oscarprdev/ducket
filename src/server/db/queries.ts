@@ -1,4 +1,5 @@
 import { db } from '.';
+import generateApiKey from '../utils/generate-api-key';
 import {
   type ApiKeys,
   type Files,
@@ -10,6 +11,7 @@ import {
   users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
+import { type ApiKeyPermissions } from '~/lib/constants';
 
 export const QUERIES = {
   // PROJECTS
@@ -40,6 +42,9 @@ export const QUERIES = {
   // USERS
   getUserById: function ({ id }: { id: string }): Promise<Users[]> {
     return db.select().from(users).where(eq(users.id, id));
+  },
+  getUserByEmail: function ({ email }: { email: string }): Promise<Users[]> {
+    return db.select().from(users).where(eq(users.email, email));
   },
   // API KEYS
   getApikey: function ({ apiKey }: { apiKey: string }): Promise<ApiKeys[]> {
@@ -101,14 +106,17 @@ export const MUTATIONS = {
     if (!project) {
       throw new Error('Failed to create project');
     }
-
-    await db.insert(apiKeys).values({
-      projectId: project.id,
-      name: title,
-      secret: apiKey,
-      permissions: 'all',
-      userId: ownerId,
-    });
+    try {
+      await db.insert(apiKeys).values({
+        projectId: project.id,
+        name: title,
+        secret: apiKey,
+        userId: ownerId,
+      });
+    } catch {
+      await db.delete(projects).where(eq(projects.id, project.id));
+      throw new Error('Failed to create project after api key creation');
+    }
 
     return [project];
   },
@@ -140,5 +148,20 @@ export const MUTATIONS = {
         lastUsed: sql`CURRENT_TIMESTAMP`,
       })
       .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
+  },
+  createApiKey: function (input: {
+    projectId: string;
+    name: string;
+    userId: string;
+    permissions: ApiKeyPermissions[];
+  }) {
+    const { projectId, name, userId, permissions } = input;
+    return db.insert(apiKeys).values({
+      name,
+      projectId,
+      permissions,
+      userId,
+      secret: generateApiKey(),
+    });
   },
 };

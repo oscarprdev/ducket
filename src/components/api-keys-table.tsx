@@ -1,7 +1,8 @@
 'use client';
 
+import { CreateApiKeyDialog } from './create-api-key-dialog';
 import { Button } from './ui/button';
-import { Copy, Eye, EyeOff, MoreHorizontal } from 'lucide-react';
+import { Eye, EyeOff, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import {
@@ -107,7 +108,7 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
           </TableBody>
         </Table>
         <div className="mt-4">
-          <Button>Create API Key</Button>
+          {apiKeys[0] && <CreateApiKeyDialog projectId={apiKeys[0].projectId} />}
         </div>
       </CardContent>
     </Card>

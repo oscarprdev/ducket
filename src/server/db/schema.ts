@@ -14,7 +14,6 @@ import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
-export const permissionsEnum = pgEnum('permissions', ['read', 'write', 'delete', 'all']);
 export type ApiKeys = typeof apiKeys.$inferSelect;
 export const apiKeys = createTable(
   'api_keys',
@@ -25,7 +24,10 @@ export const apiKeys = createTable(
       .default(sql`gen_random_uuid()`),
     name: varchar('name', { length: 255 }).notNull().unique(),
     secret: varchar('secret', { length: 255 }).notNull(),
-    permissions: permissionsEnum('permissions').notNull(),
+    permissions: text('permissions')
+      .array()
+      .notNull()
+      .default(sql`ARRAY['all']::text[]`),
     projectId: varchar('project_id', { length: 255 })
       .notNull()
       .references(() => projects.id, { onDelete: 'cascade' }),
@@ -106,7 +108,7 @@ export const projectUsers = createTable(
     userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    role: permissionsEnum('role').notNull().default('read'),
+    role: text('role').notNull().default('read'),
   },
   table => ({
     pk: primaryKey({ columns: [table.projectId, table.userId] }),

@@ -31,11 +31,10 @@ Ducket is a web application that allows users store their files in an easy way.
 - [ ] Api-key screen
   - [x] Copy api key card (07/02/2025)
   - [x] Api keys table (07/02/2025)
-  - [ ] Create api key action
+  - [x] Create api key action (07/02/2025)
   - [ ] Delete api key action
   - [ ] Update api key permissions
 - [ ] Account screen
-- [ ] User settings screen (manage user roles and api-key)
 - [ ] Header (dark/light theme)
 - [ ] Internationalization
 - [ ] Landing page

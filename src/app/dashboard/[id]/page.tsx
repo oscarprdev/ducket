@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import FileTable from '~/components/file-table';
 import FileTableSkeleton from '~/components/file-table-skeleton';
 import { FileUploadDialog } from '~/components/file-upload-dialog';
-import { VALID_FILE_TYPES } from '~/lib/constants';
+import { API_KEY_PERMISSIONS, VALID_FILE_TYPES } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
@@ -44,7 +44,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   const secret = response[0].secret;
   const permissions = response[0].permissions;
-  const isUploadAllowed = permissions === 'all' || permissions === 'write';
+  const isUploadAllowed =
+    permissions.includes(API_KEY_PERMISSIONS.all) ||
+    permissions.includes(API_KEY_PERMISSIONS.write);
 
   return (
     <>
