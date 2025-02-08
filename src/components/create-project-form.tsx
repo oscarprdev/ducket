@@ -1,6 +1,7 @@
 'use client';
 
 import LoaderCircle from './icons/loader-circle';
+import SubmitButton from './submit-button';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
@@ -38,14 +39,7 @@ export function CreateProjectForm({ action, onActionFinished }: CreateProjectFor
 
       <div className="space-y-2">
         {state.error && <p className="text-xs text-destructive">{state.error}</p>}
-        <Button type="submit" disabled={pending}>
-          {pending && (
-            <span className="animate-spin">
-              <LoaderCircle />
-            </span>
-          )}
-          Create Project
-        </Button>
+        <SubmitButton pending={pending} disabled={pending} text="Create Project" />
       </div>
     </form>
   );

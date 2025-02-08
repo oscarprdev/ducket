@@ -1,9 +1,11 @@
 import LoaderCircle from './icons/loader-circle';
+import SubmitButton from './submit-button';
 import { Button } from './ui/button';
 import { DialogFooter } from './ui/dialog';
 import { Input } from './ui/input';
 import { Switch } from './ui/switch';
 import { Label } from '@radix-ui/react-label';
+import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
@@ -26,7 +28,11 @@ export default function CreateApiKeyForm({
     action,
     onSuccess: () => {
       toast({ title: 'Project created', description: 'Your project has been created' });
-      onActionFinished?.();
+
+      setTimeout(() => {
+        onActionFinished?.();
+        redirect(`/dashboard/${projectId}/api-keys`);
+      }, 100);
     },
   });
 
@@ -92,14 +98,7 @@ export default function CreateApiKeyForm({
         {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
         <div className="flex items-center gap-2">
           {children}
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending && (
-              <span className="animate-spin">
-                <LoaderCircle />
-              </span>
-            )}
-            Create API Key
-          </Button>
+          <SubmitButton pending={pending} disabled={!projectId || pending} text=" Create API Key" />
         </div>
       </DialogFooter>
     </form>

@@ -1,18 +1,13 @@
 'use client';
 
 import { ApiKeyDeleteForm } from './api-key-delete-form';
+import ApiKeysActionsDropdown from './api-keys-actions-dropdown';
 import { CreateApiKeyDialog } from './create-api-key-dialog';
 import { Button } from './ui/button';
 import { Eye, EyeOff, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { deleteApiKey } from '~/app/dashboard/[id]/api-keys/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -28,10 +23,6 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
 
   const toggleKeyVisibility = (id: string) => {
     setShowKeys(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const copyToClipboard = async (text: string) => {
-    await navigator.clipboard.writeText(text);
   };
 
   return (
@@ -95,25 +86,7 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                     : 'Never'}
                 </TableCell>
                 <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => copyToClipboard(apiKey.secret)}>
-                        Copy API Key
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
-                        <ApiKeyDeleteForm
-                          action={deleteApiKey}
-                          projectId={apiKey.projectId}
-                          apiKey={apiKey.secret}
-                        />
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <ApiKeysActionsDropdown apiKey={apiKey} />
                 </TableCell>
               </TableRow>
             ))}

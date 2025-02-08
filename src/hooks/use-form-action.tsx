@@ -7,19 +7,20 @@ export const useFormAction = ({
   onError,
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
-  onSuccess?: () => void;
-  onError?: () => void;
+  onSuccess?: (message?: string) => void;
+  onError?: (message?: string) => void;
 }) => {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, { error: '' });
 
   useEffect(() => {
     if (state?.success) {
-      onSuccess?.();
+      onSuccess?.(state?.success);
     } else if (state?.error) {
-      onError?.();
+      onError?.(state?.error);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state?.success, state?.error]);
+  }, [state, state?.success, state?.error]);
 
   return { state, formAction, pending };
 };

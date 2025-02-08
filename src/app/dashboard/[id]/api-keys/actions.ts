@@ -50,8 +50,6 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
     permissions,
   });
 
-  revalidatePath(`/dashboard/${projectId}/api-keys`);
-
   return { success: 'API key created successfully' };
 });
 
@@ -61,11 +59,13 @@ const deleteApiKeySchema = z.object({
 });
 
 export const deleteApiKey = validatedActionWithUser(deleteApiKeySchema, async data => {
-  const { projectId, apiKey } = data;
+  try {
+    const { projectId, apiKey } = data;
 
-  await MUTATIONS.deleteApiKey({ projectId, apiKey });
+    await MUTATIONS.deleteApiKey({ projectId, apiKey });
 
-  revalidatePath(`/dashboard/${projectId}/api-keys`);
-
-  return { success: 'API key deleted successfully' };
+    return { success: 'API key deleted successfully' };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Error deleting API key' };
+  }
 });

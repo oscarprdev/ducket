@@ -1,3 +1,4 @@
+import SubmitButton from './submit-button';
 import { Button } from './ui/button';
 import { LoaderCircle } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
@@ -47,14 +48,11 @@ export default function FileDeleteForm({
       {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
       <div className="flex items-center gap-2">
         {children}
-        <Button type="submit" disabled={pending} className="w-full">
-          {pending && (
-            <span className="animate-spin">
-              <LoaderCircle />
-            </span>
-          )}
-          {`Delete file${selectedFiles.length > 1 ? 's' : ''}`}
-        </Button>
+        <SubmitButton
+          pending={pending}
+          disabled={selectedFiles.length === 0 || pending}
+          text={`Delete file${selectedFiles.length > 1 ? 's' : ''}`}
+        />
       </div>
     </form>
   );

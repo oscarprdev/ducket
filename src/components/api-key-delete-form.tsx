@@ -1,5 +1,7 @@
+import SubmitButton from './submit-button';
 import { Button } from './ui/button';
 import { LoaderCircle } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import { type ActionState } from '~/server/auth/middleware';
@@ -8,17 +10,35 @@ interface ApiKeyDeleteFormProps {
   projectId: string;
   apiKey: string;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  onActionFinished?: () => void;
 }
 
-export function ApiKeyDeleteForm({ projectId, apiKey, action }: ApiKeyDeleteFormProps) {
+export function ApiKeyDeleteForm({
+  projectId,
+  apiKey,
+  action,
+  onActionFinished,
+}: ApiKeyDeleteFormProps) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
     action,
-    onSuccess: () => {
+    onSuccess: (message?: string) => {
       toast({
         title: 'API key deleted',
-        description: 'Your API key has been deleted successfully',
+        description: message ?? 'Your API key has been deleted successfully',
       });
+
+      setTimeout(() => {
+        onActionFinished?.();
+        redirect(`/dashboard/${projectId}/api-keys`);
+      }, 100);
+    },
+    onError: (message?: string) => {
+      toast({
+        title: 'Error deleting API key',
+        description: message ?? 'An error occurred while deleting your API key',
+      });
+      onActionFinished?.();
     },
   });
 
@@ -32,14 +52,12 @@ export function ApiKeyDeleteForm({ projectId, apiKey, action }: ApiKeyDeleteForm
     <form action={handleAction} className="space-y-4">
       <div className="space-y-2">
         {state.error && <p className="text-xs text-destructive">{state.error}</p>}
-        <Button type="submit" disabled={pending}>
-          {pending && (
-            <span className="animate-spin">
-              <LoaderCircle />
-            </span>
-          )}
-          Revoke API key
-        </Button>
+        <SubmitButton
+          pending={pending}
+          disabled={!projectId || !apiKey || pending}
+          variant={{ variant: 'destructive' }}
+          text="Revoke API key"
+        />
       </div>
     </form>
   );

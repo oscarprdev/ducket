@@ -1,6 +1,7 @@
 'use client';
 
 import LoaderCircle from './icons/loader-circle';
+import SubmitButton from './submit-button';
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -114,14 +115,7 @@ export function FileUploadForm({
 
       <div className="space-y-2">
         {state.error && <p className="text-xs text-destructive">{state.error}</p>}
-        <Button type="submit" disabled={pending || !file}>
-          {pending && (
-            <span className="mr-2 animate-spin">
-              <LoaderCircle />
-            </span>
-          )}
-          Upload File
-        </Button>
+        <SubmitButton pending={pending} disabled={!file || pending} text="Upload File" />
       </div>
     </form>
   );
