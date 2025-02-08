@@ -1,8 +1,6 @@
 'use client';
 
-import LoaderCircle from './icons/loader-circle';
-import SubmitButton from './submit-button';
-import { Button } from '~/components/ui/button';
+import SubmitButton from '~/components/submit-button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { useFormAction } from '~/hooks/use-form-action';

@@ -1,6 +1,6 @@
-import { Button } from './ui/button';
 import { Download, LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '~/components/ui/button';
 import { useToast } from '~/hooks/use-toast';
 
 export default function FileDownloadButton({ fileUrl }: { fileUrl: string }) {
