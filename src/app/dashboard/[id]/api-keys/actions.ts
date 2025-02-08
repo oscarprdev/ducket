@@ -1,22 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { API_KEY_PERMISSIONS, type ApiKeyPermissions } from '~/lib/constants';
 import { validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
-const createApiKeySchema = z.object({
-  projectId: z.string(),
-  name: z.string(),
-  email: z.string().email(),
-  read: z.string().optional(),
-  write: z.string().optional(),
-  delete: z.string().optional(),
-});
-export const createApiKey = validatedActionWithUser(createApiKeySchema, async data => {
-  const { projectId, name, email, read, write, delete: deletePermission } = data;
-
+const extractPermissions = (read?: string, write?: string, deletePermission?: string) => {
   let permissions: ApiKeyPermissions[] = [];
   if (read === 'on') {
     permissions.push(API_KEY_PERMISSIONS.read);
@@ -30,6 +19,21 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
   if (permissions.length === 3) {
     permissions = [API_KEY_PERMISSIONS.all];
   }
+
+  return permissions;
+};
+
+const createApiKeySchema = z.object({
+  projectId: z.string(),
+  name: z.string(),
+  email: z.string().email(),
+  read: z.string().optional(),
+  write: z.string().optional(),
+  delete: z.string().optional(),
+});
+export const createApiKey = validatedActionWithUser(createApiKeySchema, async data => {
+  const { projectId, name, email, read, write, delete: deletePermission } = data;
+  const permissions = extractPermissions(read, write, deletePermission);
   if (permissions.length === 0) {
     return { error: 'Please select at least one permission' };
   }
@@ -68,4 +72,27 @@ export const deleteApiKey = validatedActionWithUser(deleteApiKeySchema, async da
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Error deleting API key' };
   }
+});
+
+const editApiKeySchema = z.object({
+  projectId: z.string(),
+  name: z.string(),
+  read: z.string().optional(),
+  write: z.string().optional(),
+  delete: z.string().optional(),
+});
+export const editApiKey = validatedActionWithUser(editApiKeySchema, async data => {
+  const { projectId, name, read, write, delete: deletePermission } = data;
+  const permissions = extractPermissions(read, write, deletePermission);
+  if (permissions.length === 0) {
+    return { error: 'Please select at least one permission' };
+  }
+
+  await MUTATIONS.editApiKey({
+    projectId,
+    name,
+    permissions,
+  });
+
+  return { success: 'API key editted successfully' };
 });

@@ -1,8 +1,8 @@
 import { ApiKeyDeleteForm } from './api-key-delete-form';
+import { ApiKeysEditDialog } from './api-keys-edit-dialog';
 import { Button } from './ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
-import { set } from 'zod';
 import { deleteApiKey } from '~/app/dashboard/[id]/api-keys/actions';
 import {
   DropdownMenu,
@@ -31,6 +31,9 @@ export default function ApiKeysActionsDropdown({ apiKey }: { apiKey: ApiKeys }) 
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => copyToClipboard(apiKey.secret)}>
           Copy API Key
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <ApiKeysEditDialog apiKey={apiKey} />
         </DropdownMenuItem>
         <DropdownMenuItem className="text-red-600" asChild>
           <ApiKeyDeleteForm

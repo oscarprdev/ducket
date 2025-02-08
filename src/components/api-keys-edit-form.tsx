@@ -1,6 +1,4 @@
-import LoaderCircle from './icons/loader-circle';
 import SubmitButton from './submit-button';
-import { Button } from './ui/button';
 import { DialogFooter } from './ui/dialog';
 import { Input } from './ui/input';
 import { Switch } from './ui/switch';
@@ -10,34 +8,35 @@ import { type PropsWithChildren } from 'react';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import { type ActionState } from '~/server/auth/middleware';
+import { type ApiKeys } from '~/server/db/schema';
 
-interface CreateApiKeyFormProps {
-  projectId: string;
+interface ApiKeyEditFormProps {
+  apiKey: ApiKeys;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   onActionFinished?: () => void;
 }
 
-export default function CreateApiKeyForm({
+export default function ApiKeysEditForm({
   children,
-  projectId,
+  apiKey,
   action,
   onActionFinished,
-}: PropsWithChildren<CreateApiKeyFormProps>) {
+}: PropsWithChildren<ApiKeyEditFormProps>) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
     action,
-    onSuccess: () => {
-      toast({ title: 'Project created', description: 'Your project has been created' });
+    onSuccess: (message?: string) => {
+      toast({ title: 'API key editted', description: message ?? 'Your API key has been editted' });
 
       setTimeout(() => {
         onActionFinished?.();
-        redirect(`/dashboard/${projectId}/api-keys`);
+        redirect(`/dashboard/${apiKey.projectId}/api-keys`);
       }, 100);
     },
   });
 
   const handleAction = (formData: FormData) => {
-    formData.append('projectId', projectId);
+    formData.append('projectId', apiKey.projectId);
     formAction(formData);
   };
 
@@ -51,20 +50,9 @@ export default function CreateApiKeyForm({
           <Input
             id="name"
             name="name"
+            defaultValue={apiKey.name}
             className="col-span-3"
             placeholder="Enter a name for your API key"
-          />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="email" className="text-right">
-            Email
-          </Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            className="col-span-3"
-            placeholder="Enter user's email"
           />
         </div>
         <div className="grid gap-2">
@@ -75,21 +63,29 @@ export default function CreateApiKeyForm({
                 <span>Read</span>
                 <span className="text-xs text-muted-foreground">(Get files and metadata)</span>
               </Label>
-              <Switch id="read" name="read" />
+              <Switch id="read" name="read" defaultChecked={apiKey.permissions.includes('read')} />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="write" className="flex items-center gap-2">
                 <span>Write</span>
                 <span className="text-xs text-muted-foreground">(Upload files)</span>
               </Label>
-              <Switch id="write" name="write" />
+              <Switch
+                id="write"
+                name="write"
+                defaultChecked={apiKey.permissions.includes('write')}
+              />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="delete" className="flex items-center gap-2">
                 <span>Delete</span>
                 <span className="text-xs text-muted-foreground">(Remove files)</span>
               </Label>
-              <Switch id="delete" name="delete" />
+              <Switch
+                id="delete"
+                name="delete"
+                defaultChecked={apiKey.permissions.includes('delete')}
+              />
             </div>
           </div>
         </div>
@@ -98,7 +94,11 @@ export default function CreateApiKeyForm({
         {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
         <div className="flex items-center gap-2">
           {children}
-          <SubmitButton pending={pending} disabled={!projectId || pending} text=" Create API Key" />
+          <SubmitButton
+            pending={pending}
+            disabled={!apiKey.projectId || pending}
+            text=" Edit API Key"
+          />
         </div>
       </DialogFooter>
     </form>

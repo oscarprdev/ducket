@@ -2,7 +2,7 @@
 
 import { ApiKeyDeleteForm } from './api-key-delete-form';
 import ApiKeysActionsDropdown from './api-keys-actions-dropdown';
-import { CreateApiKeyDialog } from './create-api-key-dialog';
+import { ApiKeysCreateDialog } from './api-keys-create-dialog';
 import { Button } from './ui/button';
 import { Eye, EyeOff, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
@@ -93,7 +93,7 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
           </TableBody>
         </Table>
         <div className="mt-4">
-          {apiKeys[0] && <CreateApiKeyDialog projectId={apiKeys[0].projectId} />}
+          {apiKeys[0] && <ApiKeysCreateDialog projectId={apiKeys[0].projectId} />}
         </div>
       </CardContent>
     </Card>

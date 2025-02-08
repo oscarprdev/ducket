@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import ApiKeyCard from '~/components/api-key-card';
+import { ApiKeysCreateDialog } from '~/components/api-keys-create-dialog';
 import ApiKeysTable from '~/components/api-keys-table';
 import { ApiKeysTableSkeleton } from '~/components/api-keys-table-skeleton';
-import { CreateApiKeyDialog } from '~/components/create-api-key-dialog';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 import { type ApiKeys } from '~/server/db/schema';
@@ -39,7 +39,7 @@ export default async function ApiKeysPage({ params }: { params: Promise<{ id: st
           {<ApiKeysTableSSR apiKeys={apiKeys} />}
         </Suspense>
       )}
-      {apiKeys.length === 0 && <CreateApiKeyDialog projectId={id} />}
+      {apiKeys.length === 0 && <ApiKeysCreateDialog projectId={id} />}
     </div>
   );
 }

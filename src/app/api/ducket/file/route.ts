@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
-    if (apiKeyStored.permissions.some(permission => PERMISSIONS_ALLOWED.includes(permission))) {
+    if (!apiKeyStored.permissions.some(permission => PERMISSIONS_ALLOWED.includes(permission))) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }
 

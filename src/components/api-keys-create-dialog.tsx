@@ -1,6 +1,6 @@
 'use client';
 
-import CreateApiKeyForm from './create-api-key-form';
+import ApiKeysCreateForm from './api-keys-create-form';
 import { Button } from './ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '~/components/ui/dialog';
 
-export function CreateApiKeyDialog({ projectId }: { projectId: string }) {
+export function ApiKeysCreateDialog({ projectId }: { projectId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const handleCloseDialog = () => {
     setIsOpen(false);
@@ -33,14 +33,14 @@ export function CreateApiKeyDialog({ projectId }: { projectId: string }) {
           <DialogTitle>Create API Key</DialogTitle>
           <DialogDescription>Create a new API key with specific permissions.</DialogDescription>
         </DialogHeader>
-        <CreateApiKeyForm
+        <ApiKeysCreateForm
           projectId={projectId}
           action={createApiKey}
           onActionFinished={handleCloseDialog}>
           <Button type="button" className="w-full" variant="outline" onClick={handleCloseDialog}>
             Cancel
           </Button>
-        </CreateApiKeyForm>
+        </ApiKeysCreateForm>
       </DialogContent>
     </Dialog>
   );

@@ -35,7 +35,9 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
-    if (apiKeyStored.permissions.some(permission => GET_PERMISSIONS_ALLOWED.includes(permission))) {
+    if (
+      !apiKeyStored.permissions.some(permission => GET_PERMISSIONS_ALLOWED.includes(permission))
+    ) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }
 
@@ -85,7 +87,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       return new Response('Invalid bearer auth', { status: 402 });
     }
     if (
-      apiKeyStored.permissions.some(permission => DELETE_PERMISSIONS_ALLOWED.includes(permission))
+      !apiKeyStored.permissions.some(permission => DELETE_PERMISSIONS_ALLOWED.includes(permission))
     ) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }

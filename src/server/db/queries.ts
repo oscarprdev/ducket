@@ -11,6 +11,7 @@ import {
   users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
+import { editApiKey } from '~/app/dashboard/[id]/api-keys/actions';
 import { type ApiKeyPermissions } from '~/lib/constants';
 
 export const QUERIES = {
@@ -170,6 +171,14 @@ export const MUTATIONS = {
       userId,
       secret: generateApiKey(),
     });
+  },
+  editApiKey: function (input: {
+    projectId: string;
+    name: string;
+    permissions: ApiKeyPermissions[];
+  }) {
+    const { projectId, name, permissions } = input;
+    return db.update(apiKeys).set({ name, permissions }).where(eq(apiKeys.projectId, projectId));
   },
   deleteApiKey: function (input: { projectId: string; apiKey: string }): Promise<ApiKeys[]> {
     const { projectId, apiKey } = input;
