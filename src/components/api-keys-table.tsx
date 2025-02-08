@@ -1,12 +1,10 @@
 'use client';
 
-import { ApiKeyDeleteForm } from './api-key-delete-form';
 import ApiKeysActionsDropdown from './api-keys-actions-dropdown';
 import { ApiKeysCreateDialog } from './api-keys-create-dialog';
 import { Button } from './ui/button';
-import { Eye, EyeOff, MoreHorizontal } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import { deleteApiKey } from '~/app/dashboard/[id]/api-keys/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import {
   Table,
