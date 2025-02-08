@@ -36,10 +36,10 @@ Initial release with core functionality.
   - API keys table (07/02/2025)
   - Create API key action (07/02/2025)
   - Delete API key action (07/02/2025)
+  - Update API key permissions (08/02/2025)
 
 ### Upcoming Features
 
-- Update API key permissions
 - Project overview screen (files size, api-keys usage)
 - Project settings screen (name, description, owner transfer, delete project)
 - Logs screen (apikeys usage)
