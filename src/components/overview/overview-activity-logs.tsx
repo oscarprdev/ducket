@@ -29,7 +29,7 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
         <CardTitle className="flex w-full items-center justify-between">
           Activity Log
           <Button variant="outline" size="sm">
-            See all activity
+            See all logs
           </Button>
         </CardTitle>
       </CardHeader>

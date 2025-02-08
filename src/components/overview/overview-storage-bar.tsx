@@ -1,3 +1,4 @@
+import { Button } from '../ui/button';
 import { TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '~/components/ui/card';
 import { Progress } from '~/components/ui/progress';
@@ -29,7 +30,13 @@ export function OverviewStorageBar({
       <CardContent className="pt-6">
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">STORAGE USED</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium text-muted-foreground">STORAGE USED</h3>
+              <Button variant="outline" size="sm">
+                Upgrade to pro
+              </Button>
+            </div>
+
             <div className="flex items-baseline gap-2">
               <span className="text-4xl font-bold">{percentage}%</span>
               <span className="text-sm text-muted-foreground">

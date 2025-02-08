@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '../ui/button';
 import { TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
@@ -37,7 +38,12 @@ export function OverviewUsageChart() {
   return (
     <Card className="col-span-2">
       <CardHeader>
-        <CardTitle>Usage activity</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          Usage activity
+          <Button variant="outline" size="sm">
+            See all activity
+          </Button>
+        </CardTitle>
         <CardDescription>Last week</CardDescription>
       </CardHeader>
       <CardContent className="max-h-[150px]">

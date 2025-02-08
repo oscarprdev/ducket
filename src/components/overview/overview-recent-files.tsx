@@ -1,4 +1,6 @@
+import { Button } from '../ui/button';
 import { FileIcon, ImageIcon, VideoIcon } from 'lucide-react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 
 const recentFiles = [
@@ -68,7 +70,12 @@ export function OverviewRecentFiles() {
   return (
     <Card className="col-span-2 -mt-32 h-[450px]">
       <CardHeader>
-        <CardTitle>Recent Files</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          Recent Files
+          <Button asChild variant="outline" size="sm">
+            <Link href="/dashboard/files">See all files</Link>
+          </Button>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
