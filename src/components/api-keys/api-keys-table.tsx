@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import ApiKeysActionsDropdown from './api-keys-actions-dropdown';
 import { ApiKeysCreateDialog } from './api-keys-create-dialog';
@@ -69,11 +70,11 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                 <TableCell>
                   <div className="flex gap-1">
                     {apiKey.permissions.map(permission => (
-                      <span
+                      <Badge
                         key={permission}
-                        className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
+                        className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-black">
                         {permission}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 </TableCell>
