@@ -7,11 +7,20 @@ import { API_KEY_PERMISSIONS, VALID_FILE_TYPES } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
-async function ProjectFiles({ projectId, apiKey }: { projectId: string; apiKey: string }) {
+async function ProjectFiles({
+  projectId,
+  apiKey,
+  isDeleteAllowed,
+}: {
+  projectId: string;
+  apiKey: string;
+  isDeleteAllowed: boolean;
+}) {
   const files = await QUERIES.getFilesByProjectId({ projectId });
   return (
     <FileTable
       apiKey={apiKey}
+      isDeleteAllowed={isDeleteAllowed}
       files={files.map(file => ({
         id: file.id,
         name: file.fileName ?? '-',
@@ -47,6 +56,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const isUploadAllowed =
     permissions.includes(API_KEY_PERMISSIONS.all) ||
     permissions.includes(API_KEY_PERMISSIONS.write);
+  const isDeleteAllowed = permissions.includes(
+    API_KEY_PERMISSIONS.all || API_KEY_PERMISSIONS.delete
+  );
 
   return (
     <>
@@ -55,7 +67,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         {isUploadAllowed && <FileUploadDialog apiKey={secret} projectId={id} />}
       </div>
       <Suspense fallback={<FileTableSkeleton />}>
-        <ProjectFiles projectId={id} apiKey={secret} />
+        <ProjectFiles projectId={id} apiKey={secret} isDeleteAllowed={isDeleteAllowed} />
       </Suspense>
     </>
   );

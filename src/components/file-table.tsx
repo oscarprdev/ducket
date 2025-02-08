@@ -29,7 +29,15 @@ const iconMap = {
   text: FileText,
 };
 
-export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey: string }) {
+export default function FileTable({
+  files,
+  apiKey,
+  isDeleteAllowed,
+}: {
+  files: FileData[];
+  apiKey: string;
+  isDeleteAllowed: boolean;
+}) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
   const handleSelectFile = (fileName: string) => {
@@ -46,7 +54,7 @@ export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey
 
   return (
     <>
-      {selectedFiles.length > 0 && (
+      {selectedFiles.length > 0 && isDeleteAllowed && (
         <div className="absolute right-48 top-[1.5rem] mb-4 flex justify-end">
           <FileDeleteDialog
             apiKey={apiKey}
@@ -58,13 +66,15 @@ export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12">
-              <Checkbox
-                checked={files.length > 0 && selectedFiles.length === files.length}
-                onCheckedChange={handleSelectAll}
-                disabled={files.length === 0}
-              />
-            </TableHead>
+            {isDeleteAllowed && (
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={files.length > 0 && selectedFiles.length === files.length}
+                  onCheckedChange={handleSelectAll}
+                  disabled={files.length === 0}
+                />
+              </TableHead>
+            )}
             <TableHead>Name</TableHead>
             <TableHead>URL</TableHead>
             <TableHead>Type</TableHead>
@@ -84,12 +94,14 @@ export default function FileTable({ files, apiKey }: { files: FileData[]; apiKey
               const Icon = iconMap[file.icon];
               return (
                 <TableRow key={file.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedFiles.includes(file.name)}
-                      onCheckedChange={() => handleSelectFile(file.name)}
-                    />
-                  </TableCell>
+                  {isDeleteAllowed && (
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedFiles.includes(file.name)}
+                        onCheckedChange={() => handleSelectFile(file.name)}
+                      />
+                    </TableCell>
+                  )}
                   <TableCell className="font-medium">
                     <div className="flex items-center">
                       <Icon className="mr-2 h-4 w-4" />
