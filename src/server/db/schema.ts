@@ -2,7 +2,6 @@ import { relations, sql } from 'drizzle-orm';
 import {
   index,
   integer,
-  pgEnum,
   pgTableCreator,
   primaryKey,
   text,

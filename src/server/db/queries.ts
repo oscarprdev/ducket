@@ -13,7 +13,6 @@ import {
   users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
-import { editApiKey } from '~/app/dashboard/[id]/api-keys/actions';
 import { type ApiKeyPermissions } from '~/lib/constants';
 
 export const QUERIES = {
