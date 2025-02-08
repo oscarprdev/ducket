@@ -115,6 +115,25 @@ export const projectUsers = createTable(
   })
 );
 
+export type ActivityLogs = typeof activityLogs.$inferSelect;
+export const activityLogs = createTable('activity_logs', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  projectId: varchar('project_id', { length: 255 })
+    .notNull()
+    .references(() => projects.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  fileName: varchar('file_name', { length: 255 }),
+  action: text('action').notNull(),
+  timestamp: timestamp('timestamp', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const accounts = createTable(
   'account',
   {

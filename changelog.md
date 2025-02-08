@@ -32,15 +32,24 @@ Initial release with core functionality.
   - Create project modal (06/02/2025)
 
 - **API Key Management Screen**
+
   - Copy API key card (07/02/2025)
   - API keys table (07/02/2025)
   - Create API key action (07/02/2025)
   - Delete API key action (07/02/2025)
   - Update API key permissions (08/02/2025)
 
+- **Project Overview Screen**
+  - Usage activity card
+    - Activity table (08/02/2025)
+    - Activity chart data
+    - Activity chart skeleton
+  - Recent files card
+  - Storage bar card
+  - Activity log card
+
 ### Upcoming Features
 
-- Project overview screen (files size, api-keys usage)
 - Project settings screen (name, description, owner transfer, delete project)
 - Logs screen (apikeys usage)
 - Account management screen (change password, update email, delete account)

@@ -1,10 +1,12 @@
 import { db } from '.';
 import generateApiKey from '../utils/generate-api-key';
 import {
+  type ActivityLogs,
   type ApiKeys,
   type Files,
   type Projects,
   type Users,
+  activityLogs,
   apiKeys,
   files,
   projects,
@@ -185,5 +187,20 @@ export const MUTATIONS = {
     return db
       .delete(apiKeys)
       .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
+  },
+  // ACTIVITY LOGS
+  createActivityLog: function (input: {
+    projectId: string;
+    userId: string;
+    fileName: string;
+    action: string;
+  }): Promise<ActivityLogs[]> {
+    const { projectId, userId, fileName, action } = input;
+    return db.insert(activityLogs).values({
+      projectId,
+      userId,
+      fileName,
+      action,
+    });
   },
 };

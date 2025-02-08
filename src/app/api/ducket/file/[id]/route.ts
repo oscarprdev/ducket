@@ -1,5 +1,6 @@
 import { Bucket } from 'ducket';
 import { env } from '~/env';
+import { API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
@@ -57,9 +58,16 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
         apiKey: apiKeyStored.secret,
       }),
     ]);
-    if (!file) {
+    if (!file?.fileName) {
       return new Response('File not found', { status: 404 });
     }
+
+    await MUTATIONS.createActivityLog({
+      projectId: projectResponse.id,
+      userId: projectResponse.ownerId,
+      fileName: file.fileName,
+      action: API_KEY_PERMISSIONS.read,
+    });
 
     return new Response(JSON.stringify({ fileUrl: file.fileUrl }), { status: 200 });
   } catch (error) {
@@ -130,6 +138,13 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
         apiKey: apiKey,
       }),
     ]);
+
+    await MUTATIONS.createActivityLog({
+      projectId: projectResponse.id,
+      userId: projectResponse.ownerId,
+      fileName: name,
+      action: API_KEY_PERMISSIONS.delete,
+    });
 
     return new Response(JSON.stringify({ fileDeleted: name, projectId: project.id }), {
       status: 201,

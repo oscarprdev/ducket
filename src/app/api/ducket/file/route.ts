@@ -1,5 +1,6 @@
 import { Bucket } from 'ducket';
 import { env } from '~/env';
+import { API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 const PERMISSIONS_ALLOWED = ['all', 'write'];
@@ -100,6 +101,12 @@ export async function POST(request: Request) {
       MUTATIONS.updateApiKeyUsage({
         projectId: project.id,
         apiKey: apiKey,
+      }),
+      MUTATIONS.createActivityLog({
+        projectId: project.id,
+        userId: project.ownerId,
+        fileName: file.name,
+        action: API_KEY_PERMISSIONS.write,
       }),
     ]);
 
