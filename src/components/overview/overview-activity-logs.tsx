@@ -1,5 +1,7 @@
 import { FileIcon, Trash2Icon, UploadIcon, UserIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { type ActivityLogsWithUser } from '~/server/db/queries';
+import { type ActivityLogs } from '~/server/db/schema';
 
 const activities = [
   {
@@ -57,7 +59,11 @@ function getActivityIcon(type: string) {
   }
 }
 
-export function OverviewActivityLog() {
+interface OverviewActivityLogProps {
+  activityLogs: ActivityLogsWithUser[];
+}
+
+export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) {
   return (
     <Card className="col-span-2">
       <CardHeader>
@@ -65,13 +71,13 @@ export function OverviewActivityLog() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {activities.map(activity => (
+          {activityLogs?.map(activity => (
             <div key={activity.id} className="flex items-center justify-between space-x-4">
               <div className="flex items-center space-x-4">
-                <div className="rounded-md border p-2">{getActivityIcon(activity.type)}</div>
+                <div className="rounded-md border p-2">{getActivityIcon(activity.action)}</div>
                 <div>
                   <p className="text-sm font-medium leading-none">
-                    {activity.user} {activity.action} {activity.target}
+                    {activity.user} {activity.action} {activity.fileName}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {new Date(activity.timestamp).toLocaleTimeString()}

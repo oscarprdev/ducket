@@ -12,8 +12,12 @@ import {
   projects,
   users,
 } from './schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import { type ApiKeyPermissions } from '~/lib/constants';
+
+export interface ActivityLogsWithUser extends ActivityLogs {
+  user: string;
+}
 
 export const QUERIES = {
   // PROJECTS
@@ -91,6 +95,31 @@ export const QUERIES = {
     if (!response) return [];
 
     return [response.api_keys];
+  },
+  // ACTIVITY LOGS
+  getActivityLogsByProject: async function ({
+    projectId,
+    offset,
+    limit,
+  }: {
+    projectId: string;
+    offset?: number;
+    limit?: number;
+  }): Promise<ActivityLogsWithUser[]> {
+    const DEFAULT_LIMIT = 5;
+    const DEFAULT_OFFSET = 0;
+    const response = await db
+      .select()
+      .from(activityLogs)
+      .where(eq(activityLogs.projectId, projectId))
+      .innerJoin(users, eq(activityLogs.userId, users.id))
+      .offset(offset ?? DEFAULT_OFFSET)
+      .limit(limit ?? DEFAULT_LIMIT)
+      .orderBy(desc(activityLogs.timestamp));
+
+    if (!response || response.length === 0) return [];
+
+    return response.map(data => ({ ...data.activity_logs, user: data.user.email }));
   },
 };
 
