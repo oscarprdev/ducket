@@ -1,7 +1,7 @@
-import { CreateProjectDialog } from '~/components/create-project-dialog';
 import DashboardLayout from '~/components/dashboard-layout';
 import DashboardSidebar from '~/components/dashboard-sidebar';
-import ProjectCard from '~/components/project-card';
+import { CreateProjectDialog } from '~/components/projects/create-project-dialog';
+import ProjectCard from '~/components/projects/project-card';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 

@@ -1,7 +1,7 @@
 'use client';
 
+import { Button } from '../ui/button';
 import ApiKeysEditForm from './api-keys-edit-form';
-import { Button } from './ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { editApiKey } from '~/app/dashboard/[id]/api-keys/actions';

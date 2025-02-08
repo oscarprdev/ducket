@@ -1,6 +1,6 @@
+import { Button } from '../ui/button';
 import { ApiKeyDeleteForm } from './api-key-delete-form';
 import { ApiKeysEditDialog } from './api-keys-edit-dialog';
-import { Button } from './ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { deleteApiKey } from '~/app/dashboard/[id]/api-keys/actions';

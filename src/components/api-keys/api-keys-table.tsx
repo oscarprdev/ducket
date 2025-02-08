@@ -1,8 +1,8 @@
 'use client';
 
+import { Button } from '../ui/button';
 import ApiKeysActionsDropdown from './api-keys-actions-dropdown';
 import { ApiKeysCreateDialog } from './api-keys-create-dialog';
-import { Button } from './ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';

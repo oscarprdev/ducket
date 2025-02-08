@@ -1,7 +1,7 @@
-import SubmitButton from './submit-button';
-import { DialogFooter } from './ui/dialog';
-import { Input } from './ui/input';
-import { Switch } from './ui/switch';
+import SubmitButton from '../submit-button';
+import { DialogFooter } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Switch } from '../ui/switch';
 import { Label } from '@radix-ui/react-label';
 import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';

@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import FileTable from '~/components/file-table';
-import FileTableSkeleton from '~/components/file-table-skeleton';
-import { FileUploadDialog } from '~/components/file-upload-dialog';
+import FileTable from '~/components/files/file-table';
+import FileTableSkeleton from '~/components/files/file-table-skeleton';
+import { FileUploadDialog } from '~/components/files/file-upload-dialog';
 import { API_KEY_PERMISSIONS, VALID_FILE_TYPES } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';

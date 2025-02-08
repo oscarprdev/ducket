@@ -1,4 +1,4 @@
-import { Files, Home, KeyRound, LayoutDashboard, Settings, Users } from 'lucide-react';
+import { Files, KeyRound, LayoutDashboard, Settings, Users } from 'lucide-react';
 import Link from 'next/link';
 
 interface ProjectSidebarProps {
