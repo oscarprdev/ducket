@@ -3,7 +3,7 @@
 import FileDeleteForm from './file-delete-form';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { deleteFile } from '~/app/dashboard/[id]/actions';
+import { deleteFile } from '~/app/dashboard/[id]/files/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,

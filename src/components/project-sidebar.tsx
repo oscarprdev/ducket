@@ -1,4 +1,4 @@
-import { Files, KeyRound, Settings, Users } from 'lucide-react';
+import { Files, Home, KeyRound, LayoutDashboard, Settings, Users } from 'lucide-react';
 import Link from 'next/link';
 
 interface ProjectSidebarProps {
@@ -10,6 +10,12 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
     <nav className="space-y-2">
       <Link
         href={`/dashboard/${projectId}`}
+        className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+        <LayoutDashboard className="h-4 w-4" />
+        <span>Overview</span>
+      </Link>
+      <Link
+        href={`/dashboard/${projectId}/files`}
         className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
         <Files className="h-4 w-4" />
         <span>Files</span>

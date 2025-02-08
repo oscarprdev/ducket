@@ -3,7 +3,7 @@
 import { FileUploadForm } from './file-upload-form';
 import { Upload } from 'lucide-react';
 import { useState } from 'react';
-import { uploadFile } from '~/app/dashboard/[id]/actions';
+import { uploadFile } from '~/app/dashboard/[id]/files/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
