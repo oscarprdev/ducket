@@ -42,8 +42,8 @@ Initial release with core functionality.
 - **Project Overview Screen**
   - Usage activity card
     - Activity table (08/02/2025)
-    - Activity chart data
-    - Activity chart skeleton
+    - Activity chart data (08/02/2025)
+    - Activity chart skeleton (08/02/2025)
   - Recent files card
   - Storage bar card
   - Activity log card
