@@ -46,8 +46,24 @@ export const QUERIES = {
   getFileByName: function ({ name }: { name: string }): Promise<Files[]> {
     return db.select().from(files).where(eq(files.fileName, name));
   },
-  getFilesByProjectId: function ({ projectId }: { projectId: string }): Promise<Files[]> {
-    return db.select().from(files).where(eq(files.projectId, projectId));
+  getFilesByProjectId: function ({
+    projectId,
+    offset,
+    limit,
+  }: {
+    projectId: string;
+    offset?: number;
+    limit?: number;
+  }): Promise<Files[]> {
+    const DEFAULT_OFFSET = 0;
+    const DEFAULT_LIMIT = 10;
+    return db
+      .select()
+      .from(files)
+      .where(eq(files.projectId, projectId))
+      .offset(offset ?? DEFAULT_OFFSET)
+      .limit(limit ?? DEFAULT_LIMIT)
+      .orderBy(desc(files.createdAt));
   },
   // USERS
   getUserById: function ({ id }: { id: string }): Promise<Users[]> {

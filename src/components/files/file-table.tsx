@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
+import { formatDate } from '~/lib/utils';
 
 interface FileData {
   id: string;
@@ -21,6 +22,7 @@ interface FileData {
   size: string;
   url: string;
   icon: 'file' | 'image' | 'text';
+  createdAt: Date | string;
 }
 
 const iconMap = {
@@ -79,6 +81,7 @@ export default function FileTable({
             <TableHead>URL</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Size</TableHead>
+            <TableHead>Created At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -111,6 +114,7 @@ export default function FileTable({
                   <TableCell className="font-medium">{file.url}</TableCell>
                   <TableCell>{file.type}</TableCell>
                   <TableCell>{file.size}</TableCell>
+                  <TableCell>{formatDate(file.createdAt)}</TableCell>
                   <TableCell className="text-right">
                     <FileDownloadButton fileUrl={file.url} />
                   </TableCell>

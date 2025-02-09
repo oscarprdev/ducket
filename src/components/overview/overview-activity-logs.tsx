@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { EyeIcon, FileIcon, Trash2Icon, UploadIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { formatDate } from '~/lib/utils';
 import { type ActivityLogsWithUser } from '~/server/db/queries';
 
 function getActivityIcon(type: string) {
@@ -49,9 +50,7 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
                     </Badge>
                   </div>
                   <p className="text-xs leading-none">{activity.user}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(activity.timestamp).toLocaleTimeString()}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{formatDate(activity.timestamp)}</p>
                 </div>
               </div>
             </div>

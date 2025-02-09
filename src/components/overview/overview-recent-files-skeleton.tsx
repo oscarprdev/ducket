@@ -2,14 +2,14 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Skeleton } from '~/components/ui/skeleton';
 
-export function ActivityLogSkeleton() {
+export function OverviewRecentFilesSkeleton() {
   return (
-    <Card className="col-span-2">
+    <Card className="col-span-2 -mt-32 h-[450px]">
       <CardHeader>
-        <CardTitle className="flex w-full items-center justify-between">
-          Activity Log
+        <CardTitle className="flex items-center justify-between">
+          Recent Files
           <Button variant="outline" size="sm">
-            See all logs
+            See all files
           </Button>
         </CardTitle>
       </CardHeader>
@@ -24,6 +24,7 @@ export function ActivityLogSkeleton() {
                   <Skeleton className="h-3 w-[100px]" />
                 </div>
               </div>
+              <Skeleton className="h-3 w-[100px]" />
             </div>
           ))}
         </div>

@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { OverviewActivityLog } from '~/components/overview/overview-activity-logs';
 import { ActivityLogSkeleton } from '~/components/overview/overview-activity-skeleton';
 import { OverviewRecentFiles } from '~/components/overview/overview-recent-files';
+import { OverviewRecentFilesSkeleton } from '~/components/overview/overview-recent-files-skeleton';
 import { OverviewStorageBar } from '~/components/overview/overview-storage-bar';
 import { OverviewUsageChart } from '~/components/overview/overview-usage-chart';
 import { QUERIES } from '~/server/db/queries';
@@ -16,6 +17,12 @@ async function ActivityLogsSSR({ projectId }: { projectId: string }) {
   const activityLogs = await QUERIES.getActivityLogsByProject({ projectId });
 
   return <OverviewActivityLog activityLogs={activityLogs} />;
+}
+
+async function RecentFilesSSR({ projectId }: { projectId: string }) {
+  const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 5 });
+
+  return <OverviewRecentFiles files={files} />;
 }
 
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {
@@ -33,7 +40,9 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
         <Suspense fallback={<ActivityLogSkeleton />}>
           <ActivityLogsSSR projectId={id} />
         </Suspense>
-        <OverviewRecentFiles />
+        <Suspense fallback={<OverviewRecentFilesSkeleton />}>
+          <RecentFilesSSR projectId={id} />
+        </Suspense>
       </div>
     </>
   );
