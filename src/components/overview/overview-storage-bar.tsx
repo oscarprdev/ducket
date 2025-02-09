@@ -7,23 +7,27 @@ interface OverviewStorageBarProps {
   currentUsage: number; // in bytes
   maxStorage: number; // in bytes
   previousUsage: number; // in bytes
+  todayUsage: number; // in bytes
 }
 
 export function OverviewStorageBar({
   currentUsage,
   maxStorage,
   previousUsage,
+  todayUsage,
 }: OverviewStorageBarProps) {
   // Convert bytes to MB for display
-  const usageInMB = (currentUsage / (1024 * 1024)).toFixed(1);
+  const usageInMB = (currentUsage / (1024 * 1024)).toFixed(4);
   const maxStorageInMB = (maxStorage / (1024 * 1024)).toFixed(1);
 
   // Calculate percentage
   const percentage = Math.round((currentUsage / maxStorage) * 100);
 
-  // Calculate comparison with previous period
-  const usageChange = ((currentUsage - previousUsage) / previousUsage) * 100;
-  const isIncreased = usageChange > 0;
+  // Calculate today's increase percentage against last month's average
+  const avgDailyLastMonth = previousUsage / 30;
+  const todayChangePercentage =
+    avgDailyLastMonth > 0 ? ((todayUsage - avgDailyLastMonth) / avgDailyLastMonth) * 100 : 0;
+  const isTodayIncreased = todayChangePercentage >= 0;
 
   return (
     <Card className="col-span-2 max-h-[180px]">
@@ -40,20 +44,22 @@ export function OverviewStorageBar({
             <div className="flex items-baseline gap-2">
               <span className="text-4xl font-bold">{percentage}%</span>
               <span className="text-sm text-muted-foreground">
-                {usageInMB} OF {maxStorageInMB}MB
+                {usageInMB}MB OF {maxStorageInMB}MB
               </span>
             </div>
           </div>
 
           <Progress value={percentage} className="h-2" />
 
-          <div className="flex items-center gap-2 text-sm">
-            <div
-              className={`flex items-center gap-1 ${isIncreased ? 'text-green-600' : 'text-red-600'}`}>
-              <TrendingUp className={`h-4 w-4 ${!isIncreased && 'rotate-180'}`} />
-              <span>{Math.abs(Math.round(usageChange))}%</span>
+          <div className="flex flex-col gap-2 text-sm">
+            <div className="flex items-center gap-2">
+              <div
+                className={`flex items-center gap-1 ${isTodayIncreased ? 'text-green-600' : 'text-red-600'}`}>
+                <TrendingUp className={`h-4 w-4 ${!isTodayIncreased && 'rotate-180'}`} />
+                <span>{Math.abs(Math.round(todayChangePercentage))}%</span>
+              </div>
+              <span className="text-muted-foreground">Compared to the previous 30 day period</span>
             </div>
-            <span className="text-muted-foreground">Compared to the previous 30 day period</span>
           </div>
         </div>
       </CardContent>

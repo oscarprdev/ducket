@@ -12,7 +12,7 @@ import {
   projects,
   users,
 } from './schema';
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
 import { type ApiKeyPermissions } from '~/lib/constants';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
@@ -56,7 +56,7 @@ export const QUERIES = {
     limit?: number;
   }): Promise<Files[]> {
     const DEFAULT_OFFSET = 0;
-    const DEFAULT_LIMIT = 10;
+    const DEFAULT_LIMIT = 10000;
     return db
       .select()
       .from(files)
@@ -136,6 +136,50 @@ export const QUERIES = {
     if (!response || response.length === 0) return [];
 
     return response.map(data => ({ ...data.activity_logs, user: data.user.email }));
+  },
+  // STORAGE
+  getStorageByProjectId: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<{ maxSize: number }> {
+    const response = await db.select().from(projects).where(eq(projects.id, projectId));
+
+    if (!response[0]?.maxSize) {
+      return {
+        maxSize: 0,
+      };
+    }
+
+    return {
+      maxSize: response[0].maxSize,
+    };
+  },
+  getLastMonthFilesByProjectId: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<Files[]> {
+    return db
+      .select()
+      .from(files)
+      .where(
+        and(
+          eq(files.projectId, projectId),
+          lt(files.createdAt, sql`CURRENT_TIMESTAMP - INTERVAL '1 day'`),
+          gt(files.createdAt, sql`CURRENT_TIMESTAMP - INTERVAL '31 days'`)
+        )
+      );
+  },
+  getTodayFilesByProjectId: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<Files[]> {
+    return db
+      .select()
+      .from(files)
+      .where(and(eq(files.projectId, projectId), gt(files.createdAt, sql`CURRENT_DATE`)));
   },
 };
 
