@@ -75,6 +75,7 @@ export const projects = createTable('projects', {
     .references(() => users.id),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
+  maxSize: integer('max_size').notNull().default(1073741824), // 1 GB in bytes (1024 * 1024 * 1024)
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
