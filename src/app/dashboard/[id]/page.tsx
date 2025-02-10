@@ -59,10 +59,9 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-bold">Overview</h1>
       </div>
       <div className="grid h-[300px] grid-cols-4 gap-4">
-        <OverviewUsageChartSkeleton />
-        {/* <Suspense fallback={<OverviewUsageChartSkeleton />}>
+        <Suspense fallback={<OverviewUsageChartSkeleton />}>
           <UsageChartSSR projectId={id} />
-        </Suspense> */}
+        </Suspense>
         <Suspense fallback={<OverviewStorageBarSkeleton />}>
           <StorageStats projectId={id} />
         </Suspense>
