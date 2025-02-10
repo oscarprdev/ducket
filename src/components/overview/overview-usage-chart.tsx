@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '../ui/button';
-import { TrendingUp } from 'lucide-react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   Card,
@@ -17,15 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '~/components/ui/chart';
-
-const chartData = [
-  { month: 'January', files: 186 },
-  { month: 'February', files: 305 },
-  { month: 'March', files: 237 },
-  { month: 'April', files: 73 },
-  { month: 'May', files: 209 },
-  { month: 'June', files: 214 },
-];
+import { type Files } from '~/server/db/schema';
 
 const chartConfig = {
   files: {
@@ -34,7 +26,56 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function OverviewUsageChart() {
+interface OverviewUsageChartProps {
+  weeklyData: Files[];
+  todayUsage: Files[];
+}
+
+export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChartProps) {
+  // Helper to group files by day
+  const groupFilesByDay = (files: Files[]) => {
+    return files.reduce(
+      (acc, file) => {
+        if (!file.createdAt) return acc;
+        const fileDate = new Date(file.createdAt);
+        const dayName = fileDate.toLocaleDateString('en-US', { weekday: 'long' });
+
+        if (!acc[dayName]) acc[dayName] = [];
+        acc[dayName].push(file);
+        return acc;
+      },
+      {} as Record<string, Files[]>
+    );
+  };
+
+  // Get last 7 days including today
+  const getDayNames = () => {
+    const days = [];
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+      days.push(dayName === today ? 'Today' : dayName);
+    }
+    return days;
+  };
+
+  const last7Days = getDayNames();
+  const groupedWeeklyFiles = groupFilesByDay(weeklyData);
+  const groupedTodayFiles = groupFilesByDay(todayUsage);
+
+  // Create chart data for last 7 days
+  const chartData = last7Days.map(day => ({
+    day,
+    files:
+      day === 'Today'
+        ? (groupedTodayFiles[new Date().toLocaleDateString('en-US', { weekday: 'long' })]?.length ??
+          0)
+        : (groupedWeeklyFiles[day]?.length ?? 0),
+  }));
+
   return (
     <Card className="col-span-2">
       <CardHeader>
@@ -51,11 +92,11 @@ export function OverviewUsageChart() {
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="day"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value: string) => value.slice(0, 3)}
+              tickFormatter={(value: string) => (value !== 'Today' ? value.slice(0, 3) : value)}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Bar dataKey="files" fill="var(--color-files)" radius={8} />
@@ -64,10 +105,33 @@ export function OverviewUsageChart() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this week <TrendingUp className="h-4 w-4" />
+          {(() => {
+            const totalWeeklyFiles = Object.values(groupedWeeklyFiles).reduce(
+              (acc, files) => acc + files.length,
+              0
+            );
+            const totalTodayFiles = Object.values(groupedTodayFiles).reduce(
+              (acc, files) => acc + files.length,
+              0
+            );
+            const totalFiles = totalWeeklyFiles + totalTodayFiles;
+
+            return totalFiles > 0 ? (
+              <>
+                {totalFiles} files uploaded this week{' '}
+                {totalFiles > 0 ? (
+                  <TrendingUp className="h-4 w-4" />
+                ) : (
+                  <TrendingDown className="h-4 w-4" />
+                )}
+              </>
+            ) : (
+              'No files uploaded this week'
+            );
+          })()}
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing files uploaded for the last week
         </div>
       </CardFooter>
     </Card>

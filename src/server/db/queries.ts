@@ -197,6 +197,22 @@ export const QUERIES = {
         )
       );
   },
+  getLastWeekFilesByProjectId: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<Files[]> {
+    return db
+      .select()
+      .from(files)
+      .where(
+        and(
+          eq(files.projectId, projectId),
+          gt(files.createdAt, sql`CURRENT_DATE - INTERVAL '7 days'`),
+          lt(files.createdAt, sql`CURRENT_DATE`)
+        )
+      );
+  },
 };
 
 export const MUTATIONS = {

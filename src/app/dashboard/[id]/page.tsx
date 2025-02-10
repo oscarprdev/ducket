@@ -48,7 +48,12 @@ async function StorageStats({ projectId }: { projectId: string }) {
 }
 
 async function UsageChartSSR({ projectId }: { projectId: string }) {
-  return <OverviewUsageChart />;
+  const [weeklyFiles, todayFiles] = await Promise.all([
+    QUERIES.getLastWeekFilesByProjectId({ projectId }),
+    QUERIES.getTodayFilesByProjectId({ projectId }),
+  ]);
+
+  return <OverviewUsageChart weeklyData={weeklyFiles} todayUsage={todayFiles} />;
 }
 
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {
