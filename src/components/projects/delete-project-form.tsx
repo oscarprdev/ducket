@@ -17,12 +17,12 @@ export function DeleteProjectForm({ action, onActionFinished, projectId }: Delet
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
+      onActionFinished?.();
       toast({
         title: 'Project deleted',
         description: 'Your project has been deleted successfully',
         variant: 'success',
       });
-      onActionFinished?.();
     },
     onError: () => {
       toast({

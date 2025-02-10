@@ -2,10 +2,10 @@ import { DatabaseZap, FileText, User } from 'lucide-react';
 import { Suspense } from 'react';
 import DashboardLayout from '~/components/dashboard-layout';
 import DashboardSidebar from '~/components/dashboard-sidebar';
-import LoaderCircle from '~/components/icons/loader-circle';
 import { CreateProjectDialog } from '~/components/projects/create-project-dialog';
 import ProjectCard from '~/components/projects/project-card';
 import { Badge } from '~/components/ui/badge';
+import { Skeleton } from '~/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
@@ -104,9 +104,10 @@ export default async function Dashboard() {
             owner={
               <Suspense
                 fallback={
-                  <span className="mr-auto flex animate-spin items-center justify-center">
-                    <LoaderCircle />
-                  </span>
+                  <div className="flex w-fit items-center space-x-1">
+                    <User className="h-4 w-4 fill-muted text-muted-foreground" />
+                    <Skeleton className="h-3 w-12 bg-muted-foreground/50" />
+                  </div>
                 }>
                 <ProjectOwnerSSR userId={project.ownerId} />
               </Suspense>
@@ -114,9 +115,10 @@ export default async function Dashboard() {
             usageIcon={
               <Suspense
                 fallback={
-                  <span className="mr-auto flex animate-spin items-center justify-center">
-                    <LoaderCircle />
-                  </span>
+                  <Badge
+                    className={`grid h-8 w-8 place-items-center rounded-sm bg-transparent p-0 text-muted-foreground hover:bg-muted`}>
+                    <DatabaseZap className="size-4" />
+                  </Badge>
                 }>
                 <UsageIconSSR projectId={project.id} />
               </Suspense>
@@ -124,9 +126,10 @@ export default async function Dashboard() {
             numberOfFiles={
               <Suspense
                 fallback={
-                  <span className="mr-auto flex animate-spin items-center justify-center">
-                    <LoaderCircle />
-                  </span>
+                  <div className="flex w-fit items-center space-x-1">
+                    <FileText className="h-4 w-4 fill-muted text-muted-foreground" />
+                    <Skeleton className="h-3 w-12 bg-muted-foreground/50" />
+                  </div>
                 }>
                 <NumberOfFilesSSR projectId={project.id} />
               </Suspense>

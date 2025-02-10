@@ -43,28 +43,6 @@ export default function ProjectCard({
     e.stopPropagation();
   };
 
-  const handleChangeEditDialog = (open: boolean) => {
-    setIsEditOpen(open);
-
-    if (!open) {
-      setTimeout(() => {
-        setIsEditOpen(false);
-      }, 100);
-    }
-  };
-
-  const handleChangeDeleteDialog = (open: boolean) => {
-    setIsDeleteOpen(open);
-
-    console.log('open', open);
-
-    if (!open) {
-      setTimeout(() => {
-        setIsDeleteOpen(false);
-      }, 100);
-    }
-  };
-
   return (
     <>
       <Link href={`/dashboard/${project.id}`} key={project.id}>
@@ -128,13 +106,13 @@ export default function ProjectCard({
 
       <EditProjectDialog
         isOpen={isEditOpen}
-        onOpenChange={handleChangeEditDialog}
+        onOpenChange={setIsEditOpen}
         projectId={project.id}
         projectTitle={project.title}
       />
       <DeleteProjectDialog
         isOpen={isDeleteOpen}
-        onOpenChange={handleChangeDeleteDialog}
+        onOpenChange={setIsDeleteOpen}
         projectId={project.id}
         projectTitle={project.title}
       />

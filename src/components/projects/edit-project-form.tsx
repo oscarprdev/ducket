@@ -26,12 +26,12 @@ export function EditProjectForm({
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
+      onActionFinished?.();
       toast({
         title: 'Project updated',
         description: 'Your project has been updated successfully',
         variant: 'success',
       });
-      onActionFinished?.();
     },
     onError: () => {
       toast({
