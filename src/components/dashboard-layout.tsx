@@ -11,10 +11,10 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, sidebarContent }: DashboardLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-white">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="sticky left-0 top-0 w-full border-b border-white/10 bg-background">
-        <div className="container flex h-16 items-center justify-between">
+      <header className="sticky left-0 top-0 w-screen border-b border-border px-5">
+        <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <span className="inline-block font-bold">Ducket</span>
           </Link>

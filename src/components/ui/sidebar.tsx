@@ -14,16 +14,16 @@ export function Sidebar({ className, children }: React.HTMLAttributes<HTMLDivEle
   return (
     <SidebarContext.Provider value={{ collapsed }}>
       <TooltipProvider>
-        <div className={cn('relative', className)}>
+        <div className={cn('relative border-border', className)}>
           <div
             className={cn(
-              'group/sidebar relative flex h-[calc(100vh-4rem)] flex-col gap-4 border-r border-r-white/10 bg-background text-white transition-all duration-300',
+              'group/sidebar relative flex h-[calc(100vh-4rem)] flex-col gap-4 border-r transition-all duration-300',
               collapsed ? 'w-16' : 'w-64'
             )}>
             {children}
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-background text-white hover:bg-white/10">
+              className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background hover:bg-muted">
               {collapsed ? (
                 <ChevronRight className="h-4 w-4" />
               ) : (
@@ -50,9 +50,9 @@ export function SidebarItem({
   const content = (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-md px-3 py-2 text-white/70 transition-colors',
-        'border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white',
-        isActive && 'border-white/10 bg-white/5 text-white',
+        'flex items-center gap-3 rounded-md px-3 py-2 transition-colors',
+        'border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground',
+        isActive && 'border-border bg-muted text-foreground',
         collapsed ? 'justify-center' : 'justify-start',
         className
       )}>

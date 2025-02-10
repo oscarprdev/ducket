@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, FolderOpen, Key, LayoutDashboard, Settings } from 'lucide-react';
+import { FileText, FolderOpen, Key, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
