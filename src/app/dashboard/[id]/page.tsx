@@ -22,26 +22,26 @@ async function RecentFilesSSR({ projectId }: { projectId: string }) {
 }
 
 async function StorageStats({ projectId }: { projectId: string }) {
-  const [storage, currentFiles, todayFiles, previousFiles] = await Promise.all([
+  const [{ maxSize }, currentFiles, yesterdayFiles, todayFiles] = await Promise.all([
     QUERIES.getStorageByProjectId({ projectId }),
-    QUERIES.getLastMonthFilesByProjectId({ projectId }),
+    QUERIES.getFilesByProjectId({ projectId }),
+    QUERIES.getYesterdayFilesByProjectId({ projectId }),
     QUERIES.getTodayFilesByProjectId({ projectId }),
-    QUERIES.getLastMonthFilesByProjectId({ projectId }),
   ]);
 
   const calculateUsage = (files: Files[]) =>
     files.reduce((acc: number, file) => acc + (file.size ?? 0), 0);
 
   const currentUsage = calculateUsage(currentFiles);
+  const yesterdayUsage = calculateUsage(yesterdayFiles);
   const todayUsage = calculateUsage(todayFiles);
-  const previousUsage = calculateUsage(previousFiles);
 
   return (
     <OverviewStorageBar
       currentUsage={currentUsage}
-      maxStorage={storage.maxSize}
-      previousUsage={previousUsage}
+      previousUsage={yesterdayUsage}
       todayUsage={todayUsage}
+      maxStorage={maxSize}
     />
   );
 }

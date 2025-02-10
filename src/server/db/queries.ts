@@ -181,6 +181,22 @@ export const QUERIES = {
       .from(files)
       .where(and(eq(files.projectId, projectId), gt(files.createdAt, sql`CURRENT_DATE`)));
   },
+  getYesterdayFilesByProjectId: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<Files[]> {
+    return db
+      .select()
+      .from(files)
+      .where(
+        and(
+          eq(files.projectId, projectId),
+          gt(files.createdAt, sql`CURRENT_DATE - INTERVAL '1 day'`),
+          lt(files.createdAt, sql`CURRENT_DATE`)
+        )
+      );
+  },
 };
 
 export const MUTATIONS = {

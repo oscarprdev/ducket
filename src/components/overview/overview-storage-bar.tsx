@@ -5,28 +5,25 @@ import { Progress } from '~/components/ui/progress';
 
 interface OverviewStorageBarProps {
   currentUsage: number; // in bytes
-  maxStorage: number; // in bytes
   previousUsage: number; // in bytes
   todayUsage: number; // in bytes
+  maxStorage: number; // in bytes
 }
 
 export function OverviewStorageBar({
   currentUsage,
-  maxStorage,
   previousUsage,
   todayUsage,
+  maxStorage,
 }: OverviewStorageBarProps) {
-  // Convert bytes to MB for display
-  const usageInMB = (currentUsage / (1024 * 1024)).toFixed(4);
+  const currentUsageInMB = (currentUsage / (1024 * 1024)).toFixed(4);
   const maxStorageInMB = (maxStorage / (1024 * 1024)).toFixed(1);
 
-  // Calculate percentage
-  const percentage = Math.round((currentUsage / maxStorage) * 100);
+  const totalUsagePercentage = Math.round((currentUsage / maxStorage) * 100);
 
   // Calculate today's increase percentage against last month's average
-  const avgDailyLastMonth = previousUsage / 30;
   const todayChangePercentage =
-    avgDailyLastMonth > 0 ? ((todayUsage - avgDailyLastMonth) / avgDailyLastMonth) * 100 : 0;
+    previousUsage > 0 ? ((todayUsage - previousUsage) / previousUsage) * 100 : 0;
   const isTodayIncreased = todayChangePercentage >= 0;
 
   return (
@@ -42,14 +39,14 @@ export function OverviewStorageBar({
             </div>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold">{percentage}%</span>
+              <span className="text-4xl font-bold">{totalUsagePercentage}%</span>
               <span className="text-sm text-muted-foreground">
-                {usageInMB}MB OF {maxStorageInMB}MB
+                {currentUsageInMB}MB OF {maxStorageInMB}MB
               </span>
             </div>
           </div>
 
-          <Progress value={percentage} className="h-2" />
+          <Progress value={totalUsagePercentage} className="h-2" />
 
           <div className="flex flex-col gap-2 text-sm">
             <div className="flex items-center gap-2">
@@ -58,7 +55,7 @@ export function OverviewStorageBar({
                 <TrendingUp className={`h-4 w-4 ${!isTodayIncreased && 'rotate-180'}`} />
                 <span>{Math.abs(Math.round(todayChangePercentage))}%</span>
               </div>
-              <span className="text-muted-foreground">Compared to the previous 30 day period</span>
+              <span className="text-muted-foreground">Compared to yesterday usage</span>
             </div>
           </div>
         </div>
