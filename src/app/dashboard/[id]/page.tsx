@@ -4,8 +4,10 @@ import { ActivityLogSkeleton } from '~/components/overview/overview-activity-ske
 import { OverviewRecentFiles } from '~/components/overview/overview-recent-files';
 import { OverviewRecentFilesSkeleton } from '~/components/overview/overview-recent-files-skeleton';
 import { OverviewStorageBar } from '~/components/overview/overview-storage-bar';
+import { OverviewStorageBarSkeleton } from '~/components/overview/overview-storage-bar-skeleton';
 import { OverviewUsageChart } from '~/components/overview/overview-usage-chart';
 import { QUERIES } from '~/server/db/queries';
+import { type Files } from '~/server/db/schema';
 
 async function ActivityLogsSSR({ projectId }: { projectId: string }) {
   const activityLogs = await QUERIES.getActivityLogsByProject({ projectId });
@@ -19,21 +21,27 @@ async function RecentFilesSSR({ projectId }: { projectId: string }) {
   return <OverviewRecentFiles files={files} />;
 }
 
-async function StorageBarSSR({ projectId }: { projectId: string }) {
-  const [{ maxSize }, oldFiles, totalFiles, todayFiles] = await Promise.all([
+async function StorageStats({ projectId }: { projectId: string }) {
+  const [storage, currentFiles, todayFiles] = await Promise.all([
     QUERIES.getStorageByProjectId({ projectId }),
     QUERIES.getLastMonthFilesByProjectId({ projectId }),
-    QUERIES.getFilesByProjectId({ projectId }),
     QUERIES.getTodayFilesByProjectId({ projectId }),
   ]);
-  const currentUsage = totalFiles.reduce((acc, file) => acc + file.size, 0);
-  const previousUsage = oldFiles.reduce((acc, file) => acc + file.size, 0);
-  const todayUsage = todayFiles.reduce((acc, file) => acc + file.size, 0);
+
+  const calculateUsage = (files: Files[]) =>
+    files.reduce((acc: number, file) => acc + (file.size ?? 0), 0);
+
+  const currentUsage = calculateUsage(currentFiles);
+  const todayUsage = calculateUsage(todayFiles);
+
+  // Calculate previous month usage (31-61 days ago)
+  const previousFiles = await QUERIES.getLastMonthFilesByProjectId({ projectId });
+  const previousUsage = calculateUsage(previousFiles);
 
   return (
     <OverviewStorageBar
       currentUsage={currentUsage}
-      maxStorage={maxSize}
+      maxStorage={storage.maxSize}
       previousUsage={previousUsage}
       todayUsage={todayUsage}
     />
@@ -49,7 +57,9 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
       </div>
       <div className="grid h-[300px] grid-cols-4 gap-4">
         <OverviewUsageChart />
-        <StorageBarSSR projectId={id} />
+        <Suspense fallback={<OverviewStorageBarSkeleton />}>
+          <StorageStats projectId={id} />
+        </Suspense>
       </div>
       <div className="mt-7 grid h-[300px] grid-cols-4 gap-4">
         <Suspense fallback={<ActivityLogSkeleton />}>
