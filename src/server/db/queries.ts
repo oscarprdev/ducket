@@ -233,6 +233,13 @@ export const QUERIES = {
         )
       );
   },
+  getAllFilesByProjectId: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<Files[]> {
+    return db.select().from(files).where(eq(files.projectId, projectId));
+  },
 };
 
 export const MUTATIONS = {
