@@ -26,6 +26,7 @@ async function ProjectFiles({
         name: file.fileName ?? '-',
         type: file.type ?? '-',
         size: String(file.size) ?? '-',
+        createdAt: file.createdAt ?? new Date(),
         url: file.fileUrl,
         icon: file.type
           ? VALID_FILE_TYPES.images.includes(file.type)
