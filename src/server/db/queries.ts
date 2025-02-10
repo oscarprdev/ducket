@@ -137,6 +137,26 @@ export const QUERIES = {
 
     return response.map(data => ({ ...data.activity_logs, user: data.user.email }));
   },
+  getLastWeekActivityLogsByProject: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<ActivityLogs[]> {
+    const response = await db
+      .select()
+      .from(activityLogs)
+      .where(
+        and(
+          eq(activityLogs.projectId, projectId),
+          gt(activityLogs.timestamp, sql`CURRENT_TIMESTAMP - INTERVAL '7 days'`),
+          lt(activityLogs.timestamp, sql`CURRENT_TIMESTAMP`)
+        )
+      );
+
+    if (!response || response.length === 0) return [];
+
+    return response;
+  },
   // STORAGE
   getStorageByProjectId: async function ({
     projectId,

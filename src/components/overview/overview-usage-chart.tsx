@@ -18,36 +18,40 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '~/components/ui/chart';
-import { type Files } from '~/server/db/schema';
+import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { type ActivityLogs } from '~/server/db/schema';
 
 const chartConfig = {
-  files: {
-    label: 'files',
+  uploads: {
+    label: 'Uploads',
     color: '#2563eb',
+  },
+  deletes: {
+    label: 'Deletes',
+    color: '#dc2626',
   },
 } satisfies ChartConfig;
 
 interface OverviewUsageChartProps {
-  weeklyData: Files[];
-  todayUsage: Files[];
+  activityLogs: ActivityLogs[];
 }
 
-const groupFilesByDay = (files: Files[]) => {
+const groupFilesByDay = (files: ActivityLogs[]) => {
   return files.reduce(
     (acc, file) => {
-      if (!file.createdAt) return acc;
-      const fileDate = new Date(file.createdAt);
+      if (!file.timestamp) return acc;
+      const fileDate = new Date(file.timestamp);
       const dayName = fileDate.toLocaleDateString('en-US', { weekday: 'long' });
 
       if (!acc[dayName]) acc[dayName] = [];
-      acc[dayName].push(file);
+      acc[dayName].push(file.id);
       return acc;
     },
-    {} as Record<string, Files[]>
+    {} as Record<string, string[]>
   );
 };
 
-export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChartProps) {
+export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
   const last7Days = useMemo(() => {
     const days = [];
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
@@ -61,39 +65,35 @@ export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChar
     return days;
   }, []);
 
-  const { groupedWeeklyFiles, groupedTodayFiles } = useMemo(
-    () => ({
-      groupedWeeklyFiles: groupFilesByDay(weeklyData),
-      groupedTodayFiles: groupFilesByDay(todayUsage),
-    }),
-    [weeklyData, todayUsage]
-  );
+  const { groupedUploads, groupedDeletes } = useMemo(() => {
+    const uploads = activityLogs.filter(log => log.action === API_KEY_PERMISSIONS.write);
+    const deletes = activityLogs.filter(log => log.action === API_KEY_PERMISSIONS.delete);
+
+    return {
+      groupedUploads: groupFilesByDay(uploads),
+      groupedDeletes: groupFilesByDay(deletes),
+    };
+  }, [activityLogs]);
 
   const chartData = useMemo(() => {
-    return last7Days.map(day => ({
-      day,
-      files:
-        day === 'Today'
-          ? (groupedTodayFiles[new Date().toLocaleDateString('en-US', { weekday: 'long' })]
-              ?.length ?? 0)
-          : (groupedWeeklyFiles[day]?.length ?? 0),
-    }));
-  }, [last7Days, groupedWeeklyFiles, groupedTodayFiles]);
+    return last7Days.map(day => {
+      const actualDay =
+        day === 'Today' ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : day;
 
-  const { totalFiles, hasTrend } = useMemo(() => {
-    const totalWeeklyFiles = Object.values(groupedWeeklyFiles).reduce(
-      (acc, files) => acc + files.length,
-      0
-    );
-    const totalTodayFiles = Object.values(groupedTodayFiles).reduce(
-      (acc, files) => acc + files.length,
-      0
-    );
+      return {
+        day,
+        uploads: groupedUploads[actualDay]?.length ?? 0,
+        deletes: groupedDeletes[actualDay]?.length ?? 0,
+      };
+    });
+  }, [last7Days, groupedUploads, groupedDeletes]);
+
+  const { totalUploads, totalDeletes } = useMemo(() => {
     return {
-      totalFiles: totalWeeklyFiles + totalTodayFiles,
-      hasTrend: totalWeeklyFiles + totalTodayFiles > 0,
+      totalUploads: Object.values(groupedUploads).reduce((acc, files) => acc + files.length, 0),
+      totalDeletes: Object.values(groupedDeletes).reduce((acc, files) => acc + files.length, 0),
     };
-  }, [groupedWeeklyFiles, groupedTodayFiles]);
+  }, [groupedUploads, groupedDeletes]);
 
   const tickFormatter = useMemo(
     () => (value: string) => (value !== 'Today' ? value.slice(0, 3) : value),
@@ -122,24 +122,29 @@ export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChar
               axisLine={false}
               tickFormatter={tickFormatter}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Bar dataKey="files" fill="var(--color-files)" radius={8} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Bar dataKey="uploads" fill="var(--color-uploads)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="deletes" fill="var(--color-deletes)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          {totalFiles > 0 ? (
+          {totalUploads + totalDeletes > 0 ? (
             <>
-              {totalFiles} files uploaded this week{' '}
-              {hasTrend ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+              {totalUploads} uploads, {totalDeletes} deletes this week{' '}
+              {totalUploads > totalDeletes ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
             </>
           ) : (
-            'No files uploaded this week'
+            'No activity this week'
           )}
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing files uploaded for the last week
+          Showing file activity for the last week
         </div>
       </CardFooter>
     </Card>
