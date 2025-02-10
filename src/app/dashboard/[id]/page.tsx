@@ -22,10 +22,11 @@ async function RecentFilesSSR({ projectId }: { projectId: string }) {
 }
 
 async function StorageStats({ projectId }: { projectId: string }) {
-  const [storage, currentFiles, todayFiles] = await Promise.all([
+  const [storage, currentFiles, todayFiles, previousFiles] = await Promise.all([
     QUERIES.getStorageByProjectId({ projectId }),
     QUERIES.getLastMonthFilesByProjectId({ projectId }),
     QUERIES.getTodayFilesByProjectId({ projectId }),
+    QUERIES.getLastMonthFilesByProjectId({ projectId }),
   ]);
 
   const calculateUsage = (files: Files[]) =>
@@ -33,9 +34,6 @@ async function StorageStats({ projectId }: { projectId: string }) {
 
   const currentUsage = calculateUsage(currentFiles);
   const todayUsage = calculateUsage(todayFiles);
-
-  // Calculate previous month usage (31-61 days ago)
-  const previousFiles = await QUERIES.getLastMonthFilesByProjectId({ projectId });
   const previousUsage = calculateUsage(previousFiles);
 
   return (
