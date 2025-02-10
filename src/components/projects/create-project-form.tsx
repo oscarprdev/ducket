@@ -19,7 +19,11 @@ export function CreateProjectForm({ action, onActionFinished }: CreateProjectFor
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      toast({ title: 'Project created', description: 'Your project has been created' });
+      toast({
+        title: 'Project created',
+        description: 'Your project has been created',
+        variant: 'success',
+      });
       onActionFinished?.();
     },
   });

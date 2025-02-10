@@ -350,4 +350,8 @@ export const MUTATIONS = {
     const { projectId, title } = input;
     return db.update(projects).set({ title }).where(eq(projects.id, projectId)).returning();
   },
+  deleteProject: function (input: { projectId: string }): Promise<Projects[]> {
+    const { projectId } = input;
+    return db.delete(projects).where(eq(projects.id, projectId)).returning();
+  },
 };

@@ -28,16 +28,27 @@ export function EditProjectForm({
     onSuccess: () => {
       toast({
         title: 'Project updated',
-        description: 'Your project has been updated',
+        description: 'Your project has been updated successfully',
         variant: 'success',
       });
       onActionFinished?.();
     },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: state.error,
+        variant: 'destructive',
+      });
+    },
   });
 
+  const handleSubmit = async (formData: FormData) => {
+    formData.append('projectId', projectId);
+    formAction(formData);
+  };
+
   return (
-    <form action={formAction} className="w-full space-y-4">
-      <input type="hidden" name="projectId" value={projectId} />
+    <form action={handleSubmit} className="w-full space-y-4">
       <div className="space-y-2">
         <Label htmlFor="project-title">Project Title</Label>
         <Input

@@ -1,7 +1,7 @@
 'use client';
 
-import { EditProjectForm } from './edit-project-form';
-import { editProject } from '~/app/dashboard/actions';
+import { DeleteProjectForm } from './delete-project-form';
+import { deleteProject } from '~/app/dashboard/actions';
 import {
   Dialog,
   DialogContent,
@@ -10,30 +10,31 @@ import {
   DialogTitle,
 } from '~/components/ui/dialog';
 
-interface EditProjectDialogProps {
+interface DeleteProjectDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   projectId: string;
   projectTitle: string;
 }
 
-export function EditProjectDialog({
+export function DeleteProjectDialog({
   isOpen,
   onOpenChange,
   projectId,
   projectTitle,
-}: EditProjectDialogProps) {
+}: DeleteProjectDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Project</DialogTitle>
-          <DialogDescription>Update your project details.</DialogDescription>
+          <DialogTitle>Delete Project</DialogTitle>
+          <DialogDescription>
+            {`Are you sure you want to delete project "${projectTitle}"? This action cannot be undone.`}
+          </DialogDescription>
         </DialogHeader>
-        <EditProjectForm
-          action={editProject}
+        <DeleteProjectForm
+          action={deleteProject}
           onActionFinished={() => onOpenChange(false)}
-          defaultTitle={projectTitle}
           projectId={projectId}
         />
       </DialogContent>

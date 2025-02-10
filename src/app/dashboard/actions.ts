@@ -50,3 +50,24 @@ export const editProject = validatedActionWithUser(editProjectSchema, async (dat
 
   return { success: 'Project updated successfully' };
 });
+
+const deleteProjectSchema = z.object({
+  projectId: z.string({ message: 'Project ID is required' }),
+});
+
+export const deleteProject = validatedActionWithUser(deleteProjectSchema, async (data, _, user) => {
+  const { projectId } = data;
+
+  const project = await QUERIES.getProject({ projectId });
+  if (!project[0] || project[0].ownerId !== user.id) {
+    throw new Error('Unauthorized');
+  }
+
+  await MUTATIONS.deleteProject({
+    projectId,
+  });
+
+  revalidatePath('/dashboard', 'page');
+
+  return { success: 'Project deleted successfully' };
+});

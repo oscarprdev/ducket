@@ -22,7 +22,11 @@ export default function FileDeleteForm({
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      toast({ title: 'File deleted', description: 'Your file has been deleted successfully' });
+      toast({
+        title: 'File deleted',
+        description: 'Your file has been deleted successfully',
+        variant: 'success',
+      });
       onActionFinished?.();
     },
     onError: () => {
