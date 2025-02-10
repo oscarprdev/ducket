@@ -1,21 +1,37 @@
-import { LayoutDashboard, User } from 'lucide-react';
+'use client';
+
+import { LayoutDashboard, Settings, User } from 'lucide-react';
 import Link from 'next/link';
+import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
 export default function DashboardSidebar() {
+  const items = [
+    {
+      title: 'Projects',
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      href: '/dashboard',
+    },
+    {
+      title: 'Account',
+      icon: <User className="h-5 w-5" />,
+      href: '/account',
+    },
+    {
+      title: 'Settings',
+      icon: <Settings className="h-5 w-5" />,
+      href: '/settings',
+    },
+  ];
+
   return (
-    <nav className="space-y-2">
-      <Link
-        href="/dashboard"
-        className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-        <LayoutDashboard className="h-4 w-4" />
-        <span>Projects</span>
-      </Link>
-      <Link
-        href="/account"
-        className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-        <User className="h-4 w-4" />
-        <span>Account</span>
-      </Link>
-    </nav>
+    <Sidebar>
+      <SidebarSection title="Menu">
+        {items.map(item => (
+          <Link key={item.href} href={item.href} className="block">
+            <SidebarItem icon={item.icon} title={item.title} href={item.href} />
+          </Link>
+        ))}
+      </SidebarSection>
+    </Sidebar>
   );
 }

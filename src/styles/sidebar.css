@@ -1,0 +1,27 @@
+@layer base {
+  :root {
+    --sidebar-width: 240px;
+    --sidebar-width-collapsed: 64px;
+  }
+}
+
+.sidebar {
+  @apply border-r bg-background transition-all duration-300 ease-in-out;
+  width: var(--sidebar-width);
+}
+
+.sidebar[data-collapsed='true'] {
+  width: var(--sidebar-width-collapsed);
+}
+
+.sidebar[data-collapsed='true'] span {
+  @apply opacity-0 transition-opacity duration-200;
+}
+
+.sidebar-trigger {
+  @apply h-6 w-6 rounded-full border bg-background shadow-md;
+}
+
+.sidebar[data-collapsed='true'] .sidebar-trigger {
+  @apply rotate-180;
+}

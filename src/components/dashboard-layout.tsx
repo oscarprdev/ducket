@@ -1,3 +1,4 @@
+import { ThemeToggle } from './theme-toggle';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 import type React from 'react';
@@ -10,29 +11,25 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, sidebarContent }: DashboardLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background text-white">
       {/* Header */}
-      <header className="sticky top-0 z-40 w-full border-b bg-background">
-        <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-          <div className="flex gap-6 md:gap-10">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="inline-block font-bold">Ducket</span>
-            </Link>
-          </div>
-          <div className="flex flex-1 items-center justify-end space-x-4">
-            <nav className="flex items-center space-x-1">
-              <Button variant="outline" size="sm">
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </Button>
-            </nav>
+      <header className="sticky left-0 top-0 w-full border-b border-white/10 bg-background">
+        <div className="container flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="inline-block font-bold">Ducket</span>
+          </Link>
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            <Button variant="outline" size="sm">
+              <User className="mr-2 h-4 w-4" />
+              Profile
+            </Button>
           </div>
         </div>
       </header>
-
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-64 bg-gray-100 p-4">{sidebarContent}</aside>
+        <aside className="w-64">{sidebarContent}</aside>
 
         {/* Main content */}
         <main className="relative flex-1 p-6">{children}</main>
