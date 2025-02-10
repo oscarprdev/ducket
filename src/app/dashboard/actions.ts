@@ -7,7 +7,7 @@ import { MUTATIONS } from '~/server/db/queries';
 import generateApiKey from '~/server/utils/generate-api-key';
 
 const createProjectsSchema = z.object({
-  title: z.string(),
+  title: z.string().max(10, { message: 'Project title cannot exceed 10 characters' }),
 });
 
 export const createProject = validatedActionWithUser(
