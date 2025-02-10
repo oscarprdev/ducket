@@ -6,6 +6,7 @@ import { OverviewRecentFilesSkeleton } from '~/components/overview/overview-rece
 import { OverviewStorageBar } from '~/components/overview/overview-storage-bar';
 import { OverviewStorageBarSkeleton } from '~/components/overview/overview-storage-bar-skeleton';
 import { OverviewUsageChart } from '~/components/overview/overview-usage-chart';
+import { OverviewUsageChartSkeleton } from '~/components/overview/overview-usage-chart-skeleton';
 import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 
@@ -46,6 +47,10 @@ async function StorageStats({ projectId }: { projectId: string }) {
   );
 }
 
+async function UsageChartSSR({ projectId }: { projectId: string }) {
+  return <OverviewUsageChart />;
+}
+
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
@@ -54,7 +59,10 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-bold">Overview</h1>
       </div>
       <div className="grid h-[300px] grid-cols-4 gap-4">
-        <OverviewUsageChart />
+        <OverviewUsageChartSkeleton />
+        {/* <Suspense fallback={<OverviewUsageChartSkeleton />}>
+          <UsageChartSSR projectId={id} />
+        </Suspense> */}
         <Suspense fallback={<OverviewStorageBarSkeleton />}>
           <StorageStats projectId={id} />
         </Suspense>
