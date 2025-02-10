@@ -2,6 +2,7 @@
 
 import { Button } from '../ui/button';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   Card,
@@ -31,25 +32,23 @@ interface OverviewUsageChartProps {
   todayUsage: Files[];
 }
 
+const groupFilesByDay = (files: Files[]) => {
+  return files.reduce(
+    (acc, file) => {
+      if (!file.createdAt) return acc;
+      const fileDate = new Date(file.createdAt);
+      const dayName = fileDate.toLocaleDateString('en-US', { weekday: 'long' });
+
+      if (!acc[dayName]) acc[dayName] = [];
+      acc[dayName].push(file);
+      return acc;
+    },
+    {} as Record<string, Files[]>
+  );
+};
+
 export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChartProps) {
-  // Helper to group files by day
-  const groupFilesByDay = (files: Files[]) => {
-    return files.reduce(
-      (acc, file) => {
-        if (!file.createdAt) return acc;
-        const fileDate = new Date(file.createdAt);
-        const dayName = fileDate.toLocaleDateString('en-US', { weekday: 'long' });
-
-        if (!acc[dayName]) acc[dayName] = [];
-        acc[dayName].push(file);
-        return acc;
-      },
-      {} as Record<string, Files[]>
-    );
-  };
-
-  // Get last 7 days including today
-  const getDayNames = () => {
+  const last7Days = useMemo(() => {
     const days = [];
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
@@ -60,21 +59,46 @@ export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChar
       days.push(dayName === today ? 'Today' : dayName);
     }
     return days;
-  };
+  }, []);
 
-  const last7Days = getDayNames();
-  const groupedWeeklyFiles = groupFilesByDay(weeklyData);
-  const groupedTodayFiles = groupFilesByDay(todayUsage);
+  const { groupedWeeklyFiles, groupedTodayFiles } = useMemo(
+    () => ({
+      groupedWeeklyFiles: groupFilesByDay(weeklyData),
+      groupedTodayFiles: groupFilesByDay(todayUsage),
+    }),
+    [weeklyData, todayUsage]
+  );
 
-  // Create chart data for last 7 days
-  const chartData = last7Days.map(day => ({
-    day,
-    files:
-      day === 'Today'
-        ? (groupedTodayFiles[new Date().toLocaleDateString('en-US', { weekday: 'long' })]?.length ??
-          0)
-        : (groupedWeeklyFiles[day]?.length ?? 0),
-  }));
+  const chartData = useMemo(() => {
+    return last7Days.map(day => ({
+      day,
+      files:
+        day === 'Today'
+          ? (groupedTodayFiles[new Date().toLocaleDateString('en-US', { weekday: 'long' })]
+              ?.length ?? 0)
+          : (groupedWeeklyFiles[day]?.length ?? 0),
+    }));
+  }, [last7Days, groupedWeeklyFiles, groupedTodayFiles]);
+
+  const { totalFiles, hasTrend } = useMemo(() => {
+    const totalWeeklyFiles = Object.values(groupedWeeklyFiles).reduce(
+      (acc, files) => acc + files.length,
+      0
+    );
+    const totalTodayFiles = Object.values(groupedTodayFiles).reduce(
+      (acc, files) => acc + files.length,
+      0
+    );
+    return {
+      totalFiles: totalWeeklyFiles + totalTodayFiles,
+      hasTrend: totalWeeklyFiles + totalTodayFiles > 0,
+    };
+  }, [groupedWeeklyFiles, groupedTodayFiles]);
+
+  const tickFormatter = useMemo(
+    () => (value: string) => (value !== 'Today' ? value.slice(0, 3) : value),
+    []
+  );
 
   return (
     <Card className="col-span-2">
@@ -96,7 +120,7 @@ export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChar
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value: string) => (value !== 'Today' ? value.slice(0, 3) : value)}
+              tickFormatter={tickFormatter}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Bar dataKey="files" fill="var(--color-files)" radius={8} />
@@ -105,30 +129,14 @@ export function OverviewUsageChart({ weeklyData, todayUsage }: OverviewUsageChar
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          {(() => {
-            const totalWeeklyFiles = Object.values(groupedWeeklyFiles).reduce(
-              (acc, files) => acc + files.length,
-              0
-            );
-            const totalTodayFiles = Object.values(groupedTodayFiles).reduce(
-              (acc, files) => acc + files.length,
-              0
-            );
-            const totalFiles = totalWeeklyFiles + totalTodayFiles;
-
-            return totalFiles > 0 ? (
-              <>
-                {totalFiles} files uploaded this week{' '}
-                {totalFiles > 0 ? (
-                  <TrendingUp className="h-4 w-4" />
-                ) : (
-                  <TrendingDown className="h-4 w-4" />
-                )}
-              </>
-            ) : (
-              'No files uploaded this week'
-            );
-          })()}
+          {totalFiles > 0 ? (
+            <>
+              {totalFiles} files uploaded this week{' '}
+              {hasTrend ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+            </>
+          ) : (
+            'No files uploaded this week'
+          )}
         </div>
         <div className="leading-none text-muted-foreground">
           Showing files uploaded for the last week
