@@ -350,4 +350,12 @@ export const MUTATIONS = {
       action,
     });
   },
+  updateProject: function (input: { projectId: string; title: string }): Promise<Projects[]> {
+    const { projectId, title } = input;
+    return db
+      .update(projects)
+      .set({ title })
+      .where(eq(projects.id, projectId))
+      .returning();
+  },
 };

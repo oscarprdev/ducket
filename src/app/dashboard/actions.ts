@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { validatedActionWithUser } from '~/server/auth/middleware';
-import { MUTATIONS } from '~/server/db/queries';
+import { MUTATIONS, QUERIES } from '~/server/db/queries';
 import generateApiKey from '~/server/utils/generate-api-key';
 
 const createProjectsSchema = z.object({
@@ -27,3 +27,27 @@ export const createProject = validatedActionWithUser(
     return { success: 'Project created successfully' };
   }
 );
+
+const editProjectSchema = z.object({
+  projectId: z.string(),
+  title: z.string().max(10, { message: 'Project title cannot exceed 10 characters' }),
+});
+
+export const editProject = validatedActionWithUser(editProjectSchema, async (data, _, user) => {
+  const { projectId, title } = data;
+
+  // Verify user owns the project
+  const project = await QUERIES.getProject({ projectId });
+  if (!project[0] || project[0].ownerId !== user.id) {
+    throw new Error('Unauthorized');
+  }
+
+  await MUTATIONS.updateProject({
+    projectId,
+    title,
+  });
+
+  revalidatePath('/dashboard');
+
+  return { success: 'Project updated successfully' };
+});
