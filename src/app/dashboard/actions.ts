@@ -36,7 +36,6 @@ const editProjectSchema = z.object({
 export const editProject = validatedActionWithUser(editProjectSchema, async (data, _, user) => {
   const { projectId, title } = data;
 
-  // Verify user owns the project
   const project = await QUERIES.getProject({ projectId });
   if (!project[0] || project[0].ownerId !== user.id) {
     throw new Error('Unauthorized');

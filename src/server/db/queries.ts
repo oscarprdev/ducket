@@ -233,11 +233,7 @@ export const QUERIES = {
         )
       );
   },
-  getAllFilesByProjectId: async function ({
-    projectId,
-  }: {
-    projectId: string;
-  }): Promise<Files[]> {
+  getAllFilesByProjectId: async function ({ projectId }: { projectId: string }): Promise<Files[]> {
     return db.select().from(files).where(eq(files.projectId, projectId));
   },
 };
@@ -352,10 +348,6 @@ export const MUTATIONS = {
   },
   updateProject: function (input: { projectId: string; title: string }): Promise<Projects[]> {
     const { projectId, title } = input;
-    return db
-      .update(projects)
-      .set({ title })
-      .where(eq(projects.id, projectId))
-      .returning();
+    return db.update(projects).set({ title }).where(eq(projects.id, projectId)).returning();
   },
 };

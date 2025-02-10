@@ -16,12 +16,21 @@ interface EditProjectFormProps {
   projectId: string;
 }
 
-export function EditProjectForm({ action, onActionFinished, defaultTitle, projectId }: EditProjectFormProps) {
+export function EditProjectForm({
+  action,
+  onActionFinished,
+  defaultTitle,
+  projectId,
+}: EditProjectFormProps) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      toast({ title: 'Project updated', description: 'Your project has been updated' });
+      toast({
+        title: 'Project updated',
+        description: 'Your project has been updated',
+        variant: 'success',
+      });
       onActionFinished?.();
     },
   });
@@ -60,4 +69,4 @@ export function EditProjectForm({ action, onActionFinished, defaultTitle, projec
       </div>
     </form>
   );
-} 
+}
