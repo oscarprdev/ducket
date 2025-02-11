@@ -76,5 +76,9 @@ export function SidebarItem({
 }
 
 export function SidebarSection({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex flex-col gap-1 p-4', className)}>{children}</div>;
+  return (
+    <div className={cn('mr-auto flex flex-col items-start gap-1 p-2 pt-4', className)}>
+      {children}
+    </div>
+  );
 }

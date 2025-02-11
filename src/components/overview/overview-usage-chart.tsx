@@ -101,7 +101,7 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
   );
 
   return (
-    <Card className="col-span-2">
+    <Card className="col-span-2 row-span-3">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Usage activity
@@ -109,7 +109,6 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
             See all activity
           </Button>
         </CardTitle>
-        <CardDescription>Last week</CardDescription>
       </CardHeader>
       <CardContent className="max-h-[150px]">
         <ChartContainer config={chartConfig} className="h-full max-h-[150px] w-full">
@@ -123,12 +122,22 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
               tickFormatter={tickFormatter}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Bar dataKey="uploads" fill="var(--color-uploads)" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="deletes" fill="var(--color-deletes)" radius={[4, 4, 0, 0]} />
+            <Bar
+              dataKey="uploads"
+              opacity={0.8}
+              fill="var(--color-uploads)"
+              radius={[4, 4, 0, 0]}
+            />
+            <Bar
+              dataKey="deletes"
+              opacity={0.8}
+              fill="var(--color-deletes)"
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
+      <CardFooter className="flex-col items-start gap-2 py-3 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           {totalUploads + totalDeletes > 0 ? (
             <>

@@ -11,13 +11,13 @@ import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 
 async function ActivityLogsSSR({ projectId }: { projectId: string }) {
-  const activityLogs = await QUERIES.getActivityLogsByProject({ projectId });
+  const activityLogs = await QUERIES.getActivityLogsByProject({ projectId, offset: 0, limit: 4 });
 
   return <OverviewActivityLog activityLogs={activityLogs} />;
 }
 
 async function RecentFilesSSR({ projectId }: { projectId: string }) {
-  const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 5 });
+  const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 7 });
 
   return <OverviewRecentFiles files={files} />;
 }
@@ -56,26 +56,24 @@ async function UsageChartSSR({ projectId }: { projectId: string }) {
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
-    <>
+    <section className="h-[calc(100vh-10rem)]">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Overview</h1>
+        <h1 className="text-3xl font-bold">Overview</h1>
       </div>
-      <div className="grid h-[300px] grid-cols-4 gap-4">
+      <section className="grid h-full grid-cols-4 grid-rows-6 gap-4">
         <Suspense fallback={<OverviewUsageChartSkeleton />}>
           <UsageChartSSR projectId={id} />
         </Suspense>
         <Suspense fallback={<OverviewStorageBarSkeleton />}>
           <StorageStats projectId={id} />
         </Suspense>
-      </div>
-      <div className="mt-7 grid h-[300px] grid-cols-4 gap-4">
         <Suspense fallback={<ActivityLogSkeleton />}>
           <ActivityLogsSSR projectId={id} />
         </Suspense>
         <Suspense fallback={<OverviewRecentFilesSkeleton />}>
           <RecentFilesSSR projectId={id} />
         </Suspense>
-      </div>
-    </>
+      </section>
+    </section>
   );
 }

@@ -18,7 +18,7 @@ function getFileIcon(type: string) {
 
 export function OverviewRecentFiles({ files }: { files: Files[] }) {
   return (
-    <Card className="col-span-2 -mt-32 h-[450px]">
+    <Card className="col-span-2 col-start-3 row-span-4 row-start-3 -mt-7 overflow-hidden">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Recent Files
@@ -34,12 +34,12 @@ export function OverviewRecentFiles({ files }: { files: Files[] }) {
               <div key={file.id} className="flex items-center justify-between space-x-4">
                 <div className="flex items-center space-x-4">
                   <div className="rounded-md border p-2">{getFileIcon(file.type ?? '')}</div>
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <p className="text-sm font-medium leading-none">{file.fileName}</p>
-                    <p className="text-sm text-muted-foreground">{formatFileSize(file.size)}</p>
+                    <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">{formatDate(file.createdAt)}</p>
+                <p className="text-xs text-muted-foreground">{formatDate(file.createdAt)}</p>
               </div>
             ))
           ) : (

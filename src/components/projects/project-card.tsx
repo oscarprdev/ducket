@@ -69,11 +69,7 @@ export default function ProjectCard({
               </TooltipProvider>
               {numberOfFiles}
             </div>
-            <Badge
-              variant="outline"
-              className="mt-2 border-none bg-accent-foreground font-medium capitalize text-accent">
-              {project.visibility}
-            </Badge>
+            <Badge className="mt-2 font-medium capitalize">{project.visibility}</Badge>
             <div className="absolute right-2 top-2 flex items-center">
               {usageIcon}
               <DropdownMenu>
