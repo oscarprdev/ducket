@@ -42,9 +42,16 @@ export const QUERIES = {
   getProjectByTitle: function ({ title }: { title: string }): Promise<Projects[]> {
     return db.select().from(projects).where(eq(projects.title, title));
   },
+  getProjectById: async ({ projectId }: { projectId: string }) => {
+    return await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
+  },
   // FILES
-  getFileByName: function ({ name }: { name: string }): Promise<Files[]> {
-    return db.select().from(files).where(eq(files.fileName, name));
+  getFileByName: async ({ projectId, fileName }: { projectId: string; fileName: string }) => {
+    return await db
+      .select()
+      .from(files)
+      .where(and(eq(files.projectId, projectId), eq(files.fileName, fileName)))
+      .limit(1);
   },
   getFilesByProjectId: function ({
     projectId,

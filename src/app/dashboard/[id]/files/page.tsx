@@ -20,6 +20,7 @@ async function ProjectFiles({
   return (
     <FileTable
       apiKey={apiKey}
+      projectId={projectId}
       isDeleteAllowed={isDeleteAllowed}
       files={files.map(file => ({
         id: file.id,

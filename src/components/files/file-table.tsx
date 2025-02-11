@@ -68,10 +68,12 @@ export default function FileTable({
   files,
   apiKey,
   isDeleteAllowed,
+  projectId,
 }: {
   files: FileData[];
   apiKey: string;
   isDeleteAllowed: boolean;
+  projectId: string;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
@@ -179,7 +181,11 @@ export default function FileTable({
                     {formatRelativeTime(file.createdAt) || formatDate(file.createdAt)}
                   </TableCell>
                   <TableCell className="text-center">
-                    <FileDownloadButton fileUrl={file.url} />
+                    <FileDownloadButton
+                      fileUrl={file.url}
+                      projectId={projectId}
+                      fileName={file.name}
+                    />
                   </TableCell>
                 </TableRow>
               );

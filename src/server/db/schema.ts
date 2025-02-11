@@ -123,10 +123,10 @@ export const activityLogs = createTable('activity_logs', {
     .default(sql`gen_random_uuid()`),
   projectId: varchar('project_id', { length: 255 })
     .notNull()
-    .references(() => projects.id, { onDelete: 'cascade' }),
+    .references(() => projects.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   userId: varchar('user_id', { length: 255 })
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
+    .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   fileName: varchar('file_name', { length: 255 }),
   action: text('action').notNull(),
   timestamp: timestamp('timestamp', { withTimezone: true })

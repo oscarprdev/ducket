@@ -5,78 +5,19 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '~/components/ui/chart';
-import { useDateRange } from '~/hooks/use-date-range';
-import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '~/components/ui/chart';
+import { useActivityChart } from '~/hooks/use-activity-chart';
+import { chartConfig } from '~/lib/constants';
 import { type ActivityLogs } from '~/server/db/schema';
-
-const chartConfig = {
-  uploads: {
-    label: 'Uploads',
-    color: 'hsl(var(--contrast))',
-  },
-  deletes: {
-    label: 'Deletes',
-    color: 'hsl(var(--destructive))',
-  },
-} satisfies ChartConfig;
 
 interface OverviewUsageChartProps {
   activityLogs: ActivityLogs[];
 }
 
-const groupLogsByDay = (files: ActivityLogs[]) => {
-  return files.reduce(
-    (acc, file) => {
-      if (!file.timestamp) return acc;
-      const fileDate = new Date(file.timestamp);
-      const dayName = fileDate.toLocaleDateString('en-US', { weekday: 'long' });
-
-      if (!acc[dayName]) acc[dayName] = [];
-      acc[dayName].push(file.id);
-      return acc;
-    },
-    {} as Record<string, string[]>
-  );
-};
-
 export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
-  const dateRange = useDateRange({ type: '7d' });
+  const { chartData, totals } = useActivityChart({ type: '7d', activityLogs });
 
-  const { groupedUploads, groupedDeletes } = useMemo(() => {
-    const uploads = activityLogs.filter(log => log.action === API_KEY_PERMISSIONS.write);
-    const deletes = activityLogs.filter(log => log.action === API_KEY_PERMISSIONS.delete);
-
-    return {
-      groupedUploads: groupLogsByDay(uploads),
-      groupedDeletes: groupLogsByDay(deletes),
-    };
-  }, [activityLogs]);
-
-  const chartData = useMemo(() => {
-    return dateRange.map(({ display }) => {
-      const actualDay =
-        display === 'Today' ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : display;
-
-      return {
-        day: display,
-        uploads: groupedUploads[actualDay]?.length ?? 0,
-        deletes: groupedDeletes[actualDay]?.length ?? 0,
-      };
-    });
-  }, [dateRange, groupedUploads, groupedDeletes]);
-
-  const { totalUploads, totalDeletes } = useMemo(() => {
-    return {
-      totalUploads: Object.values(groupedUploads).reduce((acc, files) => acc + files.length, 0),
-      totalDeletes: Object.values(groupedDeletes).reduce((acc, files) => acc + files.length, 0),
-    };
-  }, [groupedUploads, groupedDeletes]);
+  console.log({ chartData });
 
   const tickFormatter = useMemo(
     () => (value: string) => (value !== 'Today' ? value.slice(0, 3) : value),
@@ -107,27 +48,35 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
               />
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
               <Bar
-                dataKey="uploads"
+                dataKey="upload"
                 opacity={0.8}
-                fill="var(--color-uploads)"
+                fill="var(--color-upload)"
                 radius={[4, 4, 0, 0]}
               />
               <Bar
-                dataKey="deletes"
+                dataKey="delete"
                 opacity={0.8}
-                fill="var(--color-deletes)"
+                fill="var(--color-delete)"
                 radius={[4, 4, 0, 0]}
               />
+              <Bar
+                dataKey="download"
+                opacity={0.8}
+                fill="var(--color-download)"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar dataKey="read" opacity={0.8} fill="var(--color-read)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ChartContainer>
         </div>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          {totalUploads + totalDeletes > 0 ? (
+          {totals.uploads + totals.deletes + totals.downloads > 0 ? (
             <>
-              {totalUploads} uploads, {totalDeletes} deletes this week{' '}
-              {totalUploads > totalDeletes ? (
+              {totals.uploads} uploads, {totals.deletes} deletes, {totals.downloads} downloads this
+              week{' '}
+              {totals.uploads > totals.deletes ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />

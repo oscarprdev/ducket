@@ -3,8 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { env } from '~/env';
-import { VALID_FILE_TYPES } from '~/lib/constants';
+import { ACTIVITY_ACTIONS, VALID_FILE_TYPES } from '~/lib/constants';
 import { validatedActionWithUser } from '~/server/auth/middleware';
+import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 const uploadFileSchema = z.object({
   file: z
@@ -70,5 +71,38 @@ export const deleteFile = validatedActionWithUser(deleteFileSchema, async (data,
     return { success: 'File deleted successfully' };
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Error deleting file' };
+  }
+});
+
+const downloadFileSchema = z.object({
+  projectId: z.string(),
+  selectedFile: z.string(),
+});
+
+export const downloadFile = validatedActionWithUser(downloadFileSchema, async (data, _, user) => {
+  try {
+    const { selectedFile, projectId } = data;
+    const userId = user.id;
+
+    const [project] = await QUERIES.getProjectById({ projectId });
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    const [file] = await QUERIES.getFileByName({ projectId, fileName: selectedFile });
+    if (!file?.fileName) {
+      throw new Error('File not found');
+    }
+
+    await MUTATIONS.createActivityLog({
+      projectId: projectId,
+      userId: userId,
+      fileName: selectedFile,
+      action: ACTIVITY_ACTIONS.download,
+    });
+
+    return { success: 'File downloaded successfully' };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Error downloading file' };
   }
 });

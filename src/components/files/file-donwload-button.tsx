@@ -1,33 +1,60 @@
 'use client';
 
 import { Download } from 'lucide-react';
+import { downloadFile } from '~/app/dashboard/[id]/files/actions';
 import { Button } from '~/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { useToast } from '~/hooks/use-toast';
+import { type ActionState } from '~/server/auth/middleware';
 
 interface FileDownloadButtonProps {
   fileUrl: string;
+  projectId: string;
+  fileName: string;
 }
 
-export default function FileDownloadButton({ fileUrl }: FileDownloadButtonProps) {
+export default function FileDownloadButton({
+  fileUrl,
+  projectId,
+  fileName,
+}: FileDownloadButtonProps) {
   const { toast } = useToast();
 
   const handleDownload = async () => {
     try {
+      const formData = new FormData();
+      formData.append('projectId', projectId);
+      formData.append('selectedFile', fileName);
+
+      const prevState: ActionState = {
+        error: undefined,
+        success: undefined,
+      };
+
+      const actionResponse = await downloadFile(prevState, formData);
+
+      if (actionResponse.error) {
+        return toast({
+          title: 'Download Failed',
+          description: actionResponse.error,
+          variant: 'destructive',
+        });
+      }
+
       const response = await fetch(fileUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = fileUrl.split('/').pop() ?? 'download';
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
       toast({
-        title: 'Download Started',
-        description: 'Your file download has started.',
+        title: 'Download Successful',
+        description: actionResponse.success,
       });
     } catch (error: unknown) {
       toast({

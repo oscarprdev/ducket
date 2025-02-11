@@ -1,4 +1,4 @@
-import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
           projectId: project.id,
           userId: project.ownerId,
           fileName: file.fileName ?? '-',
-          action: API_KEY_PERMISSIONS.read,
+          action: ACTIVITY_ACTIONS.read,
         })
       )
     );

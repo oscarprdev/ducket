@@ -9,19 +9,7 @@ async function ActivityChartSSR({ projectId }: { projectId: string }) {
     log => log.timestamp >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
   );
 
-  const logsByDay = filteredActivity.reduce(
-    (acc, log) => {
-      const date = log.timestamp.toISOString().split('T')[0] ?? '';
-      if (!acc[date]) {
-        acc[date] = { write: 0, delete: 0, read: 0 };
-      }
-      acc[date][log.action as keyof (typeof acc)[string]]++;
-      return acc;
-    },
-    {} as Record<string, { write: number; delete: number; read: number }>
-  );
-
-  return <ActivityChart data={logsByDay} />;
+  return <ActivityChart activityLogs={filteredActivity} />;
 }
 
 async function ActivityTableSSR({ projectId }: { projectId: string }) {

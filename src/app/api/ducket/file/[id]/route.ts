@@ -1,6 +1,6 @@
 import { Bucket } from 'ducket';
 import { env } from '~/env';
-import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
@@ -52,7 +52,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
      */
     const { id } = await context.params;
     const [[file]] = await Promise.all([
-      QUERIES.getFileByName({ name: id }),
+      QUERIES.getFileByName({ projectId: projectResponse.id, fileName: id }),
       MUTATIONS.updateApiKeyUsage({
         projectId: projectResponse.id,
         apiKey: apiKeyStored.secret,
@@ -66,7 +66,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       projectId: projectResponse.id,
       userId: projectResponse.ownerId,
       fileName: file.fileName,
-      action: API_KEY_PERMISSIONS.read,
+      action: ACTIVITY_ACTIONS.read,
     });
 
     return new Response(JSON.stringify({ fileUrl: file.fileUrl }), { status: 200 });
@@ -108,7 +108,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
      * Get file by param id
      */
     const { id: name } = await context.params;
-    const [file] = await QUERIES.getFileByName({ name });
+    const [file] = await QUERIES.getFileByName({ projectId: projectResponse.id, fileName: name });
     if (!file) {
       return new Response('File not found', { status: 404 });
     }
@@ -143,7 +143,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       projectId: projectResponse.id,
       userId: projectResponse.ownerId,
       fileName: name,
-      action: API_KEY_PERMISSIONS.delete,
+      action: ACTIVITY_ACTIONS.delete,
     });
 
     return new Response(JSON.stringify({ fileDeleted: name, projectId: project.id }), {
