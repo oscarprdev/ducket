@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { type ApiKeys } from '~/server/db/schema';
 
 export default function ApiKeyCard({ apiKey }: { apiKey: ApiKeys }) {
@@ -13,6 +14,7 @@ export default function ApiKeyCard({ apiKey }: { apiKey: ApiKeys }) {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
   return (
     <Card>
       <CardHeader>
@@ -20,18 +22,23 @@ export default function ApiKeyCard({ apiKey }: { apiKey: ApiKeys }) {
         <CardDescription>Copy your environment variable to your clipboard.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="rounded-lg bg-black p-4 font-mono text-sm text-white">
-          <div className="flex items-center justify-between">
-            <span>
-              DUCKET_API_KEY=&apos;{apiKey.secret.slice(0, 5)}...
-              {apiKey.secret.slice(-5)}&apos;
+        <div className="rounded-lg bg-black p-2 font-mono text-sm text-white">
+          <div className="flex items-center justify-start gap-4">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={handleCopyApiKey} size="icon" variant="ghost">
+                    {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Copy API key</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <span className="font-mono text-sm">
+              DUCKET_API_KEY=&apos;{apiKey.secret.slice(0, 5)}...{apiKey.secret.slice(-5)}&apos;
             </span>
-            <Button
-              onClick={handleCopyApiKey}
-              size="sm"
-              className="text-white duration-300 hover:border hover:border-white/80 hover:text-white/80">
-              {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            </Button>
           </div>
         </div>
       </CardContent>
