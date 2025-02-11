@@ -58,11 +58,11 @@ async function UsageChartSSR({ projectId }: { projectId: string }) {
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
-    <section className="h-[calc(100vh-10rem)]">
+    <section className="h-full">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Overview</h1>
       </div>
-      <section className="grid h-full grid-cols-4 grid-rows-6 gap-4">
+      <section className="grid h-[calc(100vh-10.5rem)] grid-cols-4 grid-rows-6 gap-4">
         <Suspense fallback={<OverviewUsageChartSkeleton />}>
           <UsageChartSSR projectId={id} />
         </Suspense>

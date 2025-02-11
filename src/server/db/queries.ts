@@ -12,7 +12,7 @@ import {
   projects,
   users,
 } from './schema';
-import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, lt, sql } from 'drizzle-orm';
 import { type ApiKeyPermissions } from '~/lib/constants';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
@@ -156,6 +156,13 @@ export const QUERIES = {
     if (!response || response.length === 0) return [];
 
     return response;
+  },
+  getAllActivityLogsByProject: async function ({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<ActivityLogs[]> {
+    return await db.select().from(activityLogs).where(eq(activityLogs.projectId, projectId));
   },
   // STORAGE
   getStorageByProjectId: async function ({

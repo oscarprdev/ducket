@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, FolderOpen, Key, Settings } from 'lucide-react';
+import { ChartColumn, FileText, FolderOpen, Key, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
@@ -21,6 +21,11 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
       href: `/dashboard/${projectId}/files`,
     },
     {
+      title: 'Activity',
+      icon: <ChartColumn className="h-5 w-5" />,
+      href: `/dashboard/${projectId}/activity`,
+    },
+    {
       title: 'API Keys',
       icon: <Key className="h-5 w-5" />,
       href: `/dashboard/${projectId}/api-keys`,
@@ -33,7 +38,7 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
   ];
 
   return (
-    <Sidebar>
+    <Sidebar className="fixed">
       <SidebarSection title="Project">
         {items.map(item => (
           <Link key={item.href} href={item.href} className="block w-full">

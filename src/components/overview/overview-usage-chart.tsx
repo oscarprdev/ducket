@@ -11,6 +11,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '~/components/ui/chart';
+import { useDateRange } from '~/hooks/use-date-range';
 import { API_KEY_PERMISSIONS } from '~/lib/constants';
 import { type ActivityLogs } from '~/server/db/schema';
 
@@ -29,7 +30,7 @@ interface OverviewUsageChartProps {
   activityLogs: ActivityLogs[];
 }
 
-const groupFilesByDay = (files: ActivityLogs[]) => {
+const groupLogsByDay = (files: ActivityLogs[]) => {
   return files.reduce(
     (acc, file) => {
       if (!file.timestamp) return acc;
@@ -45,41 +46,30 @@ const groupFilesByDay = (files: ActivityLogs[]) => {
 };
 
 export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
-  const last7Days = useMemo(() => {
-    const days = [];
-    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-      days.push(dayName === today ? 'Today' : dayName);
-    }
-    return days;
-  }, []);
+  const dateRange = useDateRange({ type: '7d' });
 
   const { groupedUploads, groupedDeletes } = useMemo(() => {
     const uploads = activityLogs.filter(log => log.action === API_KEY_PERMISSIONS.write);
     const deletes = activityLogs.filter(log => log.action === API_KEY_PERMISSIONS.delete);
 
     return {
-      groupedUploads: groupFilesByDay(uploads),
-      groupedDeletes: groupFilesByDay(deletes),
+      groupedUploads: groupLogsByDay(uploads),
+      groupedDeletes: groupLogsByDay(deletes),
     };
   }, [activityLogs]);
 
   const chartData = useMemo(() => {
-    return last7Days.map(day => {
+    return dateRange.map(({ date, display }) => {
       const actualDay =
-        day === 'Today' ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : day;
+        display === 'Today' ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : display;
 
       return {
-        day,
+        day: display,
         uploads: groupedUploads[actualDay]?.length ?? 0,
         deletes: groupedDeletes[actualDay]?.length ?? 0,
       };
     });
-  }, [last7Days, groupedUploads, groupedDeletes]);
+  }, [dateRange, groupedUploads, groupedDeletes]);
 
   const { totalUploads, totalDeletes } = useMemo(() => {
     return {

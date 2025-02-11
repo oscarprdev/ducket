@@ -11,6 +11,8 @@ export default async function ProjectLayout({
 }) {
   const { id } = await params;
   return (
-    <DashboardLayout sidebarContent={<ProjectSidebar projectId={id} />}>{children}</DashboardLayout>
+    <DashboardLayout sidebarContent={<ProjectSidebar projectId={id} />}>
+      <div className="ml-64 h-full">{children}</div>
+    </DashboardLayout>
   );
 }
