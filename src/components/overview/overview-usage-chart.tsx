@@ -59,7 +59,7 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
   }, [activityLogs]);
 
   const chartData = useMemo(() => {
-    return dateRange.map(({ date, display }) => {
+    return dateRange.map(({ display }) => {
       const actualDay =
         display === 'Today' ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : display;
 
