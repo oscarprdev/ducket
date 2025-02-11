@@ -18,7 +18,7 @@ async function deleteFileFromBucket(name: string, project: string): Promise<stri
 
   return await bucket.deleteFile({ name, project });
 }
-const GET_PERMISSIONS_ALLOWED = ['all', 'read'];
+const GET_PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.read];
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     /**
@@ -37,7 +37,9 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       return new Response('Invalid bearer auth', { status: 402 });
     }
     if (
-      !apiKeyStored.permissions.some(permission => GET_PERMISSIONS_ALLOWED.includes(permission))
+      !apiKeyStored.permissions.some(permission =>
+        GET_PERMISSIONS_ALLOWED.includes(permission as (typeof GET_PERMISSIONS_ALLOWED)[number])
+      )
     ) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }
@@ -76,7 +78,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   }
 }
 
-const DELETE_PERMISSIONS_ALLOWED = ['all', 'delete'];
+const DELETE_PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.delete];
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     /**
@@ -95,7 +97,11 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       return new Response('Invalid bearer auth', { status: 402 });
     }
     if (
-      !apiKeyStored.permissions.some(permission => DELETE_PERMISSIONS_ALLOWED.includes(permission))
+      !apiKeyStored.permissions.some(permission =>
+        DELETE_PERMISSIONS_ALLOWED.includes(
+          permission as (typeof DELETE_PERMISSIONS_ALLOWED)[number]
+        )
+      )
     ) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }

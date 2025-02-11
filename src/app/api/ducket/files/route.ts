@@ -1,4 +1,4 @@
-import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
+import { ACTIVITY_ACTIONS } from '~/lib/constants';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {

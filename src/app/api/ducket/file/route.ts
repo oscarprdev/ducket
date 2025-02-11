@@ -3,7 +3,7 @@ import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
-const PERMISSIONS_ALLOWED = ['all', 'write'];
+const PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.write];
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
   const bearer = request.headers.get('Authorization');
@@ -56,7 +56,11 @@ export async function POST(request: Request) {
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
-    if (!apiKeyStored.permissions.some(permission => PERMISSIONS_ALLOWED.includes(permission))) {
+    if (
+      !apiKeyStored.permissions.some(permission =>
+        PERMISSIONS_ALLOWED.includes(permission as (typeof PERMISSIONS_ALLOWED)[number])
+      )
+    ) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }
 
