@@ -11,13 +11,13 @@ import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 
 async function ActivityLogsSSR({ projectId }: { projectId: string }) {
-  const activityLogs = await QUERIES.getActivityLogsByProject({ projectId, offset: 0, limit: 4 });
+  const activityLogs = await QUERIES.getActivityLogsByProject({ projectId, offset: 0, limit: 7 });
 
   return <OverviewActivityLog activityLogs={activityLogs} />;
 }
 
 async function RecentFilesSSR({ projectId }: { projectId: string }) {
-  const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 7 });
+  const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 10 });
 
   return <OverviewRecentFiles files={files} />;
 }

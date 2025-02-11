@@ -38,7 +38,7 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
     }
   }, []);
   return (
-    <Card className="col-span-2 row-span-3 row-start-4 overflow-hidden">
+    <Card className="col-span-2 row-span-3 row-start-4 flex flex-col">
       <CardHeader>
         <CardTitle className="flex w-full items-center justify-between">
           Activity Log
@@ -47,8 +47,8 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="min-h-0 flex-1">
+        <div className="scrollable h-full space-y-4">
           {activityLogs?.map(activity => (
             <div key={activity.id} className="flex items-center justify-between space-x-4">
               <div className="flex items-center space-x-4">

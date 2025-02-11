@@ -27,8 +27,8 @@ export function OverviewRecentFiles({ files }: { files: Files[] }) {
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="min-h-0 flex-1">
+        <div className="h-full space-y-4 scrollable">
           {files?.length > 0 ? (
             files.map(file => (
               <div key={file.id} className="flex items-center justify-between space-x-4">
