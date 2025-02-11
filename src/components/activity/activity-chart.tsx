@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '../ui/button';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '~/components/ui/chart';
@@ -22,14 +22,6 @@ export function ActivityChart({ activityLogs }: ActivityChartProps) {
     activityLogs,
   });
 
-  console.log({ chartData });
-
-  const tickFormatter = useMemo(
-    () => (value: string) =>
-      value !== 'Today' ? (selectedPeriod === PERIODS[0] ? value.slice(0, 3) : value) : value,
-    [selectedPeriod]
-  );
-
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -47,7 +39,10 @@ export function ActivityChart({ activityLogs }: ActivityChartProps) {
             ))}
           </div>
         </div>
-        <CardDescription>File uploads, deletes and downloads over the last month</CardDescription>
+        <CardDescription>
+          File uploads, deletes and downloads over the{' '}
+          {selectedPeriod === PERIODS[0] ? 'last 7 days' : 'last 30 days'}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[200px] w-full">
@@ -59,7 +54,6 @@ export function ActivityChart({ activityLogs }: ActivityChartProps) {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={tickFormatter}
                 interval={selectedPeriod === PERIODS[0] ? 0 : 2}
               />
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
