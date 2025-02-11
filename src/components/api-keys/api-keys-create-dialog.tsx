@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '../ui/button';
 import ApiKeysCreateForm from './api-keys-create-form';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { createApiKey } from '~/app/dashboard/[id]/api-keys/actions';
+import { Button } from '~/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -16,9 +16,6 @@ import {
 
 export function ApiKeysCreateDialog({ projectId }: { projectId: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const handleCloseDialog = () => {
-    setIsOpen(false);
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -36,8 +33,12 @@ export function ApiKeysCreateDialog({ projectId }: { projectId: string }) {
         <ApiKeysCreateForm
           projectId={projectId}
           action={createApiKey}
-          onActionFinished={handleCloseDialog}>
-          <Button type="button" className="w-full" variant="outline" onClick={handleCloseDialog}>
+          onActionFinished={() => setIsOpen(false)}>
+          <Button
+            type="button"
+            className="w-full"
+            variant="outline"
+            onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
         </ApiKeysCreateForm>

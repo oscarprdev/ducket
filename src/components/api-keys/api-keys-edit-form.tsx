@@ -1,16 +1,17 @@
-import SubmitButton from '../submit-button';
-import { DialogFooter } from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Switch } from '../ui/switch';
-import { Label } from '@radix-ui/react-label';
-import { redirect } from 'next/navigation';
+'use client';
+
 import { type PropsWithChildren } from 'react';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { Switch } from '~/components/ui/switch';
+import { DialogFooter } from '~/components/ui/dialog';
+import SubmitButton from '~/components/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import { type ActionState } from '~/server/auth/middleware';
 import { type ApiKeys } from '~/server/db/schema';
 
-interface ApiKeyEditFormProps {
+interface ApiKeysEditFormProps {
   apiKey: ApiKeys;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   onActionFinished?: () => void;
@@ -21,19 +22,22 @@ export default function ApiKeysEditForm({
   apiKey,
   action,
   onActionFinished,
-}: PropsWithChildren<ApiKeyEditFormProps>) {
+}: PropsWithChildren<ApiKeysEditFormProps>) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
     action,
-    onSuccess: (message?: string) => {
-      toast({ title: 'API key editted', description: message ?? 'Your API key has been editted' });
-
-      setTimeout(() => {
-        onActionFinished?.();
-        redirect(`/dashboard/${apiKey.projectId}/api-keys`);
-      }, 100);
+    onSuccess: () => {
+      toast({
+        title: 'API key updated',
+        description: 'Your API key has been updated successfully',
+        variant: 'success',
+      });
+      onActionFinished?.();
     },
   });
+
+  // Check if the API key has 'all' permission
+  const hasAllPermissions = apiKey.permissions.includes('all');
 
   const handleAction = (formData: FormData) => {
     formData.append('projectId', apiKey.projectId);
@@ -63,7 +67,11 @@ export default function ApiKeysEditForm({
                 <span>Read</span>
                 <span className="text-xs text-muted-foreground">(Get files and metadata)</span>
               </Label>
-              <Switch id="read" name="read" defaultChecked={apiKey.permissions.includes('read')} />
+              <Switch
+                id="read"
+                name="read"
+                defaultChecked={hasAllPermissions || apiKey.permissions.includes('read')}
+              />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="write" className="flex items-center gap-2">
@@ -73,7 +81,7 @@ export default function ApiKeysEditForm({
               <Switch
                 id="write"
                 name="write"
-                defaultChecked={apiKey.permissions.includes('write')}
+                defaultChecked={hasAllPermissions || apiKey.permissions.includes('write')}
               />
             </div>
             <div className="flex items-center justify-between">
@@ -84,7 +92,7 @@ export default function ApiKeysEditForm({
               <Switch
                 id="delete"
                 name="delete"
-                defaultChecked={apiKey.permissions.includes('delete')}
+                defaultChecked={hasAllPermissions || apiKey.permissions.includes('delete')}
               />
             </div>
           </div>
@@ -96,8 +104,8 @@ export default function ApiKeysEditForm({
           {children}
           <SubmitButton
             pending={pending}
-            disabled={!apiKey.projectId || pending}
-            text=" Edit API Key"
+            disabled={pending}
+            text="Save changes"
           />
         </div>
       </DialogFooter>

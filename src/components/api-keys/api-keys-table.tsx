@@ -3,9 +3,9 @@
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
-import ApiKeysActionsDropdown from './api-keys-actions-dropdown';
+import { ApiKeysEditDialog } from './api-keys-edit-dialog';
 import ApiKeysRevokeDialog from './api-keys-revoke-dialog';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import {
   Table,
@@ -70,7 +70,7 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
             <TableHead>Permissions</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Last used</TableHead>
-            <TableHead></TableHead>
+            <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -136,8 +136,22 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                     ? new Date(apiKey.lastUsed).toLocaleString()
                     : 'Never'}
                 </TableCell>
-                <TableCell>
-                  <ApiKeysActionsDropdown apiKey={apiKey} />
+                <TableCell className="text-center">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <ApiKeysEditDialog apiKey={apiKey}>
+                          <Button variant="ghost" size="icon">
+                            <Pencil className="h-4 w-4" />
+                            <span className="sr-only">Edit API key</span>
+                          </Button>
+                        </ApiKeysEditDialog>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Edit API key</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableCell>
               </TableRow>
             ))
