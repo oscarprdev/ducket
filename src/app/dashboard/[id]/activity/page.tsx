@@ -1,5 +1,9 @@
 import { Suspense } from 'react';
 import { ActivityChart } from '~/components/activity/activity-chart';
+import {
+  ActivityChartSkeleton,
+  ActivityTableSkeleton,
+} from '~/components/activity/activity-skeletons';
 import { ActivityTable } from '~/components/activity/activity-table';
 import { QUERIES } from '~/server/db/queries';
 
@@ -20,14 +24,17 @@ async function ActivityTableSSR({ projectId }: { projectId: string }) {
 export default async function ActivityPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
-    <section className="h-full overflow-y-auto p-6">
-      <h2 className="mb-6 text-3xl font-bold tracking-tight">Activity</h2>
-
-      <Suspense fallback={<div>Loading chart...</div>}>
+    <section className="h-full overflow-y-auto">
+      <div className="mb-6 space-y-1">
+        <h1 className="text-2xl font-bold">Activity</h1>
+        <p className="text-sm text-muted-foreground">
+          View the activity usage and logs for this project.
+        </p>
+      </div>
+      <Suspense fallback={<ActivityChartSkeleton />}>
         <ActivityChartSSR projectId={id} />
       </Suspense>
-
-      <Suspense fallback={<div>Loading table...</div>}>
+      <Suspense fallback={<ActivityTableSkeleton />}>
         <ActivityTableSSR projectId={id} />
       </Suspense>
     </section>

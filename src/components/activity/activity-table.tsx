@@ -1,8 +1,6 @@
 'use client';
 
-import { ArrowUpRight } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import {
   Table,
@@ -25,10 +23,6 @@ export function ActivityTable({ logs }: ActivityTableProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Activity Log</CardTitle>
-          <Button variant="ghost" className="h-8">
-            See all activity
-            <ArrowUpRight className="ml-2 h-4 w-4" />
-          </Button>
         </div>
       </CardHeader>
       <CardContent>

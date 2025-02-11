@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartColumn, FileText, FolderOpen, Key, Settings } from 'lucide-react';
+import { Activity, FileText, FolderOpen, Key, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
@@ -22,7 +22,7 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
     },
     {
       title: 'Activity',
-      icon: <ChartColumn className="h-5 w-5" />,
+      icon: <Activity className="h-5 w-5" />,
       href: `/dashboard/${projectId}/activity`,
     },
     {
