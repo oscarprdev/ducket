@@ -6,7 +6,7 @@ import { Checkbox } from '../ui/checkbox';
 import { ApiKeysEditDialog } from './api-keys-edit-dialog';
 import ApiKeysRevokeDialog from './api-keys-revoke-dialog';
 import { Check, Copy, Eye, EyeOff, Pencil } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
