@@ -52,11 +52,7 @@ function CopyUrlButton({ url }: { url: string }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 border border-border text-muted-foreground hover:text-foreground"
-            onClick={copyUrl}>
+          <Button variant="ghost" size="icon" className="size-8" onClick={copyUrl}>
             {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
           </Button>
         </TooltipTrigger>

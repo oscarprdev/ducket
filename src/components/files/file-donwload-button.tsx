@@ -19,7 +19,7 @@ export default function FileDownloadButton({ fileUrl }: FileDownloadButtonProps)
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = fileUrl.split('/').pop() || 'download';
+      a.download = fileUrl.split('/').pop() ?? 'download';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -29,10 +29,11 @@ export default function FileDownloadButton({ fileUrl }: FileDownloadButtonProps)
         title: 'Download Started',
         description: 'Your file download has started.',
       });
-    } catch (error) {
+    } catch (error: unknown) {
       toast({
         title: 'Download Failed',
-        description: 'There was an error downloading your file.',
+        description:
+          error instanceof Error ? error.message : 'There was an error downloading your file.',
         variant: 'destructive',
       });
     }
@@ -42,11 +43,7 @@ export default function FileDownloadButton({ fileUrl }: FileDownloadButtonProps)
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 border border-border text-muted-foreground hover:text-foreground"
-            onClick={handleDownload}>
+          <Button variant="ghost" size="icon" className="size-8" onClick={handleDownload}>
             <Download className="h-3 w-3" />
           </Button>
         </TooltipTrigger>
