@@ -1,43 +1,59 @@
-import { Download, LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
+'use client';
+
+import { Download } from 'lucide-react';
 import { Button } from '~/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { useToast } from '~/hooks/use-toast';
 
-export default function FileDownloadButton({ fileUrl }: { fileUrl: string }) {
+interface FileDownloadButtonProps {
+  fileUrl: string;
+}
+
+export default function FileDownloadButton({ fileUrl }: FileDownloadButtonProps) {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
 
   const handleDownload = async () => {
-    setLoading(true);
+    try {
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileUrl.split('/').pop() || 'download';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
 
-    const response = await fetch(fileUrl);
-    if (!response.ok) {
-      return toast({
-        title: 'Error',
-        description: 'Error downloading file',
+      toast({
+        title: 'Download Started',
+        description: 'Your file download has started.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Download Failed',
+        description: 'There was an error downloading your file.',
         variant: 'destructive',
       });
     }
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileUrl.split('/').pop() ?? 'download';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    setTimeout(() => setLoading(false), 500);
   };
+
   return (
-    <Button variant="ghost" disabled={loading} size="icon" onClick={handleDownload}>
-      {loading ? (
-        <span className="animate-spin">
-          <LoaderCircle />
-        </span>
-      ) : (
-        <Download className="h-4 w-4" />
-      )}
-    </Button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 border border-border text-muted-foreground hover:text-foreground"
+            onClick={handleDownload}>
+            <Download className="h-3 w-3" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Download file</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

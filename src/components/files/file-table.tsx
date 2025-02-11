@@ -1,9 +1,11 @@
 'use client';
 
+import { Button } from '../ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import FileDeleteDialog from './file-delete-dialog';
 import FileDownloadButton from './file-donwload-button';
-import { File, FileText, Image } from 'lucide-react';
-import { useState } from 'react';
+import { Check, Copy, File, FileText, Image } from 'lucide-react';
+import { useCallback, useState } from 'react';
 import { Checkbox } from '~/components/ui/checkbox';
 import {
   Table,
@@ -13,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
+import { useToast } from '~/hooks/use-toast';
 import { formatDate } from '~/lib/utils';
 
 interface FileData {
@@ -31,6 +34,40 @@ const iconMap = {
   text: FileText,
 };
 
+function CopyUrlButton({ url }: { url: string }) {
+  const [isCopied, setIsCopied] = useState(false);
+  const { toast } = useToast();
+
+  const copyUrl = async () => {
+    await navigator.clipboard.writeText(url);
+    setIsCopied(true);
+    toast({
+      title: 'URL Copied',
+      description: 'The URL has been copied to your clipboard.',
+    });
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 border border-border text-muted-foreground hover:text-foreground"
+            onClick={copyUrl}>
+            {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Copy URL</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
 export default function FileTable({
   files,
   apiKey,
@@ -41,6 +78,18 @@ export default function FileTable({
   isDeleteAllowed: boolean;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+
+  const formatFileSize = useCallback((bytes: string | number) => {
+    const size = typeof bytes === 'string' ? parseInt(bytes) : bytes;
+
+    if (size < 1024) {
+      return `${size} B`;
+    } else if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(1)} KB`;
+    } else {
+      return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+    }
+  }, []);
 
   const handleSelectFile = (fileName: string) => {
     setSelectedFiles(prev =>
@@ -82,7 +131,7 @@ export default function FileTable({
             <TableHead>Type</TableHead>
             <TableHead>Size</TableHead>
             <TableHead>Created At</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -105,17 +154,35 @@ export default function FileTable({
                       />
                     </TableCell>
                   )}
-                  <TableCell className="font-medium">
+                  <TableCell className="font-light">
                     <div className="flex items-center">
                       <Icon className="mr-2 h-4 w-4" />
                       {file.name}
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">{file.url}</TableCell>
-                  <TableCell>{file.type}</TableCell>
-                  <TableCell>{file.size}</TableCell>
-                  <TableCell>{formatDate(file.createdAt)}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="font-light text-primary">
+                    <div className="flex items-center gap-2 space-x-2">
+                      <CopyUrlButton url={file.url} />
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger className="cursor-help">
+                            {file.url.slice(0, 35)}...
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">{file.url}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">{file.type}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatFileSize(file.size)}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(file.createdAt)}
+                  </TableCell>
+                  <TableCell className="text-center">
                     <FileDownloadButton fileUrl={file.url} />
                   </TableCell>
                 </TableRow>
