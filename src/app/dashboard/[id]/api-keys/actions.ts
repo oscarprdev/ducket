@@ -1,8 +1,12 @@
 'use server';
 
+import { and, eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { API_KEY_PERMISSIONS, type ApiKeyPermissions } from '~/lib/constants';
 import { validatedActionWithUser } from '~/server/auth/middleware';
+import { type ActionState } from '~/server/auth/middleware';
+import { db } from '~/server/db';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 const extractPermissions = (read?: string, write?: string, deletePermission?: string) => {
@@ -95,4 +99,32 @@ export const editApiKey = validatedActionWithUser(editApiKeySchema, async data =
   });
 
   return { success: 'API key editted successfully' };
+});
+
+const revokeApiKeysSchema = z.object({
+  projectId: z.string(),
+  selectedKeys: z.array(z.string()),
+});
+
+export const revokeApiKeys = validatedActionWithUser(revokeApiKeysSchema, async data => {
+  try {
+    const { projectId, selectedKeys } = data;
+
+    if (selectedKeys.length === 0) {
+      return { error: 'No API keys selected' };
+    }
+
+    const apiKeysCount = await QUERIES.getApiKeysCountByProject({ projectId });
+
+    if (apiKeysCount <= selectedKeys.length) {
+      return { error: 'Cannot revoke all API keys. At least one API key must remain active.' };
+    }
+
+    await Promise.all(selectedKeys.map(key => MUTATIONS.deleteApiKey({ projectId, apiKey: key })));
+
+    revalidatePath(`/dashboard/${projectId}/api-keys`);
+    return { success: 'API keys revoked successfully' };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Failed to revoke API keys' };
+  }
 });

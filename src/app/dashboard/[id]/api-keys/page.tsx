@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import ApiKeyCard from '~/components/api-keys/api-key-card';
 import { ApiKeysCreateDialog } from '~/components/api-keys/api-keys-create-dialog';
 import ApiKeysTable from '~/components/api-keys/api-keys-table';
 import { ApiKeysTableSkeleton } from '~/components/api-keys/api-keys-table-skeleton';
@@ -31,15 +30,25 @@ export default async function ApiKeysPage({ params }: { params: Promise<{ id: st
   const userIsOwner = projects.some(project => project.ownerId === user.id);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">API Keys</h1>
-      {apiKeys[0] ? <ApiKeyCard apiKey={apiKeys[0]} /> : <p>No API keys found</p>}
-      {userIsOwner && (
+    <section className="relative">
+      <div className="mb-6 flex items-center justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold">API Keys</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage your API keys and their permissions for this project.
+          </p>
+        </div>
+        {userIsOwner && apiKeys.length > 0 && <ApiKeysCreateDialog projectId={id} />}
+      </div>
+      {/* {apiKeys[0] && <ApiKeyCard apiKey={apiKeys[0]} />} */}
+      {userIsOwner ? (
         <Suspense fallback={<ApiKeysTableSkeleton />}>
-          {<ApiKeysTableSSR apiKeys={apiKeys} />}
+          <ApiKeysTableSSR apiKeys={apiKeys} />
         </Suspense>
+      ) : (
+        <p>{"You don't have permission to view API keys"}</p>
       )}
-      {apiKeys.length === 0 && <ApiKeysCreateDialog projectId={id} />}
-    </div>
+      {apiKeys.length === 0 && userIsOwner && <ApiKeysCreateDialog projectId={id} />}
+    </section>
   );
 }

@@ -23,9 +23,9 @@ export function ApiKeysCreateDialog({ projectId }: { projectId: string }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button size="sm" variant="outline">
           <Plus className="mr-2 h-4 w-4" />
-          Create API Key
+          Create key
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

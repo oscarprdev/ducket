@@ -64,7 +64,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   return (
     <section className="relative">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Project Files</h1>
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold">Project Files</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage and organize your project files in one place.
+          </p>
+        </div>
         {isUploadAllowed && <FileUploadDialog apiKey={secret} projectId={id} />}
       </div>
       <Suspense fallback={<FileTableSkeleton />}>

@@ -236,6 +236,13 @@ export const QUERIES = {
   getAllFilesByProjectId: async function ({ projectId }: { projectId: string }): Promise<Files[]> {
     return db.select().from(files).where(eq(files.projectId, projectId));
   },
+  getApiKeysCountByProject: async ({ projectId }: { projectId: string }) => {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(apiKeys)
+      .where(eq(apiKeys.projectId, projectId));
+    return result[0]?.count ?? 0;
+  },
 };
 
 export const MUTATIONS = {
@@ -325,9 +332,8 @@ export const MUTATIONS = {
     const { projectId, name, permissions } = input;
     return db.update(apiKeys).set({ name, permissions }).where(eq(apiKeys.projectId, projectId));
   },
-  deleteApiKey: function (input: { projectId: string; apiKey: string }): Promise<ApiKeys[]> {
-    const { projectId, apiKey } = input;
-    return db
+  deleteApiKey: async ({ projectId, apiKey }: { projectId: string; apiKey: string }) => {
+    return await db
       .delete(apiKeys)
       .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
   },
