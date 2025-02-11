@@ -63,22 +63,18 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
         <h1 className="text-3xl font-bold">Overview</h1>
       </div>
       <section className="grid h-full grid-cols-4 grid-rows-6 gap-4">
-        {/* <Suspense fallback={<OverviewUsageChartSkeleton />}>
+        <Suspense fallback={<OverviewUsageChartSkeleton />}>
           <UsageChartSSR projectId={id} />
-        </Suspense> */}
-        <OverviewUsageChartSkeleton />
-        <OverviewStorageBarSkeleton />
-        {/* <Suspense fallback={<OverviewStorageBarSkeleton />}>
+        </Suspense>
+        <Suspense fallback={<OverviewStorageBarSkeleton />}>
           <StorageStats projectId={id} />
-        </Suspense> */}
-        <OverviewActivityLogSkeleton />
-        {/* <Suspense fallback={<OverviewActivityLogSkeleton />}>
+        </Suspense>
+        <Suspense fallback={<OverviewActivityLogSkeleton />}>
           <ActivityLogsSSR projectId={id} />
-        </Suspense> */}
-        <OverviewRecentFilesSkeleton />
-        {/* <Suspense fallback={<OverviewRecentFilesSkeleton />}>
+        </Suspense>
+        <Suspense fallback={<OverviewRecentFilesSkeleton />}>
           <RecentFilesSSR projectId={id} />
-        </Suspense> */}
+        </Suspense>
       </section>
     </section>
   );
