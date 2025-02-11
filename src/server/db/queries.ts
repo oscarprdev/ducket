@@ -12,7 +12,7 @@ import {
   projects,
   users,
 } from './schema';
-import { and, desc, eq, gt, gte, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
 import { type ApiKeyPermissions } from '~/lib/constants';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
