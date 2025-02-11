@@ -2,7 +2,7 @@ import { Button } from '../ui/button';
 import { FileIcon, ImageIcon, VideoIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { formatDate, formatFileSize } from '~/lib/utils';
+import { formatDate, formatFileSize, formatRelativeTime } from '~/lib/utils';
 import { type Files } from '~/server/db/schema';
 
 function getFileIcon(type: string) {
@@ -28,7 +28,7 @@ export function OverviewRecentFiles({ files }: { files: Files[] }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="min-h-0 flex-1">
-        <div className="h-full space-y-4 scrollable">
+        <div className="scrollable h-full space-y-4">
           {files?.length > 0 ? (
             files.map(file => (
               <div key={file.id} className="flex items-center justify-between space-x-4">
@@ -39,7 +39,9 @@ export function OverviewRecentFiles({ files }: { files: Files[] }) {
                     <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground">{formatDate(file.createdAt)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {formatRelativeTime(file.createdAt ?? '') || formatDate(file.createdAt ?? '')}
+                </p>
               </div>
             ))
           ) : (

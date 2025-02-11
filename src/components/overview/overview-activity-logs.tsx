@@ -4,7 +4,7 @@ import { EyeIcon, FileIcon, Trash2Icon, UploadIcon } from 'lucide-react';
 import { useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { API_KEY_PERMISSIONS } from '~/lib/constants';
-import { formatDate } from '~/lib/utils';
+import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ActivityLogsWithUser } from '~/server/db/queries';
 
 interface OverviewActivityLogProps {
@@ -63,7 +63,9 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
                   <p className="text-xs text-muted-foreground">{activity.user}</p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">{formatDate(activity.timestamp)}</p>
+              <p className="text-xs text-muted-foreground">
+                {formatRelativeTime(activity.timestamp) || formatDate(activity.timestamp)}
+              </p>
             </div>
           ))}
         </div>
