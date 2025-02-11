@@ -1,12 +1,14 @@
 import { Suspense } from 'react';
 import { OverviewActivityLog } from '~/components/overview/overview-activity-logs';
-import { ActivityLogSkeleton } from '~/components/overview/overview-activity-skeleton';
 import { OverviewRecentFiles } from '~/components/overview/overview-recent-files';
-import { OverviewRecentFilesSkeleton } from '~/components/overview/overview-recent-files-skeleton';
+import {
+  OverviewActivityLogSkeleton,
+  OverviewRecentFilesSkeleton,
+  OverviewStorageBarSkeleton,
+  OverviewUsageChartSkeleton,
+} from '~/components/overview/overview-skeletons';
 import { OverviewStorageBar } from '~/components/overview/overview-storage-bar';
-import { OverviewStorageBarSkeleton } from '~/components/overview/overview-storage-bar-skeleton';
 import { OverviewUsageChart } from '~/components/overview/overview-usage-chart';
-import { OverviewUsageChartSkeleton } from '~/components/overview/overview-usage-chart-skeleton';
 import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 
@@ -61,18 +63,22 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
         <h1 className="text-3xl font-bold">Overview</h1>
       </div>
       <section className="grid h-full grid-cols-4 grid-rows-6 gap-4">
-        <Suspense fallback={<OverviewUsageChartSkeleton />}>
+        {/* <Suspense fallback={<OverviewUsageChartSkeleton />}>
           <UsageChartSSR projectId={id} />
-        </Suspense>
-        <Suspense fallback={<OverviewStorageBarSkeleton />}>
+        </Suspense> */}
+        <OverviewUsageChartSkeleton />
+        <OverviewStorageBarSkeleton />
+        {/* <Suspense fallback={<OverviewStorageBarSkeleton />}>
           <StorageStats projectId={id} />
-        </Suspense>
-        <Suspense fallback={<ActivityLogSkeleton />}>
+        </Suspense> */}
+        <OverviewActivityLogSkeleton />
+        {/* <Suspense fallback={<OverviewActivityLogSkeleton />}>
           <ActivityLogsSSR projectId={id} />
-        </Suspense>
-        <Suspense fallback={<OverviewRecentFilesSkeleton />}>
+        </Suspense> */}
+        <OverviewRecentFilesSkeleton />
+        {/* <Suspense fallback={<OverviewRecentFilesSkeleton />}>
           <RecentFilesSSR projectId={id} />
-        </Suspense>
+        </Suspense> */}
       </section>
     </section>
   );
