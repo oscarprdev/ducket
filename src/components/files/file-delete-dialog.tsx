@@ -17,7 +17,7 @@ import {
 interface FileDeleteDialogProps {
   apiKey: string;
   selectedFiles: string[];
-  cleanSelectedFiles: () => void;
+  cleanSelectedFiles: (files: string[]) => void;
 }
 
 export default function FileDeleteDialog({
@@ -26,17 +26,11 @@ export default function FileDeleteDialog({
   cleanSelectedFiles,
 }: FileDeleteDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const handleCloseDialog = () => {
-    setIsOpen(false);
-    cleanSelectedFiles();
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="border-destructive text-destructive hover:bg-destructive-foreground hover:text-destructive">
+        <Button variant="destructive">
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Selected
         </Button>
@@ -48,19 +42,17 @@ export default function FileDeleteDialog({
             Are you sure you want to delete the following files?
           </DialogDescription>
         </DialogHeader>
-        <div className="p-4 text-center">
-          {selectedFiles.map(fileName => (
-            <p key={fileName} className="text-sm font-semibold text-destructive">
-              {fileName}
-            </p>
-          ))}
-        </div>
         <FileDeleteForm
-          selectedFiles={selectedFiles}
           apiKey={apiKey}
+          selectedFiles={selectedFiles}
           action={deleteFile}
-          onActionFinished={handleCloseDialog}>
-          <Button type="button" className="w-full" variant="outline" onClick={handleCloseDialog}>
+          onActionFinished={() => cleanSelectedFiles([])}
+          onFilesChange={cleanSelectedFiles}>
+          <Button
+            type="button"
+            className="w-full"
+            variant="outline"
+            onClick={() => cleanSelectedFiles([])}>
             Cancel
           </Button>
         </FileDeleteForm>

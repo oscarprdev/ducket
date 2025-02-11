@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   );
 
   return (
-    <>
+    <section className="relative">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Project Files</h1>
         {isUploadAllowed && <FileUploadDialog apiKey={secret} projectId={id} />}
@@ -70,6 +70,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       <Suspense fallback={<FileTableSkeleton />}>
         <ProjectFiles projectId={id} apiKey={secret} isDeleteAllowed={isDeleteAllowed} />
       </Suspense>
-    </>
+    </section>
   );
 }
