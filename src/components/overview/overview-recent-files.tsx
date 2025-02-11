@@ -16,14 +16,14 @@ function getFileIcon(type: string) {
   }
 }
 
-export function OverviewRecentFiles({ files }: { files: Files[] }) {
+export function OverviewRecentFiles({ files, projectId }: { files: Files[]; projectId: string }) {
   return (
     <Card className="col-span-2 col-start-3 row-span-4 row-start-3 -mt-7 overflow-hidden">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Recent Files
           <Button asChild variant="outline" size="sm">
-            <Link href="/dashboard/files">See all files</Link>
+            <Link href={`/dashboard/${projectId}/files`}>See all files</Link>
           </Button>
         </CardTitle>
       </CardHeader>

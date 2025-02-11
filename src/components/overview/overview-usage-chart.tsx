@@ -103,7 +103,7 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="min-h-0 flex-1">
+      <CardContent className="min-h-0 flex-1 pb-2">
         <div className="h-full">
           <ChartContainer config={chartConfig} className="h-full w-full">
             <BarChart accessibilityLayer data={chartData}>
@@ -132,7 +132,7 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
           </ChartContainer>
         </div>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 py-3 text-sm">
+      <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           {totalUploads + totalDeletes > 0 ? (
             <>

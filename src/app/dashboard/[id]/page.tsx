@@ -21,7 +21,7 @@ async function ActivityLogsSSR({ projectId }: { projectId: string }) {
 async function RecentFilesSSR({ projectId }: { projectId: string }) {
   const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 10 });
 
-  return <OverviewRecentFiles files={files} />;
+  return <OverviewRecentFiles files={files} projectId={projectId} />;
 }
 
 async function StorageStats({ projectId }: { projectId: string }) {
