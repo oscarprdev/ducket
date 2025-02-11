@@ -94,7 +94,7 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
   );
 
   return (
-    <Card className="col-span-2 row-span-3">
+    <Card className="col-span-2 row-span-3 flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Usage activity
@@ -103,32 +103,34 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="max-h-[150px]">
-        <ChartContainer config={chartConfig} className="h-full max-h-[150px] w-full">
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="day"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={tickFormatter}
-            />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Bar
-              dataKey="uploads"
-              opacity={0.8}
-              fill="var(--color-uploads)"
-              radius={[4, 4, 0, 0]}
-            />
-            <Bar
-              dataKey="deletes"
-              opacity={0.8}
-              fill="var(--color-deletes)"
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
-        </ChartContainer>
+      <CardContent className="min-h-0 flex-1">
+        <div className="h-full">
+          <ChartContainer config={chartConfig} className="h-full w-full">
+            <BarChart accessibilityLayer data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="day"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={tickFormatter}
+              />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <Bar
+                dataKey="uploads"
+                opacity={0.8}
+                fill="var(--color-uploads)"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="deletes"
+                opacity={0.8}
+                fill="var(--color-deletes)"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ChartContainer>
+        </div>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 py-3 text-sm">
         <div className="flex gap-2 font-medium leading-none">
