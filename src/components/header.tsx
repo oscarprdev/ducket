@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
-export function Header() {
+export function Header({ className }: { className?: string }) {
   return (
     <header
-      className={cn('sticky left-0 top-0 z-10 w-screen border-b border-border bg-background px-5')}>
+      className={cn(
+        'sticky left-0 top-0 z-10 w-screen border-b border-border bg-background px-5',
+        className
+      )}>
       <div className="flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <span className="inline-block font-bold">Ducket</span>

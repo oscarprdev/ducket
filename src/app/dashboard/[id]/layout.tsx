@@ -12,7 +12,7 @@ export default async function ProjectLayout({
   const { id } = await params;
   return (
     <DashboardLayout sidebarContent={<ProjectSidebar projectId={id} />}>
-      <div className="ml-64 h-full">{children}</div>
+      <div className="h-full">{children}</div>
     </DashboardLayout>
   );
 }

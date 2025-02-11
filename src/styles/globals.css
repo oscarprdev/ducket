@@ -3,6 +3,8 @@
 @tailwind utilities;
 @layer base {
   :root {
+    --sidebar-width: 16rem;
+    --sidebar-width-collapsed: 4rem;
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;

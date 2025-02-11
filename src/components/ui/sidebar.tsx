@@ -2,35 +2,56 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import * as React from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { cn } from '~/lib/utils';
 
-const SidebarContext = React.createContext<{ collapsed: boolean }>({ collapsed: false });
+interface SidebarContextValue {
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
+}
+
+const SidebarContext = createContext<SidebarContextValue>({
+  collapsed: false,
+  setCollapsed: () => undefined,
+});
 
 export function Sidebar({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
-  const [collapsed, setCollapsed] = React.useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  // Update CSS variable when sidebar collapses/expands
+  useEffect(() => {
+    document.documentElement.style.setProperty('--sidebar-width', collapsed ? '4rem' : '16rem');
+    document.documentElement.style.setProperty(
+      '--sidebar-width-collapsed',
+      collapsed ? '4rem' : '16rem'
+    );
+  }, [collapsed]);
 
   return (
-    <SidebarContext.Provider value={{ collapsed }}>
+    <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
       <TooltipProvider>
-        <div className={cn('relative border-border', className)}>
+        <div
+          className={cn(
+            'relative h-[calc(100vh-4rem)] w-[var(--sidebar-width)] border-r border-border transition-all',
+            className
+          )}
+          data-collapsed={collapsed}>
           <div
             className={cn(
-              'group/sidebar relative flex h-[calc(100vh-4rem)] flex-col gap-4 border-r transition-all duration-300',
-              collapsed ? 'w-16' : 'w-64'
+              'flex h-full flex-col gap-4 overflow-y-auto p-2',
+              collapsed && 'items-center'
             )}>
             {children}
-            <button
-              onClick={() => setCollapsed(!collapsed)}
-              className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background hover:bg-muted">
-              {collapsed ? (
-                <ChevronRight className="h-4 w-4" />
-              ) : (
-                <ChevronLeft className="h-4 w-4" />
-              )}
-            </button>
           </div>
+          <button
+            onClick={() => setCollapsed(c => !c)}
+            className={cn(
+              'absolute -right-4 top-7 flex h-8 w-8 items-center justify-center rounded-full border bg-background text-muted-foreground shadow-sm hover:text-foreground',
+              collapsed && '-right-4'
+            )}>
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
         </div>
       </TooltipProvider>
     </SidebarContext.Provider>
@@ -43,7 +64,7 @@ export function SidebarItem({
   title,
   href,
 }: React.HTMLAttributes<HTMLDivElement> & { icon: React.ReactNode; title: string; href: string }) {
-  const { collapsed } = React.useContext(SidebarContext);
+  const { collapsed } = useContext(SidebarContext);
   const pathname = usePathname();
   const isActive = pathname === href;
 
