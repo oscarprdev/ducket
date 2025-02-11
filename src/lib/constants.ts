@@ -33,7 +33,7 @@ export const chartConfig = {
   },
   download: {
     label: 'Downloads',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--tertiary))',
   },
   read: {
     label: 'Reads',

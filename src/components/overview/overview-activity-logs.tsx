@@ -1,9 +1,9 @@
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { EyeIcon, FileIcon, Trash2Icon, UploadIcon } from 'lucide-react';
+import { CloudDownload, EyeIcon, FileIcon, Trash2Icon, UploadIcon } from 'lucide-react';
 import { useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ActivityLogsWithUser } from '~/server/db/queries';
 
@@ -14,11 +14,13 @@ interface OverviewActivityLogProps {
 export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) {
   const badgeVariant = useCallback((action: string) => {
     switch (action) {
-      case API_KEY_PERMISSIONS.write:
+      case ACTIVITY_ACTIONS.upload:
         return 'secondary';
-      case API_KEY_PERMISSIONS.delete:
+      case ACTIVITY_ACTIONS.download:
+        return 'tertiary';
+      case ACTIVITY_ACTIONS.delete:
         return 'destructive';
-      case API_KEY_PERMISSIONS.read:
+      case ACTIVITY_ACTIONS.read:
         return 'secondary';
       default:
         return 'default';
@@ -27,9 +29,11 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
 
   const getActivityIcon = useCallback((type: string) => {
     switch (type) {
-      case API_KEY_PERMISSIONS.write:
+      case ACTIVITY_ACTIONS.upload:
         return <UploadIcon className="h-4 w-4" />;
-      case API_KEY_PERMISSIONS.delete:
+      case ACTIVITY_ACTIONS.download:
+        return <CloudDownload className="h-4 w-4" />;
+      case ACTIVITY_ACTIONS.delete:
         return <Trash2Icon className="h-4 w-4" />;
       case API_KEY_PERMISSIONS.read:
         return <EyeIcon className="h-4 w-4" />;
