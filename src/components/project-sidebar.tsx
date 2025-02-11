@@ -36,7 +36,7 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
     <Sidebar>
       <SidebarSection title="Project">
         {items.map(item => (
-          <Link key={item.href} href={item.href} className="block">
+          <Link key={item.href} href={item.href} className="block w-full">
             <SidebarItem icon={item.icon} title={item.title} href={item.href} />
           </Link>
         ))}
