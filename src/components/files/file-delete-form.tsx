@@ -84,6 +84,7 @@ export default function FileDeleteForm({
                       variant="ghost"
                       size="icon"
                       className="size-8 border border-destructive/20 bg-transparent text-destructive/20 hover:bg-destructive/10 hover:text-destructive"
+                      disabled={pending}
                       onClick={() => removeFile(fileName)}>
                       <X className="h-4 w-4" />
                       <span className="sr-only">Cancel deletion</span>
