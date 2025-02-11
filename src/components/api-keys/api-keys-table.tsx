@@ -5,8 +5,8 @@ import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import { ApiKeysEditDialog } from './api-keys-edit-dialog';
 import ApiKeysRevokeDialog from './api-keys-revoke-dialog';
-import { Eye, EyeOff, Pencil } from 'lucide-react';
-import { useState } from 'react';
+import { Check, Copy, Eye, EyeOff, Pencil } from 'lucide-react';
+import { useCallback, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -16,8 +16,40 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import { useToast } from '~/hooks/use-toast';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ApiKeys } from '~/server/db/schema';
+
+function CopyButton({ text, onCopy }: { text: string; onCopy?: () => void }) {
+  const [isCopied, setIsCopied] = useState(false);
+  const { toast } = useToast();
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    toast({
+      title: 'API Key Copied',
+      description: 'The API key has been copied to your clipboard.',
+    });
+    setTimeout(() => setIsCopied(false), 2000);
+    onCopy?.();
+  };
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" className="size-8" onClick={copyToClipboard}>
+            {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Copy API key</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
@@ -101,6 +133,7 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                         ? `${apiKey.secret.slice(0, 5)}...${apiKey.secret.slice(-5)}`
                         : '•••••••••••••'}
                     </code>
+
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -120,6 +153,8 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+
+                    <CopyButton text={apiKey.secret} />
                   </div>
                 </TableCell>
                 <TableCell>
