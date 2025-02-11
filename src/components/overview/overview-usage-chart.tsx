@@ -17,11 +17,11 @@ import { type ActivityLogs } from '~/server/db/schema';
 const chartConfig = {
   uploads: {
     label: 'Uploads',
-    color: '#2563eb',
+    color: 'hsl(var(--contrast))',
   },
   deletes: {
     label: 'Deletes',
-    color: '#dc2626',
+    color: 'hsl(var(--destructive))',
   },
 } satisfies ChartConfig;
 

@@ -48,7 +48,7 @@ export function OverviewStorageBar({
           <Progress value={totalUsagePercentage} className="h-2" />
           <div className="flex items-center gap-2 text-sm">
             <div
-              className={`flex items-center gap-1 ${isTodayIncreased ? 'text-green-600' : 'text-red-600'}`}>
+              className={`flex items-center gap-1 ${isTodayIncreased ? 'text-accent' : 'text-destructive'}`}>
               <TrendingUp className={`h-4 w-4 ${!isTodayIncreased && 'rotate-180'}`} />
               <span>{Math.abs(Math.round(todayChangePercentage))}%</span>
             </div>

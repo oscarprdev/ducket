@@ -15,7 +15,7 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
   const badgeVariant = useCallback((action: string) => {
     switch (action) {
       case API_KEY_PERMISSIONS.write:
-        return 'default';
+        return 'secondary';
       case API_KEY_PERMISSIONS.delete:
         return 'destructive';
       case API_KEY_PERMISSIONS.read:
@@ -57,7 +57,7 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">{activity.fileName}</p>
                     <Badge variant={badgeVariant(activity.action)} className="capitalize">
-                      {activity.action}
+                      {activity.action === API_KEY_PERMISSIONS.write ? 'Upload' : activity.action}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">{activity.user}</p>
