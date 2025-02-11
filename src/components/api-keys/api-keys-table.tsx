@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ApiKeys } from '~/server/db/schema';
 
 export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
@@ -129,11 +130,11 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                   </div>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {new Date(apiKey.createdAt).toLocaleString()}
+                  {formatDate(apiKey.createdAt)}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {apiKey.lastUsed !== apiKey.createdAt
-                    ? new Date(apiKey.lastUsed).toLocaleString()
+                    ? formatRelativeTime(apiKey.lastUsed)
                     : 'Never'}
                 </TableCell>
                 <TableCell className="text-center">

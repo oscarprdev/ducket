@@ -1,12 +1,9 @@
 'use server';
 
-import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { API_KEY_PERMISSIONS, type ApiKeyPermissions } from '~/lib/constants';
 import { validatedActionWithUser } from '~/server/auth/middleware';
-import { type ActionState } from '~/server/auth/middleware';
-import { db } from '~/server/db';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
 
 const extractPermissions = (read?: string, write?: string, deletePermission?: string) => {
@@ -59,23 +56,6 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
   });
 
   return { success: 'API key created successfully' };
-});
-
-const deleteApiKeySchema = z.object({
-  projectId: z.string(),
-  apiKey: z.string(),
-});
-
-export const deleteApiKey = validatedActionWithUser(deleteApiKeySchema, async data => {
-  try {
-    const { projectId, apiKey } = data;
-
-    await MUTATIONS.deleteApiKey({ projectId, apiKey });
-
-    return { success: 'API key deleted successfully' };
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Error deleting API key' };
-  }
 });
 
 const editApiKeySchema = z.object({

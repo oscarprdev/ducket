@@ -60,7 +60,6 @@ export default function ApiKeysCreateForm({
   });
 
   const handleAction = (formData: FormData) => {
-    // Add permissions to form data
     selectedPermissions.forEach(permission => {
       formData.append(permission.value, 'on');
     });
@@ -71,12 +70,10 @@ export default function ApiKeysCreateForm({
   function addPermission(value: string) {
     const permission = availablePermissions.find(p => p.value === value);
     if (permission && !selectedPermissions.some(p => p.value === value)) {
-      // If selecting 'all', remove other permissions
       if (value === 'all') {
         setSelectedPermissions([permission]);
         return;
       }
-      // If adding other permission and 'all' exists, remove 'all'
       const newPermissions = selectedPermissions.filter(p => p.value !== 'all');
       setSelectedPermissions([...newPermissions, permission]);
     }
@@ -86,7 +83,6 @@ export default function ApiKeysCreateForm({
     setSelectedPermissions(selectedPermissions.filter(p => p.value !== value));
   }
 
-  // Filter out already selected permissions and 'all' if other permissions are selected
   const availableToSelect = availablePermissions.filter(
     p =>
       !selectedPermissions.some(sp => sp.value === p.value) &&
