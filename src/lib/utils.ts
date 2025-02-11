@@ -39,11 +39,14 @@ export function formatRelativeTime(date: Date | string): string {
   const now = new Date();
   const past = new Date(date);
   const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
+  const twoDaysInSeconds = 172800; // 48 hours in seconds
+
+  // If more than 2 days, return null to use the standard date format
+  if (diffInSeconds >= twoDaysInSeconds) {
+    return '';
+  }
 
   const intervals = {
-    year: 31536000,
-    month: 2592000,
-    week: 604800,
     day: 86400,
     hour: 3600,
     minute: 60,

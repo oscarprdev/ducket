@@ -130,11 +130,11 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                   </div>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {formatDate(apiKey.createdAt)}
+                  {formatRelativeTime(apiKey.createdAt) || formatDate(apiKey.createdAt)}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {apiKey.lastUsed !== apiKey.createdAt
-                    ? formatRelativeTime(apiKey.lastUsed)
+                    ? formatRelativeTime(apiKey.lastUsed) || formatDate(apiKey.lastUsed)
                     : 'Never'}
                 </TableCell>
                 <TableCell className="text-center">

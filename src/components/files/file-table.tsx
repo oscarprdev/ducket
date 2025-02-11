@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { useToast } from '~/hooks/use-toast';
-import { formatDate } from '~/lib/utils';
+import { formatDate, formatRelativeTime } from '~/lib/utils';
 
 interface FileData {
   id: string;
@@ -176,7 +176,7 @@ export default function FileTable({
                     {formatFileSize(file.size)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {formatDate(file.createdAt)}
+                    {formatRelativeTime(file.createdAt) || formatDate(file.createdAt)}
                   </TableCell>
                   <TableCell className="text-center">
                     <FileDownloadButton fileUrl={file.url} />
