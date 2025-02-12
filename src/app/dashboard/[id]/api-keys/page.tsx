@@ -7,24 +7,52 @@ import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 import { type ApiKeys } from '~/server/db/schema';
 
-async function ApiKeysTableSSR({ apiKeys }: { apiKeys: ApiKeys[] }) {
+const ITEMS_PER_PAGE = 10;
+
+async function ApiKeysTableSSR({
+  apiKeys,
+  projectId,
+  page,
+}: {
+  apiKeys: ApiKeys[];
+  projectId: string;
+  page: string;
+}) {
+  const totalItems = await QUERIES.apiKeys.getCountByProject({ projectId });
   const apiKeysWithUser = await Promise.all(
     apiKeys.map(async apiKey => ({
       ...apiKey,
       userId: await QUERIES.users.getById({ id: apiKey.userId }).then(user => user[0]?.email ?? ''),
     }))
   );
-  return <ApiKeysTable apiKeys={apiKeysWithUser} />;
+  return (
+    <ApiKeysTable
+      apiKeys={apiKeysWithUser}
+      projectId={projectId}
+      totalItems={totalItems}
+      itemsPerPage={ITEMS_PER_PAGE}
+      currentPage={parseInt(page)}
+    />
+  );
 }
 
-export default async function ApiKeysPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ApiKeysPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ page: string }>;
+}) {
   const { id } = await params;
+  const { page } = await searchParams;
   const session = await auth();
   if (!session?.user?.id) redirect('/dashboard');
 
   const user = session.user;
   const { projects, apiKeys } = await QUERIES.apiKeys.getByProject({
     projectId: id,
+    offset: (parseInt(page) - 1) * ITEMS_PER_PAGE,
+    limit: ITEMS_PER_PAGE,
   });
 
   const userIsOwner = projects.some(project => project.ownerId === user.id);
@@ -40,10 +68,9 @@ export default async function ApiKeysPage({ params }: { params: Promise<{ id: st
         </div>
         {userIsOwner && apiKeys.length > 0 && <ApiKeysCreateDialog projectId={id} />}
       </div>
-      {/* {apiKeys[0] && <ApiKeyCard apiKey={apiKeys[0]} />} */}
       {userIsOwner ? (
         <Suspense fallback={<ApiKeysTableSkeleton />}>
-          <ApiKeysTableSSR apiKeys={apiKeys} />
+          <ApiKeysTableSSR apiKeys={apiKeys} projectId={id} page={page} />
         </Suspense>
       ) : (
         <p>{"You don't have permission to view API keys"}</p>

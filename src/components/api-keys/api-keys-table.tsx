@@ -1,11 +1,14 @@
 'use client';
 
+import { CopyUrlButton } from '../copy-url-buttont';
+import { TablePagination } from '../table-pagination';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import { ApiKeysEditDialog } from './api-keys-edit-dialog';
 import ApiKeysRevokeDialog from './api-keys-revoke-dialog';
-import { Check, Copy, Eye, EyeOff, Pencil } from 'lucide-react';
+import { Eye, EyeOff, Pencil } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
   Table,
@@ -16,42 +19,25 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
-import { useToast } from '~/hooks/use-toast';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ApiKeys } from '~/server/db/schema';
 
-function CopyButton({ text, onCopy }: { text: string; onCopy?: () => void }) {
-  const [isCopied, setIsCopied] = useState(false);
-  const { toast } = useToast();
-
-  const copyToClipboard = async () => {
-    await navigator.clipboard.writeText(text);
-    setIsCopied(true);
-    toast({
-      title: 'API Key Copied',
-      description: 'The API key has been copied to your clipboard.',
-    });
-    setTimeout(() => setIsCopied(false), 2000);
-    onCopy?.();
-  };
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8" onClick={copyToClipboard}>
-            {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Copy API key</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+interface ApiKeysTableProps {
+  projectId: string;
+  apiKeys: ApiKeys[];
+  totalItems: number;
+  itemsPerPage: number;
+  currentPage: number;
 }
 
-export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
+export default function ApiKeysTable({
+  projectId,
+  apiKeys,
+  totalItems,
+  itemsPerPage,
+  currentPage,
+}: ApiKeysTableProps) {
+  const router = useRouter();
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
@@ -75,13 +61,17 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
 
   const handleCleanSelectedKeys = (keys: string[]) => setSelectedKeys(keys);
 
+  const handlePageChange = (page: number) => {
+    router.push(`/dashboard/${projectId}?page=${page}`);
+  };
+
   return (
     <>
       {selectedKeys.length > 0 && apiKeys[0]?.projectId && (
         <div className="absolute right-40 top-0 mb-4 flex justify-end">
           <ApiKeysRevokeDialog
             selectedKeys={selectedKeys}
-            projectId={apiKeys[0].projectId}
+            projectId={projectId}
             cleanSelectedKeys={handleCleanSelectedKeys}
           />
         </div>
@@ -154,7 +144,7 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
                       </Tooltip>
                     </TooltipProvider>
 
-                    <CopyButton text={apiKey.secret} />
+                    <CopyUrlButton url={apiKey.secret} />
                   </div>
                 </TableCell>
                 <TableCell>
@@ -193,7 +183,15 @@ export default function ApiKeysTable({ apiKeys }: { apiKeys: ApiKeys[] }) {
             ))
           )}
         </TableBody>
-      </Table>
+      </Table>{' '}
+      {totalItems > itemsPerPage && (
+        <TablePagination
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 }

@@ -69,19 +69,19 @@ export function ActivityTable({
             logs.map(log => (
               <TableRow key={log.id}>
                 <TableCell className="max-w-[150px] truncate font-light">{log.fileName}</TableCell>
-                <TableCell className="font-light text-primary">
+                <TableCell className="w-[250px] font-light text-primary">
                   <div className="flex items-center gap-2 space-x-2">
-                    <CopyUrlButton url={log.fileUrl} />
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger className="cursor-help">
-                          {log.fileUrl !== '-' ? `${log.fileUrl.slice(0, 25)}...` : '-'}
+                        <TooltipTrigger className="w-[200px] cursor-help truncate text-start">
+                          {log.fileUrl !== '-' ? log.fileUrl : '-'}
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="text-xs">{log.fileUrl}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    <CopyUrlButton url={log.fileUrl} />
                   </div>
                 </TableCell>
                 <TableCell className="font-light">{log.user}</TableCell>
@@ -94,12 +94,14 @@ export function ActivityTable({
           )}
         </TableBody>
       </Table>
-      <TablePagination
-        itemsPerPage={itemsPerPage}
-        currentPage={currentPage}
-        totalItems={totalItems}
-        onPageChange={handlePageChange}
-      />
+      {totalItems > itemsPerPage && (
+        <TablePagination
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 }

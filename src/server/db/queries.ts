@@ -74,6 +74,13 @@ export const QUERIES = {
         .limit(limit ?? DEFAULT_LIMIT)
         .orderBy(desc(files.createdAt));
     },
+    getCount: async ({ projectId }: { projectId: string }) => {
+      const result = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(files)
+        .where(eq(files.projectId, projectId));
+      return result[0]?.count ?? 0;
+    },
     getLastMonth: async ({ projectId }: { projectId: string }): Promise<Files[]> => {
       return db
         .select()
@@ -134,14 +141,20 @@ export const QUERIES = {
     },
     getByProject: async ({
       projectId,
+      offset,
+      limit,
     }: {
       projectId: string;
+      offset?: number;
+      limit?: number;
     }): Promise<{ projects: Projects[]; apiKeys: ApiKeys[] }> => {
       const [response] = await db
         .select()
         .from(apiKeys)
         .innerJoin(projects, eq(apiKeys.projectId, projects.id))
-        .where(eq(apiKeys.projectId, projectId));
+        .where(eq(apiKeys.projectId, projectId))
+        .offset(offset ?? 0)
+        .limit(limit ?? 10);
 
       if (!response) return { projects: [], apiKeys: [] };
 
@@ -149,6 +162,13 @@ export const QUERIES = {
         projects: [response.projects],
         apiKeys: [response.api_keys],
       };
+    },
+    getCountByProject: async ({ projectId }: { projectId: string }) => {
+      const result = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(apiKeys)
+        .where(eq(apiKeys.projectId, projectId));
+      return result[0]?.count ?? 0;
     },
     getByProjectAndUser: async ({
       projectId,

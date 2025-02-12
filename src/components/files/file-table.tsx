@@ -1,10 +1,11 @@
 'use client';
 
 import { CopyUrlButton } from '../copy-url-buttont';
+import { TablePagination } from '../table-pagination';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import FileDeleteDialog from './file-delete-dialog';
 import FileDownloadButton from './file-donwload-button';
-import { File, FileText, Image } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { Checkbox } from '~/components/ui/checkbox';
 import {
@@ -17,7 +18,7 @@ import {
 } from '~/components/ui/table';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 
-interface FileData {
+export interface FileData {
   id: string;
   name: string;
   type: string;
@@ -27,25 +28,26 @@ interface FileData {
   createdAt: Date | string;
 }
 
-const iconMap = {
-  file: File,
-  image: Image,
-  text: FileText,
-};
-
+interface FileTableProps {
+  files: FileData[];
+  apiKey: string;
+  isDeleteAllowed: boolean;
+  projectId: string;
+  totalItems: number;
+  itemsPerPage: number;
+  currentPage: number;
+}
 export default function FileTable({
   files,
   apiKey,
   isDeleteAllowed,
   projectId,
-}: {
-  files: FileData[];
-  apiKey: string;
-  isDeleteAllowed: boolean;
-  projectId: string;
-}) {
+  totalItems,
+  itemsPerPage,
+  currentPage,
+}: FileTableProps) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-
+  const router = useRouter();
   const formatFileSize = useCallback((bytes: string | number) => {
     const size = typeof bytes === 'string' ? parseInt(bytes) : bytes;
 
@@ -69,6 +71,10 @@ export default function FileTable({
   };
 
   const handleCleanSelectedFiles = (files: string[]) => setSelectedFiles(files);
+
+  const handlePageChange = (page: number) => {
+    router.push(`/dashboard/${projectId}/files?page=${page}`, { scroll: false });
+  };
 
   return (
     <>
@@ -110,7 +116,6 @@ export default function FileTable({
             </TableRow>
           ) : (
             files.map(file => {
-              const Icon = iconMap[file.icon];
               return (
                 <TableRow key={file.id}>
                   {isDeleteAllowed && (
@@ -121,25 +126,20 @@ export default function FileTable({
                       />
                     </TableCell>
                   )}
-                  <TableCell className="font-light">
-                    <div className="flex items-center">
-                      <Icon className="mr-2 h-4 w-4" />
-                      {file.name}
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-light text-primary">
+                  <TableCell className="max-w-[150px] font-light">{file.name}</TableCell>
+                  <TableCell className="max-w-[250px] font-light text-primary">
                     <div className="flex items-center gap-2 space-x-2">
-                      <CopyUrlButton url={file.url} />
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger className="cursor-help">
-                            {file.url.slice(0, 35)}...
+                          <TooltipTrigger className="cursor-help truncate">
+                            {file.url}
                           </TooltipTrigger>
                           <TooltipContent>
                             <p className="text-xs">{file.url}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                      <CopyUrlButton url={file.url} />
                     </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{file.type}</TableCell>
@@ -162,6 +162,14 @@ export default function FileTable({
           )}
         </TableBody>
       </Table>
+      {totalItems > itemsPerPage && (
+        <TablePagination
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 }
