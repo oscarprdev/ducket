@@ -5,6 +5,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { EditUserDialog } from './edit-user-dialog';
+import { DeleteUserDialog } from './remove-user-dialog';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -36,8 +37,9 @@ interface UsersTableProps {
   projectId: string;
   users: UserData[];
   isOwner: boolean;
+  ownerId: string;
 }
-export default function UsersTable({ projectId, users, isOwner }: UsersTableProps) {
+export default function UsersTable({ projectId, users, isOwner, ownerId }: UsersTableProps) {
   const badgeVariant = useBadgeVariant();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -106,7 +108,7 @@ export default function UsersTable({ projectId, users, isOwner }: UsersTableProp
                       )}
                     </div>
                   </TableCell>
-                  {isOwner && (
+                  {isOwner && ownerId !== user.id && (
                     <TableCell className="text-center">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -136,6 +138,13 @@ export default function UsersTable({ projectId, users, isOwner }: UsersTableProp
                     projectId={projectId}
                     userId={user.id}
                     permissions={user.permissions}
+                  />
+                  <DeleteUserDialog
+                    isOpen={isDeleteOpen}
+                    onOpenChange={setIsDeleteOpen}
+                    projectId={projectId}
+                    userId={user.id}
+                    userName={user.name}
                   />
                 </TableRow>
               );

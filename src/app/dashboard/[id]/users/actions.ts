@@ -38,3 +38,26 @@ export const editUserPermissions = validatedActionWithUser(
     return { success: 'User permissions edited successfully' };
   }
 );
+
+const removeUserSchema = z.object({
+  projectId: z.string({ message: 'Project ID is required' }),
+  userId: z.string({ message: 'User ID is required' }),
+});
+
+export const removeUser = validatedActionWithUser(removeUserSchema, async (data, _, user) => {
+  const { projectId, userId } = data;
+
+  const project = await QUERIES.projects.getById({ projectId });
+  if (!project[0] || project[0].ownerId !== user.id) {
+    throw new Error('Unauthorized');
+  }
+
+  await MUTATIONS.removeUser({
+    projectId,
+    userId,
+  });
+
+  revalidatePath(`/dashboard/${projectId}/users`);
+
+  return { success: 'User removed successfully' };
+});

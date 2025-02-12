@@ -29,7 +29,7 @@ async function ProjectUsersSSR({
       };
     })
   );
-  return <UsersTable projectId={projectId} users={usersData} isOwner={isOwner} />;
+  return <UsersTable projectId={projectId} users={usersData} isOwner={isOwner} ownerId={ownerId} />;
 }
 
 export default async function UsersPage({ params }: { params: Promise<{ id: string }> }) {

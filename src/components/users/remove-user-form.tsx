@@ -1,0 +1,67 @@
+'use client';
+
+import SubmitButton from '~/components/submit-button';
+import { Button } from '~/components/ui/button';
+import { useFormAction } from '~/hooks/use-form-action';
+import { useToast } from '~/hooks/use-toast';
+import type { ActionState } from '~/server/auth/middleware';
+
+interface RemoveUserFormProps {
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  onActionFinished?: () => void;
+  projectId: string;
+  userId: string;
+}
+
+export function RemoveUserForm({
+  action,
+  onActionFinished,
+  projectId,
+  userId,
+}: RemoveUserFormProps) {
+  const { toast } = useToast();
+  const { state, formAction, pending } = useFormAction({
+    action,
+    onSuccess: () => {
+      onActionFinished?.();
+      toast({
+        title: 'User removed',
+        description: 'User has been removed from the project successfully',
+        variant: 'success',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: state.error,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleSubmit = async (formData: FormData) => {
+    formData.append('projectId', projectId);
+    formData.append('userId', userId);
+    formAction(formData);
+  };
+
+  return (
+    <form action={handleSubmit} className="flex w-full flex-col gap-4">
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          className="w-full focus:border-inherit"
+          variant="outline"
+          onClick={onActionFinished}>
+          Cancel
+        </Button>
+        <SubmitButton
+          pending={pending}
+          disabled={pending}
+          text="Remove User"
+          variant={{ variant: 'destructive' }}
+        />
+      </div>
+    </form>
+  );
+}

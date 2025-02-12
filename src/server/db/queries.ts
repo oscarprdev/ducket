@@ -413,4 +413,10 @@ export const MUTATIONS = {
       .set({ permissions })
       .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
   },
+  removeUser: function (input: { projectId: string; userId: string }): Promise<ProjectUsers[]> {
+    const { projectId, userId } = input;
+    return db
+      .delete(projectUsers)
+      .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
+  },
 };
