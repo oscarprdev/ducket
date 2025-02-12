@@ -61,3 +61,37 @@ export const removeUser = validatedActionWithUser(removeUserSchema, async (data,
 
   return { success: 'User removed successfully' };
 });
+
+const inviteUserSchema = z.object({
+  projectId: z.string(),
+  email: z.string(),
+  read: z.string().optional(),
+  write: z.string().optional(),
+  delete: z.string().optional(),
+});
+
+export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data, _, user) => {
+  const { projectId, email, read, write, delete: deletePermission } = data;
+  const permissions = extractPermissions(read, write, deletePermission);
+  const project = await QUERIES.projects.getById({ projectId });
+  if (!project[0] || project[0].ownerId !== user.id) {
+    throw new Error('Unauthorized');
+  }
+
+  const [userResponse] = await QUERIES.users.getByEmail({ email });
+  if (!userResponse) {
+    return { error: 'User does not exist' };
+  }
+
+  // TODO: Send invitation email with resend
+
+  await MUTATIONS.inviteUser({
+    projectId,
+    userId: userResponse.id,
+    permissions,
+  });
+
+  revalidatePath(`/dashboard/${projectId}/users`);
+
+  return { success: 'User invited successfully' };
+});

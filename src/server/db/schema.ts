@@ -91,25 +91,23 @@ export const users = createTable('user', {
 });
 
 export type ProjectUsers = typeof projectUsers.$inferSelect;
-export const projectUsers = createTable(
-  'project_users',
-  {
-    projectId: varchar('project_id', { length: 255 })
-      .notNull()
-      .references(() => projects.id, { onDelete: 'cascade' }),
-    userId: varchar('user_id', { length: 255 })
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-    permissions: text('permissions')
-      .array()
-      .notNull()
-      .default(sql`ARRAY['read']::text[]`),
-    confirmed: boolean('confirmed').notNull().default(false),
-  },
-  table => ({
-    pk: primaryKey({ columns: [table.projectId, table.userId] }),
-  })
-);
+export const projectUsers = createTable('project_users', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  projectId: varchar('project_id', { length: 255 })
+    .notNull()
+    .references(() => projects.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  permissions: text('permissions')
+    .array()
+    .notNull()
+    .default(sql`ARRAY['read']::text[]`),
+  confirmed: boolean('confirmed').notNull().default(false),
+});
 
 export type ActivityLogs = typeof activityLogs.$inferSelect;
 export const activityLogs = createTable('activity_logs', {

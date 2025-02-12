@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { AddUserDialog } from '~/components/users/add-user-dialog';
+import { InviteUserDialog } from '~/components/users/invite-user-dialog';
 import { UsersTableSkeleton } from '~/components/users/users-skeletons';
 import UsersTable from '~/components/users/users-table';
 import { auth } from '~/server/auth';
@@ -52,7 +52,7 @@ export default async function UsersPage({ params }: { params: Promise<{ id: stri
             Manage and organize your project files in one place.
           </p>
         </div>
-        {isOwner && <AddUserDialog projectId={id} />}
+        {isOwner && <InviteUserDialog projectId={id} />}
       </div>
       <Suspense fallback={<UsersTableSkeleton />}>
         <ProjectUsersSSR projectId={id} isOwner={isOwner} ownerId={projectUser.ownerId} />

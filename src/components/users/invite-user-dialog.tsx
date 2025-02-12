@@ -1,7 +1,9 @@
 'use client';
 
+import InviteUserForm from './invite-user-form';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { inviteUser } from '~/app/dashboard/[id]/users/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -12,7 +14,7 @@ import {
   DialogTrigger,
 } from '~/components/ui/dialog';
 
-export function AddUserDialog({ projectId }: { projectId: string }) {
+export function InviteUserDialog({ projectId }: { projectId: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -20,17 +22,17 @@ export function AddUserDialog({ projectId }: { projectId: string }) {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline">
           <Plus className="mr-2 h-4 w-4" />
-          Add user
+          Invite user
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add user</DialogTitle>
+          <DialogTitle>Invite user</DialogTitle>
           <DialogDescription>Send invitation to join the project.</DialogDescription>
         </DialogHeader>
-        {/* <ApiKeysCreateForm
+        <InviteUserForm
           projectId={projectId}
-          action={createApiKey}
+          action={inviteUser}
           onActionFinished={() => setIsOpen(false)}>
           <Button
             type="button"
@@ -39,7 +41,7 @@ export function AddUserDialog({ projectId }: { projectId: string }) {
             onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-        </ApiKeysCreateForm> */}
+        </InviteUserForm>
       </DialogContent>
     </Dialog>
   );

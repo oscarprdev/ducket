@@ -12,26 +12,26 @@ import { useToast } from '~/hooks/use-toast';
 import { type Permission } from '~/lib/constants';
 import { type ActionState } from '~/server/auth/middleware';
 
-interface ApiKeyCreateFormProps {
+interface InviteUserFormProps {
   projectId: string;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   onActionFinished?: () => void;
 }
 
-export default function ApiKeysCreateForm({
+export default function InviteUserForm({
   children,
   projectId,
   action,
   onActionFinished,
-}: PropsWithChildren<ApiKeyCreateFormProps>) {
+}: PropsWithChildren<InviteUserFormProps>) {
   const { toast } = useToast();
   const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>([]);
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
       toast({
-        title: 'API key created',
-        description: 'Your API key has been created successfully',
+        title: 'User invitation sent',
+        description: 'User has been invited successfully',
         variant: 'success',
       });
       onActionFinished?.();
@@ -50,8 +50,8 @@ export default function ApiKeysCreateForm({
     <form action={handleAction} className="space-y-4">
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" placeholder="Enter key name" required />
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" placeholder="Enter user email" required />
         </div>
         <PermissionsSelect
           selectedPermissions={selectedPermissions}
@@ -66,7 +66,7 @@ export default function ApiKeysCreateForm({
             <SubmitButton
               pending={pending}
               disabled={!projectId || selectedPermissions.length === 0 || pending}
-              text="Create API Key"
+              text="Invite User"
             />
           </div>
         </div>
