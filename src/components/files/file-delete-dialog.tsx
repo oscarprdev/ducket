@@ -15,13 +15,13 @@ import {
 } from '~/components/ui/dialog';
 
 interface FileDeleteDialogProps {
-  apiKey: string;
+  projectId: string;
   selectedFiles: string[];
   cleanSelectedFiles: (files: string[]) => void;
 }
 
 export default function FileDeleteDialog({
-  apiKey,
+  projectId,
   selectedFiles,
   cleanSelectedFiles,
 }: FileDeleteDialogProps) {
@@ -43,7 +43,7 @@ export default function FileDeleteDialog({
           </DialogDescription>
         </DialogHeader>
         <FileDeleteForm
-          apiKey={apiKey}
+          projectId={projectId}
           selectedFiles={selectedFiles}
           action={deleteFile}
           onActionFinished={() => cleanSelectedFiles([])}

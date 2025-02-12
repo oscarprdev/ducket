@@ -4,11 +4,13 @@ import {
   type ActivityLogs,
   type ApiKeys,
   type Files,
+  type ProjectUsers,
   type Projects,
   type Users,
   activityLogs,
   apiKeys,
   files,
+  projectUsers,
   projects,
   users,
 } from './schema';
@@ -135,6 +137,29 @@ export const QUERIES = {
       return db.select().from(users).where(eq(users.email, email));
     },
   },
+  projectUsers: {
+    getByProjectId: ({
+      projectId,
+      offset,
+      limit,
+    }: {
+      projectId: string;
+      offset?: number;
+      limit?: number;
+    }): Promise<ProjectUsers[]> => {
+      const DEFAULT_OFFSET = 0;
+      const DEFAULT_LIMIT = 10000;
+      return db
+        .select()
+        .from(projectUsers)
+        .where(eq(projectUsers.projectId, projectId))
+        .offset(offset ?? DEFAULT_OFFSET)
+        .limit(limit ?? DEFAULT_LIMIT);
+    },
+    getByUserId: ({ userId }: { userId: string }): Promise<ProjectUsers[]> => {
+      return db.select().from(projectUsers).where(eq(projectUsers.userId, userId));
+    },
+  },
   apiKeys: {
     getBySecret: ({ apiKey }: { apiKey: string }): Promise<ApiKeys[]> => {
       return db.select().from(apiKeys).where(eq(apiKeys.secret, apiKey));
@@ -148,19 +173,20 @@ export const QUERIES = {
       offset?: number;
       limit?: number;
     }): Promise<{ projects: Projects[]; apiKeys: ApiKeys[] }> => {
-      const [response] = await db
+      const response = await db
         .select()
         .from(apiKeys)
-        .innerJoin(projects, eq(apiKeys.projectId, projects.id))
         .where(eq(apiKeys.projectId, projectId))
         .offset(offset ?? 0)
         .limit(limit ?? 10);
 
-      if (!response) return { projects: [], apiKeys: [] };
+      if (!response || response.length === 0) return { projects: [], apiKeys: [] };
+
+      const project = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
 
       return {
-        projects: [response.projects],
-        apiKeys: [response.api_keys],
+        projects: project,
+        apiKeys: response,
       };
     },
     getCountByProject: async ({ projectId }: { projectId: string }) => {
@@ -169,24 +195,6 @@ export const QUERIES = {
         .from(apiKeys)
         .where(eq(apiKeys.projectId, projectId));
       return result[0]?.count ?? 0;
-    },
-    getByProjectAndUser: async ({
-      projectId,
-      userId,
-    }: {
-      projectId: string;
-      userId: string;
-    }): Promise<ApiKeys[]> => {
-      const [response] = await db
-        .select()
-        .from(apiKeys)
-        .innerJoin(projects, eq(apiKeys.projectId, projects.id))
-        .innerJoin(users, eq(apiKeys.userId, users.id))
-        .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.userId, userId)));
-
-      if (!response) return [];
-
-      return [response.api_keys];
     },
     getCount: async ({ projectId }: { projectId: string }) => {
       const result = await db
@@ -285,11 +293,24 @@ export const MUTATIONS = {
         projectId: project.id,
         name: title,
         secret: apiKey,
-        userId: ownerId,
       });
     } catch {
       await db.delete(projects).where(eq(projects.id, project.id));
-      throw new Error('Failed to create project after api key creation');
+      throw new Error('Failed to create api key on project creation process');
+    }
+
+    try {
+      await db.insert(projectUsers).values({
+        projectId: project.id,
+        userId: ownerId,
+        permissions: ['all'],
+      });
+    } catch {
+      await Promise.all([
+        db.delete(apiKeys).where(eq(apiKeys.projectId, project.id)),
+        db.delete(projects).where(eq(projects.id, project.id)),
+      ]);
+      throw new Error('Failed to insert project user on project creation process');
     }
 
     return [project];
@@ -328,25 +349,27 @@ export const MUTATIONS = {
   createApiKey: function (input: {
     projectId: string;
     name: string;
-    userId: string;
     permissions: ApiKeyPermissions[];
   }) {
-    const { projectId, name, userId, permissions } = input;
+    const { projectId, name, permissions } = input;
     return db.insert(apiKeys).values({
       name,
       projectId,
       permissions,
-      userId,
       secret: generateApiKey(),
     });
   },
   editApiKey: function (input: {
     projectId: string;
     name: string;
+    currentName: string;
     permissions: ApiKeyPermissions[];
   }) {
     const { projectId, name, permissions } = input;
-    return db.update(apiKeys).set({ name, permissions }).where(eq(apiKeys.projectId, projectId));
+    return db
+      .update(apiKeys)
+      .set({ name, permissions })
+      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.name, input.currentName)));
   },
   deleteApiKey: async ({ projectId, apiKey }: { projectId: string; apiKey: string }) => {
     return await db

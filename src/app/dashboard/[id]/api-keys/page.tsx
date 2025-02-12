@@ -3,32 +3,31 @@ import { Suspense } from 'react';
 import { ApiKeysCreateDialog } from '~/components/api-keys/api-keys-create-dialog';
 import ApiKeysTable from '~/components/api-keys/api-keys-table';
 import { ApiKeysTableSkeleton } from '~/components/api-keys/api-keys-table-skeleton';
+import { API_KEY_PERMISSIONS } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
-import { type ApiKeys } from '~/server/db/schema';
 
 const ITEMS_PER_PAGE = 10;
 
-async function ApiKeysTableSSR({
-  apiKeys,
-  projectId,
-  page,
-}: {
-  apiKeys: ApiKeys[];
-  projectId: string;
-  page: string;
-}) {
-  const totalItems = await QUERIES.apiKeys.getCountByProject({ projectId });
-  const apiKeysWithUser = await Promise.all(
-    apiKeys.map(async apiKey => ({
-      ...apiKey,
-      userId: await QUERIES.users.getById({ id: apiKey.userId }).then(user => user[0]?.email ?? ''),
-    }))
-  );
+async function ApiKeysTableSSR({ projectId, page }: { projectId: string; page: string }) {
+  const currentPage = Number(page) || 1;
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const limit = ITEMS_PER_PAGE;
+  const [{ apiKeys }, totalItems] = await Promise.all([
+    QUERIES.apiKeys.getByProject({
+      projectId,
+      offset,
+      limit,
+    }),
+    QUERIES.apiKeys.getCountByProject({ projectId }),
+  ]);
+
+  console.log(apiKeys);
+
   return (
     <ApiKeysTable
-      apiKeys={apiKeysWithUser}
       projectId={projectId}
+      apiKeys={apiKeys}
       totalItems={totalItems}
       itemsPerPage={ITEMS_PER_PAGE}
       currentPage={parseInt(page)}
@@ -49,13 +48,9 @@ export default async function ApiKeysPage({
   if (!session?.user?.id) redirect('/dashboard');
 
   const user = session.user;
-  const { projects, apiKeys } = await QUERIES.apiKeys.getByProject({
-    projectId: id,
-    offset: (parseInt(page) - 1) * ITEMS_PER_PAGE,
-    limit: ITEMS_PER_PAGE,
-  });
+  const [projectUser] = await QUERIES.projectUsers.getByUserId({ userId: user.id });
 
-  const userIsOwner = projects.some(project => project.ownerId === user.id);
+  const userIsOwner = projectUser?.permissions.includes(API_KEY_PERMISSIONS.all);
 
   return (
     <section className="relative">
@@ -66,16 +61,15 @@ export default async function ApiKeysPage({
             Manage your API keys and their permissions for this project.
           </p>
         </div>
-        {userIsOwner && apiKeys.length > 0 && <ApiKeysCreateDialog projectId={id} />}
+        {userIsOwner && <ApiKeysCreateDialog projectId={id} />}
       </div>
       {userIsOwner ? (
         <Suspense fallback={<ApiKeysTableSkeleton />}>
-          <ApiKeysTableSSR apiKeys={apiKeys} projectId={id} page={page} />
+          <ApiKeysTableSSR projectId={id} page={page} />
         </Suspense>
       ) : (
         <p>{"You don't have permission to view API keys"}</p>
       )}
-      {apiKeys.length === 0 && userIsOwner && <ApiKeysCreateDialog projectId={id} />}
     </section>
   );
 }

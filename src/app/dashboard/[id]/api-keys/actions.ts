@@ -27,36 +27,42 @@ const extractPermissions = (read?: string, write?: string, deletePermission?: st
 const createApiKeySchema = z.object({
   projectId: z.string(),
   name: z.string(),
-  email: z.string().email(),
   read: z.string().optional(),
   write: z.string().optional(),
   delete: z.string().optional(),
 });
 export const createApiKey = validatedActionWithUser(createApiKeySchema, async data => {
-  const { projectId, name, email, read, write, delete: deletePermission } = data;
+  const { projectId, name, read, write, delete: deletePermission } = data;
   const permissions = extractPermissions(read, write, deletePermission);
   if (permissions.length === 0) {
     return { error: 'Please select at least one permission' };
   }
-  const user = await QUERIES.users.getByEmail({ email });
-  if (!user[0]) {
-    return { error: 'User not found' };
+
+  const { apiKeys } = await QUERIES.apiKeys.getByProject({
+    projectId,
+  });
+
+  const apiKeysPermissions = apiKeys.map(apiKey => apiKey.permissions);
+
+  if (permissions[0] === 'all') {
+    return { error: 'Cannot create API key with all permissions' };
   }
 
-  const [apiKey] = await QUERIES.apiKeys.getByProjectAndUser({
-    projectId,
-    userId: user[0].id,
-  });
-  if (apiKey?.userId === user[0].id) {
-    return { error: 'User already has an API key for this project' };
+  if (
+    apiKeysPermissions.some(existingPermissions =>
+      existingPermissions.every(permission => permissions.includes(permission as ApiKeyPermissions))
+    )
+  ) {
+    return { error: 'Cannot create another API key with same permissions' };
   }
 
   await MUTATIONS.createApiKey({
     projectId,
     name,
-    userId: user[0].id,
     permissions,
   });
+
+  revalidatePath(`/dashboard/${projectId}/api-keys`);
 
   return { success: 'API key created successfully' };
 });
@@ -64,24 +70,35 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
 const editApiKeySchema = z.object({
   projectId: z.string(),
   name: z.string(),
+  currentName: z.string(),
   read: z.string().optional(),
   write: z.string().optional(),
   delete: z.string().optional(),
 });
 export const editApiKey = validatedActionWithUser(editApiKeySchema, async data => {
-  const { projectId, name, read, write, delete: deletePermission } = data;
+  const { projectId, name, currentName, read, write, delete: deletePermission } = data;
   const permissions = extractPermissions(read, write, deletePermission);
   if (permissions.length === 0) {
     return { error: 'Please select at least one permission' };
   }
 
+  if (name !== currentName) {
+    const { apiKeys: existingKeys } = await QUERIES.apiKeys.getByProject({ projectId });
+    if (existingKeys.some(key => key.name === name)) {
+      return { error: 'An API key with this name already exists' };
+    }
+  }
+
   await MUTATIONS.editApiKey({
     projectId,
     name,
+    currentName,
     permissions,
   });
 
-  return { success: 'API key editted successfully' };
+  revalidatePath(`/dashboard/${projectId}/api-keys`);
+
+  return { success: 'API key edited successfully' };
 });
 
 const revokeApiKeysSchema = z.object({

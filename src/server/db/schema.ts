@@ -6,7 +6,6 @@ import {
   primaryKey,
   text,
   timestamp,
-  unique,
   varchar,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
@@ -14,36 +13,27 @@ import { type AdapterAccount } from 'next-auth/adapters';
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
 export type ApiKeys = typeof apiKeys.$inferSelect;
-export const apiKeys = createTable(
-  'api_keys',
-  {
-    id: varchar('id', { length: 255 })
-      .notNull()
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    name: varchar('name', { length: 255 }).notNull().unique(),
-    secret: varchar('secret', { length: 255 }).notNull(),
-    permissions: text('permissions')
-      .array()
-      .notNull()
-      .default(sql`ARRAY['all']::text[]`),
-    projectId: varchar('project_id', { length: 255 })
-      .notNull()
-      .references(() => projects.id, { onDelete: 'cascade' }),
-    userId: varchar('user_id', { length: 255 })
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-    lastUsed: timestamp('last_used', { withTimezone: true })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-  },
-  table => ({
-    uniqueApiKey: unique('unique_api_key').on(table.projectId, table.userId),
-  })
-);
+export const apiKeys = createTable('api_keys', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull().unique(),
+  secret: varchar('secret', { length: 255 }).notNull(),
+  permissions: text('permissions')
+    .array()
+    .notNull()
+    .default(sql`ARRAY['all']::text[]`),
+  projectId: varchar('project_id', { length: 255 })
+    .notNull()
+    .references(() => projects.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  lastUsed: timestamp('last_used', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
 
 export type Files = typeof files.$inferSelect;
 export const files = createTable('files', {
@@ -99,6 +89,7 @@ export const users = createTable('user', {
   image: varchar('image', { length: 255 }),
 });
 
+export type ProjectUsers = typeof projectUsers.$inferSelect;
 export const projectUsers = createTable(
   'project_users',
   {
@@ -108,7 +99,10 @@ export const projectUsers = createTable(
     userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    role: text('role').notNull().default('read'),
+    permissions: text('permissions')
+      .array()
+      .notNull()
+      .default(sql`ARRAY['read']::text[]`),
   },
   table => ({
     pk: primaryKey({ columns: [table.projectId, table.userId] }),

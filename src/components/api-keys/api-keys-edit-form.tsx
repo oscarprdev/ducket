@@ -31,7 +31,6 @@ const availablePermissions: Permission[] = [
   { value: 'read', label: 'Read', description: 'Get files and metadata' },
   { value: 'write', label: 'Write', description: 'Upload files' },
   { value: 'delete', label: 'Delete', description: 'Remove files' },
-  { value: 'all', label: 'All', description: 'Full access' },
 ];
 
 interface ApiKeysEditFormProps {
@@ -48,15 +47,10 @@ export default function ApiKeysEditForm({
 }: PropsWithChildren<ApiKeysEditFormProps>) {
   const { toast } = useToast();
   const [name, setName] = useState(apiKey.name);
-  const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>(() => {
-    // Initialize permissions from apiKey
-    if (apiKey.permissions.includes('all')) {
-      return [availablePermissions.find(p => p.value === 'all')!];
-    }
-    return availablePermissions.filter(p => apiKey.permissions.includes(p.value));
-  });
+  const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>(() =>
+    availablePermissions.filter(p => apiKey.permissions.includes(p.value))
+  );
 
-  // Track if form has been modified
   const isModified = useMemo(() => {
     const nameChanged = name !== apiKey.name;
     const permissionsChanged =
@@ -78,25 +72,18 @@ export default function ApiKeysEditForm({
   });
 
   const handleAction = (formData: FormData) => {
-    // Add permissions to form data
     selectedPermissions.forEach(permission => {
       formData.append(permission.value, 'on');
     });
     formData.append('projectId', apiKey.projectId);
+    formData.append('currentName', apiKey.name);
     formAction(formData);
   };
 
   function addPermission(value: string) {
     const permission = availablePermissions.find(p => p.value === value);
     if (permission && !selectedPermissions.some(p => p.value === value)) {
-      // If selecting 'all', remove other permissions
-      if (value === 'all') {
-        setSelectedPermissions([permission]);
-        return;
-      }
-      // If adding other permission and 'all' exists, remove 'all'
-      const newPermissions = selectedPermissions.filter(p => p.value !== 'all');
-      setSelectedPermissions([...newPermissions, permission]);
+      setSelectedPermissions([...selectedPermissions, permission]);
     }
   }
 
@@ -104,11 +91,8 @@ export default function ApiKeysEditForm({
     setSelectedPermissions(selectedPermissions.filter(p => p.value !== value));
   }
 
-  // Filter out already selected permissions and 'all' if other permissions are selected
   const availableToSelect = availablePermissions.filter(
-    p =>
-      !selectedPermissions.some(sp => sp.value === p.value) &&
-      (p.value !== 'all' || selectedPermissions.length === 0)
+    p => !selectedPermissions.some(sp => sp.value === p.value)
   );
 
   return (
@@ -119,6 +103,7 @@ export default function ApiKeysEditForm({
           <Input
             id="name"
             name="name"
+            required
             value={name}
             onChange={e => setName(e.target.value)}
             placeholder="Enter key name"

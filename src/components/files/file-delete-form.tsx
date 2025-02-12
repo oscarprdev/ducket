@@ -9,8 +9,8 @@ import { useToast } from '~/hooks/use-toast';
 import { type ActionState } from '~/server/auth/middleware';
 
 interface FileDeleteFormProps {
+  projectId: string;
   selectedFiles: string[];
-  apiKey: string;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   onActionFinished?: () => void;
   onFilesChange?: (files: string[]) => void;
@@ -18,8 +18,8 @@ interface FileDeleteFormProps {
 
 export default function FileDeleteForm({
   children,
+  projectId,
   selectedFiles,
-  apiKey,
   action,
   onActionFinished,
   onFilesChange,
@@ -44,8 +44,8 @@ export default function FileDeleteForm({
     await Promise.all(
       selectedFiles.map(fileName => {
         const formData = new FormData();
-        formData.append('apiKey', apiKey);
         formData.append('selectedFile', fileName);
+        formData.append('projectId', projectId);
         formAction(formData);
       })
     );

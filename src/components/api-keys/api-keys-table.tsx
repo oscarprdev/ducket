@@ -19,6 +19,7 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import { API_KEY_PERMISSIONS } from '~/lib/constants';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ApiKeys } from '~/server/db/schema';
 
@@ -56,7 +57,9 @@ export default function ApiKeysTable({
   const handleSelectAll = () => {
     if (apiKeys.length === 1) return;
 
-    setSelectedKeys(selectedKeys.length === apiKeys.length ? [] : apiKeys.map(key => key.secret));
+    const allKeys = apiKeys.filter(key => !key.permissions.includes(API_KEY_PERMISSIONS.all));
+
+    setSelectedKeys(selectedKeys.length === allKeys.length ? [] : allKeys.map(key => key.secret));
   };
 
   const handleCleanSelectedKeys = (keys: string[]) => setSelectedKeys(keys);
@@ -88,7 +91,6 @@ export default function ApiKeysTable({
               />
             </TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>User</TableHead>
             <TableHead>Key</TableHead>
             <TableHead>Permissions</TableHead>
             <TableHead>Created</TableHead>
@@ -110,12 +112,13 @@ export default function ApiKeysTable({
                   <Checkbox
                     checked={selectedKeys.includes(apiKey.secret)}
                     onCheckedChange={() => handleSelectKey(apiKey.secret)}
-                    disabled={apiKeys.length === 1}
-                    className="border-input disabled:border-muted-foreground"
+                    disabled={
+                      apiKeys.length === 1 || apiKey.permissions.includes(API_KEY_PERMISSIONS.all)
+                    }
+                    className="border-input disabled:border-muted"
                   />
                 </TableCell>
                 <TableCell className="font-light">{apiKey.name}</TableCell>
-                <TableCell className="font-light">{apiKey.userId}</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <code className="relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm">

@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '~/components/ui/dialog';
 
-export function FileUploadDialog({ apiKey, projectId }: { apiKey: string; projectId: string }) {
+export function FileUploadDialog({ projectId }: { projectId: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -32,7 +32,6 @@ export function FileUploadDialog({ apiKey, projectId }: { apiKey: string; projec
         </DialogHeader>
         <FileUploadForm
           projectId={projectId}
-          apiKey={apiKey}
           action={uploadFile}
           onActionFinished={() => setIsOpen(false)}
         />

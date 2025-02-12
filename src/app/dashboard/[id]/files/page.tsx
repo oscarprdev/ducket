@@ -11,13 +11,11 @@ const ITEMS_PER_PAGE = 10;
 
 async function ProjectFiles({
   projectId,
-  apiKey,
   isDeleteAllowed,
   page,
 }: {
   projectId: string;
-  apiKey: string;
-  isDeleteAllowed: boolean;
+  isDeleteAllowed?: boolean;
   page: number;
 }) {
   const currentPage = Number(page) || 1;
@@ -50,7 +48,6 @@ async function ProjectFiles({
 
   return (
     <FileTable
-      apiKey={apiKey}
       projectId={projectId}
       isDeleteAllowed={isDeleteAllowed}
       files={filesMapped}
@@ -73,19 +70,13 @@ export default async function ProjectPage({
   const session = await auth();
   if (!session?.user?.id) redirect('/dashboard');
 
-  const response = await QUERIES.apiKeys.getByProjectAndUser({
-    projectId: id,
-    userId: session.user.id,
-  });
+  const user = session.user;
+  const [projectUser] = await QUERIES.projectUsers.getByUserId({ userId: user.id });
 
-  if (response.length === 0 || !response[0]) redirect('/dashboard');
-
-  const secret = response[0].secret;
-  const permissions = response[0].permissions;
-  const isUploadAllowed =
-    permissions.includes(API_KEY_PERMISSIONS.all) ||
-    permissions.includes(API_KEY_PERMISSIONS.write);
-  const isDeleteAllowed = permissions.includes(
+  const isUploadAllowed = projectUser?.permissions.includes(
+    API_KEY_PERMISSIONS.all || API_KEY_PERMISSIONS.write
+  );
+  const isDeleteAllowed = projectUser?.permissions.includes(
     API_KEY_PERMISSIONS.all || API_KEY_PERMISSIONS.delete
   );
 
@@ -98,15 +89,10 @@ export default async function ProjectPage({
             Manage and organize your project files in one place.
           </p>
         </div>
-        {isUploadAllowed && <FileUploadDialog apiKey={secret} projectId={id} />}
+        {isUploadAllowed && <FileUploadDialog projectId={id} />}
       </div>
       <Suspense fallback={<FileTableSkeleton />}>
-        <ProjectFiles
-          projectId={id}
-          apiKey={secret}
-          isDeleteAllowed={isDeleteAllowed}
-          page={parseInt(page)}
-        />
+        <ProjectFiles projectId={id} isDeleteAllowed={isDeleteAllowed} page={parseInt(page)} />
       </Suspense>
     </section>
   );

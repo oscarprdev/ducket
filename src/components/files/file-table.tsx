@@ -30,8 +30,7 @@ export interface FileData {
 
 interface FileTableProps {
   files: FileData[];
-  apiKey: string;
-  isDeleteAllowed: boolean;
+  isDeleteAllowed?: boolean;
   projectId: string;
   totalItems: number;
   itemsPerPage: number;
@@ -39,7 +38,6 @@ interface FileTableProps {
 }
 export default function FileTable({
   files,
-  apiKey,
   isDeleteAllowed,
   projectId,
   totalItems,
@@ -81,7 +79,7 @@ export default function FileTable({
       {selectedFiles.length > 0 && isDeleteAllowed && (
         <div className="absolute right-40 top-0 mb-4 flex justify-end">
           <FileDeleteDialog
-            apiKey={apiKey}
+            projectId={projectId}
             selectedFiles={selectedFiles}
             cleanSelectedFiles={handleCleanSelectedFiles}
           />

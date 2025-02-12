@@ -94,11 +94,7 @@ export default function ApiKeysCreateForm({
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
           <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" placeholder="Enter key name" />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" placeholder="Enter user's email" />
+          <Input id="name" name="name" placeholder="Enter key name" required />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center gap-2">
