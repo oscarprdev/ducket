@@ -59,7 +59,7 @@ export function ActivityTableSkeleton() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Activity Log</CardTitle>
+          <CardTitle>Activity Logs</CardTitle>
         </div>
       </CardHeader>
 
@@ -70,8 +70,8 @@ export function ActivityTableSkeleton() {
               <TableHead>Name</TableHead>
               <TableHead>URL</TableHead>
               <TableHead>User</TableHead>
-              <TableHead>Updated At</TableHead>
-              <TableHead>Action</TableHead>
+              <TableHead>Time</TableHead>
+              <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
