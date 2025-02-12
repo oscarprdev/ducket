@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '../ui/button';
+import { CopyUrlButton } from '../copy-url-buttont';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import FileDeleteDialog from './file-delete-dialog';
 import FileDownloadButton from './file-donwload-button';
-import { Check, Copy, File, FileText, Image } from 'lucide-react';
+import { File, FileText, Image } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Checkbox } from '~/components/ui/checkbox';
 import {
@@ -15,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
-import { useToast } from '~/hooks/use-toast';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 
 interface FileData {
@@ -33,36 +32,6 @@ const iconMap = {
   image: Image,
   text: FileText,
 };
-
-function CopyUrlButton({ url }: { url: string }) {
-  const [isCopied, setIsCopied] = useState(false);
-  const { toast } = useToast();
-
-  const copyUrl = async () => {
-    await navigator.clipboard.writeText(url);
-    setIsCopied(true);
-    toast({
-      title: 'URL Copied',
-      description: 'The URL has been copied to your clipboard.',
-    });
-    setTimeout(() => setIsCopied(false), 2000);
-  };
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8" onClick={copyUrl}>
-            {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Copy URL</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
 
 export default function FileTable({
   files,

@@ -16,7 +16,7 @@ async function ProjectFiles({
   apiKey: string;
   isDeleteAllowed: boolean;
 }) {
-  const files = await QUERIES.getFilesByProjectId({ projectId });
+  const files = await QUERIES.files.getByProjectId({ projectId });
   return (
     <FileTable
       apiKey={apiKey}
@@ -46,7 +46,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const session = await auth();
   if (!session?.user?.id) redirect('/dashboard');
 
-  const response = await QUERIES.getApiKeyByProjectAndUser({
+  const response = await QUERIES.apiKeys.getByProjectAndUser({
     projectId: id,
     userId: session.user.id,
   });

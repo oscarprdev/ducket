@@ -36,7 +36,7 @@ const editProjectSchema = z.object({
 export const editProject = validatedActionWithUser(editProjectSchema, async (data, _, user) => {
   const { projectId, title } = data;
 
-  const project = await QUERIES.getProject({ projectId });
+  const project = await QUERIES.projects.getById({ projectId });
   if (!project[0] || project[0].ownerId !== user.id) {
     throw new Error('Unauthorized');
   }
@@ -58,7 +58,7 @@ const deleteProjectSchema = z.object({
 export const deleteProject = validatedActionWithUser(deleteProjectSchema, async (data, _, user) => {
   const { projectId } = data;
 
-  const project = await QUERIES.getProject({ projectId });
+  const project = await QUERIES.projects.getById({ projectId });
   if (!project[0] || project[0].ownerId !== user.id) {
     throw new Error('Unauthorized');
   }

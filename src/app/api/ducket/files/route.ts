@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     /**
      * Validate api key permissions
      */
-    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    const [apiKeyStored] = await QUERIES.apiKeys.getBySecret({ apiKey });
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     /*
      * Get project by api key
      */
-    const [project] = await QUERIES.getProjectByApiKey({ apiKey });
+    const [project] = await QUERIES.projects.getByApiKey({ apiKey });
     if (!project) {
       return new Response('Project not found', { status: 404 });
     }
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
      * Get files by project id
      */
     const [files] = await Promise.all([
-      QUERIES.getFilesByProjectId({ projectId: project.id }),
+      QUERIES.files.getByProjectId({ projectId: project.id }),
       MUTATIONS.updateApiKeyUsage({
         projectId: project.id,
         apiKey: apiKey,

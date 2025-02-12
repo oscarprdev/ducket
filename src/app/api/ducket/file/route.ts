@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     /**
      * Validate api key permissions
      */
-    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    const [apiKeyStored] = await QUERIES.apiKeys.getBySecret({ apiKey });
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       return new Response('Api key permissions not allowed', { status: 403 });
     }
 
-    const [project] = await QUERIES.getProject({ projectId: apiKeyStored.projectId });
+    const [project] = await QUERIES.projects.getById({ projectId: apiKeyStored.projectId });
     if (!project?.id) {
       return new Response('Project not found for api key provided', { status: 404 });
     }

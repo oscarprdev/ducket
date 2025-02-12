@@ -11,7 +11,7 @@ async function ApiKeysTableSSR({ apiKeys }: { apiKeys: ApiKeys[] }) {
   const apiKeysWithUser = await Promise.all(
     apiKeys.map(async apiKey => ({
       ...apiKey,
-      userId: await QUERIES.getUserById({ id: apiKey.userId }).then(user => user[0]?.email ?? ''),
+      userId: await QUERIES.users.getById({ id: apiKey.userId }).then(user => user[0]?.email ?? ''),
     }))
   );
   return <ApiKeysTable apiKeys={apiKeysWithUser} />;
@@ -23,7 +23,7 @@ export default async function ApiKeysPage({ params }: { params: Promise<{ id: st
   if (!session?.user?.id) redirect('/dashboard');
 
   const user = session.user;
-  const { projects, apiKeys } = await QUERIES.getApiKeysByProject({
+  const { projects, apiKeys } = await QUERIES.apiKeys.getByProject({
     projectId: id,
   });
 

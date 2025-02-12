@@ -40,7 +40,7 @@ export function ActivityChart({ activityLogs }: ActivityChartProps) {
           </div>
         </div>
         <CardDescription>
-          File uploads, deletes and downloads over the{' '}
+          File uploads, deletes, reads and downloads over the{' '}
           {selectedPeriod === PERIODS[0] ? 'last 7 days' : 'last 30 days'}
         </CardDescription>
       </CardHeader>

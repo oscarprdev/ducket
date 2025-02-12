@@ -11,13 +11,15 @@ import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
 async function UsageIconSSR({ projectId }: { projectId: string }) {
-  const [{ maxSize }, allFiles] = await Promise.all([
-    QUERIES.getStorageByProjectId({ projectId }),
-    QUERIES.getAllFilesByProjectId({ projectId }),
+  const [[project], allFiles] = await Promise.all([
+    QUERIES.projects.getById({ projectId }),
+    QUERIES.files.getByProjectId({ projectId }),
   ]);
 
+  if (!project) return null;
+
   const usage = allFiles.reduce((acc, file) => acc + file.size, 0);
-  const isNearLimit = usage + 1000 >= maxSize;
+  const isNearLimit = usage + 1000 >= project.maxSize;
 
   return (
     <TooltipProvider>
@@ -33,7 +35,7 @@ async function UsageIconSSR({ projectId }: { projectId: string }) {
           </Badge>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{Math.round((usage / maxSize) * 100)}% used</p>
+          <p>{Math.round((usage / project.maxSize) * 100)}% used</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -41,7 +43,7 @@ async function UsageIconSSR({ projectId }: { projectId: string }) {
 }
 
 async function NumberOfFilesSSR({ projectId }: { projectId: string }) {
-  const files = await QUERIES.getAllFilesByProjectId({ projectId });
+  const files = await QUERIES.files.getByProjectId({ projectId });
   return (
     <TooltipProvider>
       <Tooltip>
@@ -60,7 +62,7 @@ async function NumberOfFilesSSR({ projectId }: { projectId: string }) {
 }
 
 async function ProjectOwnerSSR({ userId }: { userId: string }) {
-  const [user] = await QUERIES.getUserById({ id: userId });
+  const [user] = await QUERIES.users.getById({ id: userId });
   return (
     <TooltipProvider>
       <Tooltip>
@@ -82,7 +84,7 @@ export default async function Dashboard() {
   const session = await auth();
   if (!session) return null;
 
-  const projects = await QUERIES.getProjects({ ownerId: session?.user.id });
+  const projects = await QUERIES.projects.getAll({ ownerId: session?.user.id });
 
   return (
     <DashboardLayout sidebarContent={<DashboardSidebar />}>

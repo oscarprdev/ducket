@@ -84,12 +84,12 @@ export const downloadFile = validatedActionWithUser(downloadFileSchema, async (d
     const { selectedFile, projectId } = data;
     const userId = user.id;
 
-    const [project] = await QUERIES.getProjectById({ projectId });
+    const [project] = await QUERIES.projects.getById({ projectId });
     if (!project) {
       throw new Error('Project not found');
     }
 
-    const [file] = await QUERIES.getFileByName({ projectId, fileName: selectedFile });
+    const [file] = await QUERIES.files.getByName({ projectId, fileName: selectedFile });
     if (!file?.fileName) {
       throw new Error('File not found');
     }

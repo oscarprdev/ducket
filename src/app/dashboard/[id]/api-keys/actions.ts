@@ -38,12 +38,15 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
   if (permissions.length === 0) {
     return { error: 'Please select at least one permission' };
   }
-  const user = await QUERIES.getUserByEmail({ email });
+  const user = await QUERIES.users.getByEmail({ email });
   if (!user[0]) {
     return { error: 'User not found' };
   }
 
-  const [apiKey] = await QUERIES.getApiKeyByProjectAndUser({ projectId, userId: user[0].id });
+  const [apiKey] = await QUERIES.apiKeys.getByProjectAndUser({
+    projectId,
+    userId: user[0].id,
+  });
   if (apiKey?.userId === user[0].id) {
     return { error: 'User already has an API key for this project' };
   }
@@ -94,7 +97,7 @@ export const revokeApiKeys = validatedActionWithUser(revokeApiKeysSchema, async 
       return { error: 'No API keys selected' };
     }
 
-    const apiKeysCount = await QUERIES.getApiKeysCountByProject({ projectId });
+    const apiKeysCount = await QUERIES.apiKeys.getCount({ projectId });
 
     if (apiKeysCount <= selectedKeys.length) {
       return { error: 'Cannot revoke all API keys. At least one API key must remain active.' };

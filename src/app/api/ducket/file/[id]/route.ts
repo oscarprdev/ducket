@@ -32,7 +32,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     /**
      * Validate api key permissions
      */
-    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    const [apiKeyStored] = await QUERIES.apiKeys.getBySecret({ apiKey });
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
@@ -44,7 +44,9 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       return new Response('Api key permissions not allowed', { status: 403 });
     }
 
-    const [projectResponse] = await QUERIES.getProject({ projectId: apiKeyStored.projectId });
+    const [projectResponse] = await QUERIES.projects.getById({
+      projectId: apiKeyStored.projectId,
+    });
     if (!projectResponse?.id) {
       return new Response('Project not found for api key provided', { status: 404 });
     }
@@ -54,7 +56,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
      */
     const { id } = await context.params;
     const [[file]] = await Promise.all([
-      QUERIES.getFileByName({ projectId: projectResponse.id, fileName: id }),
+      QUERIES.files.getByName({ projectId: projectResponse.id, fileName: id }),
       MUTATIONS.updateApiKeyUsage({
         projectId: projectResponse.id,
         apiKey: apiKeyStored.secret,
@@ -92,7 +94,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     /**
      * Validate api key permissions
      */
-    const [apiKeyStored] = await QUERIES.getApikey({ apiKey });
+    const [apiKeyStored] = await QUERIES.apiKeys.getBySecret({ apiKey });
     if (!apiKeyStored) {
       return new Response('Invalid bearer auth', { status: 402 });
     }
@@ -106,7 +108,9 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       return new Response('Api key permissions not allowed', { status: 403 });
     }
 
-    const [projectResponse] = await QUERIES.getProject({ projectId: apiKeyStored.projectId });
+    const [projectResponse] = await QUERIES.projects.getById({
+      projectId: apiKeyStored.projectId,
+    });
     if (!projectResponse?.id) {
       return new Response('Project not found for api key provided', { status: 404 });
     }
@@ -114,7 +118,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
      * Get file by param id
      */
     const { id: name } = await context.params;
-    const [file] = await QUERIES.getFileByName({ projectId: projectResponse.id, fileName: name });
+    const [file] = await QUERIES.files.getByName({ projectId: projectResponse.id, fileName: name });
     if (!file) {
       return new Response('File not found', { status: 404 });
     }
@@ -122,7 +126,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     /**
      * Validate if project does exist based on projectId from file
      */
-    const [project] = await QUERIES.getProject({ projectId: file?.projectId });
+    const [project] = await QUERIES.projects.getById({ projectId: file?.projectId });
     if (!project) {
       return new Response('Project not found', { status: 404 });
     } else if (projectResponse.id !== project.id) {

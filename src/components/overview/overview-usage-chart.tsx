@@ -2,6 +2,7 @@
 
 import { Button } from '../ui/button';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
 import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
@@ -12,12 +13,11 @@ import { type ActivityLogs } from '~/server/db/schema';
 
 interface OverviewUsageChartProps {
   activityLogs: ActivityLogs[];
+  projectId: string;
 }
 
-export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
+export function OverviewUsageChart({ activityLogs, projectId }: OverviewUsageChartProps) {
   const { chartData, totals } = useActivityChart({ type: '7d', activityLogs });
-
-  console.log({ chartData });
 
   const tickFormatter = useMemo(
     () => (value: string) => (value !== 'Today' ? value.slice(0, 3) : value),
@@ -30,7 +30,7 @@ export function OverviewUsageChart({ activityLogs }: OverviewUsageChartProps) {
         <CardTitle className="flex items-center justify-between">
           Usage activity
           <Button variant="outline" size="sm">
-            See all activity
+            <Link href={`/dashboard/${projectId}/activity`}>See all activity</Link>
           </Button>
         </CardTitle>
       </CardHeader>

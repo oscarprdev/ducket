@@ -13,23 +13,27 @@ import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 
 async function ActivityLogsSSR({ projectId }: { projectId: string }) {
-  const activityLogs = await QUERIES.getActivityLogsByProject({ projectId, offset: 0, limit: 7 });
+  const activityLogs = await QUERIES.activityLogs.getByProject({
+    projectId,
+    offset: 0,
+    limit: 7,
+  });
 
-  return <OverviewActivityLog activityLogs={activityLogs} />;
+  return <OverviewActivityLog activityLogs={activityLogs} projectId={projectId} />;
 }
 
 async function RecentFilesSSR({ projectId }: { projectId: string }) {
-  const files = await QUERIES.getFilesByProjectId({ projectId, offset: 0, limit: 10 });
+  const files = await QUERIES.files.getByProjectId({ projectId, offset: 0, limit: 10 });
 
   return <OverviewRecentFiles files={files} projectId={projectId} />;
 }
 
 async function StorageStats({ projectId }: { projectId: string }) {
   const [{ maxSize }, currentFiles, yesterdayFiles, todayFiles] = await Promise.all([
-    QUERIES.getStorageByProjectId({ projectId }),
-    QUERIES.getFilesByProjectId({ projectId }),
-    QUERIES.getYesterdayFilesByProjectId({ projectId }),
-    QUERIES.getTodayFilesByProjectId({ projectId }),
+    QUERIES.storage.getByProjectId({ projectId }),
+    QUERIES.files.getByProjectId({ projectId }),
+    QUERIES.files.getLastWeek({ projectId }),
+    QUERIES.files.getToday({ projectId }),
   ]);
 
   const calculateUsage = (files: Files[]) =>
@@ -50,9 +54,9 @@ async function StorageStats({ projectId }: { projectId: string }) {
 }
 
 async function UsageChartSSR({ projectId }: { projectId: string }) {
-  const activityLogs = await QUERIES.getLastWeekActivityLogsByProject({ projectId });
+  const activityLogs = await QUERIES.activityLogs.getLastWeek({ projectId });
 
-  return <OverviewUsageChart activityLogs={activityLogs} />;
+  return <OverviewUsageChart activityLogs={activityLogs} projectId={projectId} />;
 }
 
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {

@@ -1,6 +1,7 @@
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { CloudDownload, EyeIcon, FileIcon, Trash2Icon, UploadIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { useBadgeVariant } from '~/hooks/use-badge-variant';
@@ -10,9 +11,10 @@ import { type ActivityLogsWithUser } from '~/server/db/queries';
 
 interface OverviewActivityLogProps {
   activityLogs: ActivityLogsWithUser[];
+  projectId: string;
 }
 
-export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) {
+export function OverviewActivityLog({ activityLogs, projectId }: OverviewActivityLogProps) {
   const badgeVariant = useBadgeVariant();
 
   const getActivityIcon = useCallback((type: string) => {
@@ -35,7 +37,7 @@ export function OverviewActivityLog({ activityLogs }: OverviewActivityLogProps) 
         <CardTitle className="flex w-full items-center justify-between">
           Activity Log
           <Button variant="outline" size="sm">
-            See all logs
+            <Link href={`/dashboard/${projectId}/activity`}>See all logs</Link>
           </Button>
         </CardTitle>
       </CardHeader>

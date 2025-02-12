@@ -8,7 +8,7 @@ import { ActivityTable } from '~/components/activity/activity-table';
 import { QUERIES } from '~/server/db/queries';
 
 async function ActivityChartSSR({ projectId }: { projectId: string }) {
-  const activity = await QUERIES.getAllActivityLogsByProject({ projectId });
+  const activity = await QUERIES.activityLogs.getAll({ projectId });
   const filteredActivity = activity.filter(
     log => log.timestamp >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
   );
@@ -16,13 +16,46 @@ async function ActivityChartSSR({ projectId }: { projectId: string }) {
   return <ActivityChart activityLogs={filteredActivity} />;
 }
 
-async function ActivityTableSSR({ projectId }: { projectId: string }) {
-  const logs = await QUERIES.getActivityLogsByProject({ projectId, offset: 0, limit: 10 });
-  return <ActivityTable logs={logs} />;
+const ITEMS_PER_PAGE = 8;
+
+async function ActivityTableSSR({ projectId, page }: { projectId: string; page: number }) {
+  const currentPage = Number(page) || 1;
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const limit = ITEMS_PER_PAGE;
+  const [logs, count] = await Promise.all([
+    QUERIES.activityLogs.getByProject({ projectId, offset, limit }),
+    QUERIES.activityLogs.getCount({ projectId }),
+  ]);
+
+  const logsWithFileUrl = await Promise.all(
+    logs.map(async log => {
+      if (!log.fileName) return { ...log, fileUrl: '-' };
+
+      const [file] = await QUERIES.files.getByName({ projectId, fileName: log.fileName });
+      return { ...log, fileUrl: file?.fileUrl ?? '-' };
+    })
+  );
+
+  return (
+    <ActivityTable
+      logs={logsWithFileUrl}
+      totalItems={count}
+      projectId={projectId}
+      currentPage={currentPage}
+      itemsPerPage={ITEMS_PER_PAGE}
+    />
+  );
 }
 
-export default async function ActivityPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ActivityPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ page: number }>;
+}) {
   const { id } = await params;
+  const { page } = await searchParams;
   return (
     <section className="h-full overflow-y-auto">
       <div className="mb-6 space-y-1">
@@ -35,7 +68,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         <ActivityChartSSR projectId={id} />
       </Suspense>
       <Suspense fallback={<ActivityTableSkeleton />}>
-        <ActivityTableSSR projectId={id} />
+        <ActivityTableSSR projectId={id} page={page} />
       </Suspense>
     </section>
   );

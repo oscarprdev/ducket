@@ -1,5 +1,9 @@
 'use client';
 
+import { CopyUrlButton } from '../copy-url-buttont';
+import { TablePagination } from '../table-pagination';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { useRouter } from 'next/navigation';
 import { Badge } from '~/components/ui/badge';
 import { CardHeader, CardTitle } from '~/components/ui/card';
 import {
@@ -11,15 +15,30 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { useBadgeVariant } from '~/hooks/use-badge-variant';
-import { formatRelativeTime } from '~/lib/utils';
-import { type ActivityLogsWithUser } from '~/server/db/queries';
+import { formatDate } from '~/lib/utils';
+import { type ActivityLogsWithUserAndURL } from '~/server/db/queries';
 
 interface ActivityTableProps {
-  logs: ActivityLogsWithUser[];
+  logs: ActivityLogsWithUserAndURL[];
+  projectId: string;
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
 }
 
-export function ActivityTable({ logs }: ActivityTableProps) {
+export function ActivityTable({
+  logs,
+  projectId,
+  currentPage,
+  totalItems,
+  itemsPerPage,
+}: ActivityTableProps) {
+  const router = useRouter();
   const badgeVariant = useBadgeVariant();
+
+  const handlePageChange = (page: number) => {
+    router.push(`/dashboard/${projectId}/activity?page=${page}`, { scroll: false });
+  };
 
   return (
     <>
@@ -49,12 +68,24 @@ export function ActivityTable({ logs }: ActivityTableProps) {
           ) : (
             logs.map(log => (
               <TableRow key={log.id}>
-                <TableCell className="font-light">{log.fileName}</TableCell>
-                <TableCell className="font-light">{log.fileName}</TableCell>
-                <TableCell className="font-light">{log.user}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {formatRelativeTime(log.timestamp)}
+                <TableCell className="max-w-[150px] truncate font-light">{log.fileName}</TableCell>
+                <TableCell className="font-light text-primary">
+                  <div className="flex items-center gap-2 space-x-2">
+                    <CopyUrlButton url={log.fileUrl} />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger className="cursor-help">
+                          {log.fileUrl !== '-' ? `${log.fileUrl.slice(0, 25)}...` : '-'}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">{log.fileUrl}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </TableCell>
+                <TableCell className="font-light">{log.user}</TableCell>
+                <TableCell className="text-muted-foreground">{formatDate(log.timestamp)}</TableCell>
                 <TableCell className="text-center">
                   <Badge variant={badgeVariant(log.action)}>{log.action}</Badge>
                 </TableCell>
@@ -63,6 +94,12 @@ export function ActivityTable({ logs }: ActivityTableProps) {
           )}
         </TableBody>
       </Table>
+      <TablePagination
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        onPageChange={handlePageChange}
+      />
     </>
   );
 }
