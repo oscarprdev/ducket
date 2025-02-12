@@ -3,26 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { API_KEY_PERMISSIONS, type ApiKeyPermissions } from '~/lib/constants';
-import { validatedActionWithUser } from '~/server/auth/middleware';
+import { extractPermissions } from '~/lib/utils';
+import { validatedActionWithPermissions, validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS, QUERIES } from '~/server/db/queries';
-
-const extractPermissions = (read?: string, write?: string, deletePermission?: string) => {
-  let permissions: ApiKeyPermissions[] = [];
-  if (read === 'on') {
-    permissions.push(API_KEY_PERMISSIONS.read);
-  }
-  if (write === 'on') {
-    permissions.push(API_KEY_PERMISSIONS.write);
-  }
-  if (deletePermission === 'on') {
-    permissions.push(API_KEY_PERMISSIONS.delete);
-  }
-  if (permissions.length === 3) {
-    permissions = [API_KEY_PERMISSIONS.all];
-  }
-
-  return permissions;
-};
 
 const createApiKeySchema = z.object({
   projectId: z.string(),
@@ -103,28 +86,22 @@ export const editApiKey = validatedActionWithUser(editApiKeySchema, async data =
 
 const revokeApiKeysSchema = z.object({
   projectId: z.string(),
-  selectedKeys: z.array(z.string()),
+  selectedKey: z.string(),
 });
 
-export const revokeApiKeys = validatedActionWithUser(revokeApiKeysSchema, async data => {
-  try {
-    const { projectId, selectedKeys } = data;
+export const revokeApiKeys = validatedActionWithPermissions(
+  revokeApiKeysSchema,
+  [API_KEY_PERMISSIONS.delete],
+  async data => {
+    try {
+      const { projectId, selectedKey } = data;
 
-    if (selectedKeys.length === 0) {
-      return { error: 'No API keys selected' };
+      await MUTATIONS.deleteApiKey({ projectId, apiKey: selectedKey });
+
+      revalidatePath(`/dashboard/${projectId}/api-keys`);
+      return { success: 'API keys revoked successfully' };
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : 'Failed to revoke API keys' };
     }
-
-    const apiKeysCount = await QUERIES.apiKeys.getCount({ projectId });
-
-    if (apiKeysCount <= selectedKeys.length) {
-      return { error: 'Cannot revoke all API keys. At least one API key must remain active.' };
-    }
-
-    await Promise.all(selectedKeys.map(key => MUTATIONS.deleteApiKey({ projectId, apiKey: key })));
-
-    revalidatePath(`/dashboard/${projectId}/api-keys`);
-    return { success: 'API keys revoked successfully' };
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Failed to revoke API keys' };
   }
-});
+);

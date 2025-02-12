@@ -40,3 +40,15 @@ export const chartConfig = {
     color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
+
+export interface Permission {
+  value: string;
+  label: string;
+  description: string;
+}
+
+export const availablePermissions: Permission[] = [
+  { value: 'read', label: 'Read', description: 'Get files and metadata' },
+  { value: 'write', label: 'Write', description: 'Upload files' },
+  { value: 'delete', label: 'Delete', description: 'Remove files' },
+];

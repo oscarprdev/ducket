@@ -41,10 +41,14 @@ export default function ApiKeysRevokeForm({
   });
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append('projectId', projectId);
-    formData.append('selectedKeys', JSON.stringify(selectedKeys));
-    formAction(formData);
+    await Promise.all(
+      selectedKeys.map(key => {
+        const formData = new FormData();
+        formData.append('projectId', projectId);
+        formData.append('selectedKey', key);
+        formAction(formData);
+      })
+    );
   };
 
   const removeKey = (key: string) => {

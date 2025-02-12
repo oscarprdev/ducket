@@ -77,7 +77,7 @@ export default function FileTable({
   return (
     <>
       {selectedFiles.length > 0 && isDeleteAllowed && (
-        <div className="absolute right-40 top-0 mb-4 flex justify-end">
+        <div className="absolute right-40 top-2 mb-4 flex justify-end">
           <FileDeleteDialog
             projectId={projectId}
             selectedFiles={selectedFiles}
@@ -91,6 +91,7 @@ export default function FileTable({
             {isDeleteAllowed && (
               <TableHead className="w-12">
                 <Checkbox
+                  className="border-input disabled:border-muted-foreground"
                   checked={files.length > 0 && selectedFiles.length === files.length}
                   onCheckedChange={handleSelectAll}
                   disabled={files.length === 0}
@@ -119,6 +120,7 @@ export default function FileTable({
                   {isDeleteAllowed && (
                     <TableCell>
                       <Checkbox
+                        className="border-input disabled:border-muted-foreground"
                         checked={selectedFiles.includes(file.name)}
                         onCheckedChange={() => handleSelectFile(file.name)}
                       />

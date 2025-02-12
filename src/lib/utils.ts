@@ -1,3 +1,4 @@
+import { API_KEY_PERMISSIONS, type ApiKeyPermissions } from './constants';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -60,4 +61,22 @@ export function formatRelativeTime(date: Date | string): string {
   }
 
   return 'Just now';
+}
+
+export function extractPermissions(read?: string, write?: string, deletePermission?: string) {
+  let permissions: ApiKeyPermissions[] = [];
+  if (read === 'on') {
+    permissions.push(API_KEY_PERMISSIONS.read);
+  }
+  if (write === 'on') {
+    permissions.push(API_KEY_PERMISSIONS.write);
+  }
+  if (deletePermission === 'on') {
+    permissions.push(API_KEY_PERMISSIONS.delete);
+  }
+  if (permissions.length === 3) {
+    permissions = [API_KEY_PERMISSIONS.all];
+  }
+
+  return permissions;
 }

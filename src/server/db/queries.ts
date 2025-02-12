@@ -48,6 +48,9 @@ export const QUERIES = {
     getByTitle: ({ title }: { title: string }): Promise<Projects[]> => {
       return db.select().from(projects).where(eq(projects.title, title));
     },
+    getByOwner: ({ userId }: { userId: string }): Promise<Projects[]> => {
+      return db.select().from(projects).where(eq(projects.ownerId, userId));
+    },
   },
   files: {
     getByName: async ({ projectId, fileName }: { projectId: string; fileName: string }) => {
@@ -398,5 +401,16 @@ export const MUTATIONS = {
   deleteProject: function (input: { projectId: string }): Promise<Projects[]> {
     const { projectId } = input;
     return db.delete(projects).where(eq(projects.id, projectId)).returning();
+  },
+  editUserPermissions: function (input: {
+    projectId: string;
+    userId: string;
+    permissions: ApiKeyPermissions[];
+  }) {
+    const { projectId, userId, permissions } = input;
+    return db
+      .update(projectUsers)
+      .set({ permissions })
+      .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
   },
 };

@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import {
+  boolean,
   index,
   integer,
   pgTableCreator,
@@ -103,6 +104,7 @@ export const projectUsers = createTable(
       .array()
       .notNull()
       .default(sql`ARRAY['read']::text[]`),
+    confirmed: boolean('confirmed').notNull().default(false),
   },
   table => ({
     pk: primaryKey({ columns: [table.projectId, table.userId] }),

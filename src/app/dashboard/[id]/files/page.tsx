@@ -9,7 +9,7 @@ import { QUERIES } from '~/server/db/queries';
 
 const ITEMS_PER_PAGE = 10;
 
-async function ProjectFiles({
+async function ProjectFilesSSR({
   projectId,
   isDeleteAllowed,
   page,
@@ -92,7 +92,7 @@ export default async function ProjectPage({
         {isUploadAllowed && <FileUploadDialog projectId={id} />}
       </div>
       <Suspense fallback={<FileTableSkeleton />}>
-        <ProjectFiles projectId={id} isDeleteAllowed={isDeleteAllowed} page={parseInt(page)} />
+        <ProjectFilesSSR projectId={id} isDeleteAllowed={isDeleteAllowed} page={parseInt(page)} />
       </Suspense>
     </section>
   );

@@ -29,7 +29,7 @@ export default function ApiKeysRevokeDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="destructive" size="sm">
           Revoke keys
         </Button>
       </DialogTrigger>

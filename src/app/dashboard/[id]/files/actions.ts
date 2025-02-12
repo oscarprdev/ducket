@@ -89,7 +89,7 @@ const downloadFileSchema = z.object({
 
 export const downloadFile = validatedActionWithPermissions(
   downloadFileSchema,
-  [API_KEY_PERMISSIONS.delete],
+  [API_KEY_PERMISSIONS.read, API_KEY_PERMISSIONS.write, API_KEY_PERMISSIONS.delete],
   async (data, _, user) => {
     try {
       const { selectedFile, projectId } = data;
