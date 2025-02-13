@@ -166,21 +166,23 @@ export default function ApiKeysTable({
                     : 'Never'}
                 </TableCell>
                 <TableCell className="text-center">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <ApiKeysEditDialog apiKey={apiKey}>
-                          <Button variant="ghost" size="icon">
-                            <Pencil className="h-4 w-4" />
-                            <span className="sr-only">Edit API key</span>
-                          </Button>
-                        </ApiKeysEditDialog>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Edit API key</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  {!apiKey.permissions.includes(API_KEY_PERMISSIONS.all) && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <ApiKeysEditDialog apiKey={apiKey}>
+                            <Button variant="ghost" size="icon">
+                              <Pencil className="h-4 w-4" />
+                              <span className="sr-only">Edit API key</span>
+                            </Button>
+                          </ApiKeysEditDialog>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit API key</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </TableCell>
               </TableRow>
             ))

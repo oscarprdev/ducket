@@ -28,7 +28,7 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
 
   const apiKeysPermissions = apiKeys.map(apiKey => apiKey.permissions);
 
-  if (permissions[0] === 'all') {
+  if (permissions.some(permission => permission === API_KEY_PERMISSIONS.all)) {
     return { error: 'Cannot create API key with all permissions' };
   }
 
@@ -65,12 +65,15 @@ export const editApiKey = validatedActionWithUser(editApiKeySchema, async data =
   if (permissions.length === 0) {
     return { error: 'Please select at least one permission' };
   }
-
+  const { apiKeys: existingKeys } = await QUERIES.apiKeys.getByProject({ projectId });
   if (name !== currentName) {
-    const { apiKeys: existingKeys } = await QUERIES.apiKeys.getByProject({ projectId });
     if (existingKeys.some(key => key.name === name)) {
       return { error: 'An API key with this name already exists' };
     }
+  }
+
+  if (permissions.includes(API_KEY_PERMISSIONS.all)) {
+    return { error: 'Cannot edit API key with all permissions' };
   }
 
   await MUTATIONS.apiKeys.edit({
@@ -92,10 +95,15 @@ const revokeApiKeysSchema = z.object({
 
 export const revokeApiKeys = validatedActionWithPermissions(
   revokeApiKeysSchema,
-  [API_KEY_PERMISSIONS.delete],
+  [API_KEY_PERMISSIONS.delete, API_KEY_PERMISSIONS.all],
   async data => {
     try {
       const { projectId, selectedKey } = data;
+      const { apiKeys } = await QUERIES.apiKeys.getByProject({ projectId });
+
+      if (apiKeys.some(key => key.permissions.includes(API_KEY_PERMISSIONS.all))) {
+        return { error: 'Cannot revoke API key with all permissions' };
+      }
 
       await MUTATIONS.apiKeys.delete({ projectId, apiKey: selectedKey });
 
