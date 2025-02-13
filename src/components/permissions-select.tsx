@@ -41,7 +41,7 @@ export function PermissionsSelect({
         <Label>Permissions</Label>
         <div className="flex flex-wrap gap-2">
           {selectedPermissions.map(permission => (
-            <Badge key={permission.value} className="gap-2 pr-1">
+            <Badge key={permission.value} className="gap-1 pr-1">
               {permission.label}
               <Button
                 type="button"
