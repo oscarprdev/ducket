@@ -4,7 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { extractPermissions } from '~/lib/utils';
 import { validatedActionWithUser } from '~/server/auth/middleware';
-import { MUTATIONS, QUERIES } from '~/server/db/queries';
+import { MUTATIONS } from '~/server/db/mutations';
+import { QUERIES } from '~/server/db/queries';
 
 const editUserPermissionsSchema = z.object({
   projectId: z.string(),
@@ -27,7 +28,7 @@ export const editUserPermissions = validatedActionWithUser(
       return { error: 'User is not in this project' };
     }
 
-    await MUTATIONS.editUserPermissions({
+    await MUTATIONS.projectUsers.editPermissions({
       projectId,
       userId,
       permissions,
@@ -52,7 +53,7 @@ export const removeUser = validatedActionWithUser(removeUserSchema, async (data,
     throw new Error('Unauthorized');
   }
 
-  await MUTATIONS.removeUser({
+  await MUTATIONS.projectUsers.remove({
     projectId,
     userId,
   });
@@ -85,7 +86,7 @@ export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data,
 
   // TODO: Send invitation email with resend
 
-  await MUTATIONS.inviteUser({
+  await MUTATIONS.projectUsers.invite({
     projectId,
     userId: userResponse.id,
     permissions,

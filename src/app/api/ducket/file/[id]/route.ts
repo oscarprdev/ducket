@@ -1,7 +1,8 @@
 import { Bucket } from 'ducket';
 import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
-import { MUTATIONS, QUERIES } from '~/server/db/queries';
+import { MUTATIONS } from '~/server/db/mutations';
+import { QUERIES } from '~/server/db/queries';
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
   const bearer = request.headers.get('Authorization');
@@ -57,7 +58,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     const { id } = await context.params;
     const [[file]] = await Promise.all([
       QUERIES.files.getByName({ projectId: projectResponse.id, fileName: id }),
-      MUTATIONS.updateApiKeyUsage({
+      MUTATIONS.apiKeys.updateUsage({
         projectId: projectResponse.id,
         apiKey: apiKeyStored.secret,
       }),
@@ -66,7 +67,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       return new Response('File not found', { status: 404 });
     }
 
-    await MUTATIONS.createActivityLog({
+    await MUTATIONS.activityLogs.create({
       projectId: projectResponse.id,
       userId: projectResponse.ownerId,
       fileName: file.fileName,
@@ -142,14 +143,14 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
      * Delete file in database
      */
     await Promise.all([
-      MUTATIONS.deleteFileByName({ name }),
-      MUTATIONS.updateApiKeyUsage({
+      MUTATIONS.files.delete({ name }),
+      MUTATIONS.apiKeys.updateUsage({
         projectId: project.id,
         apiKey: apiKey,
       }),
     ]);
 
-    await MUTATIONS.createActivityLog({
+    await MUTATIONS.activityLogs.create({
       projectId: projectResponse.id,
       userId: projectResponse.ownerId,
       fileName: name,

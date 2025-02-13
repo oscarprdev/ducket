@@ -1,3 +1,4 @@
+import { updateProjectTitle } from './actions';
 import { Suspense } from 'react';
 import { DangerZone } from '~/components/settings/danger-zone';
 import { ProjectTitleCard } from '~/components/settings/project-title';
@@ -13,7 +14,7 @@ async function ProjectTitleCardSSR({ projectId }: { projectId: string }) {
   if (!project) {
     return <div>Project not found</div>;
   }
-  return <ProjectTitleCard project={project} />;
+  return <ProjectTitleCard project={project} action={updateProjectTitle} />;
 }
 
 export default async function SettingsPage({ params }: { params: Promise<{ id: string }> }) {

@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS, VALID_FILE_TYPES } from '~/lib/constants';
 import { validatedActionWithPermissions } from '~/server/auth/middleware';
-import { MUTATIONS } from '~/server/db/queries';
+import { MUTATIONS } from '~/server/db/mutations';
 
 const uploadFileSchema = z.object({
   file: z
@@ -95,7 +95,7 @@ export const downloadFile = validatedActionWithPermissions(
       const { selectedFile, projectId } = data;
       const userId = user.id;
 
-      await MUTATIONS.createActivityLog({
+      await MUTATIONS.activityLogs.create({
         projectId: projectId,
         userId: userId,
         fileName: selectedFile,

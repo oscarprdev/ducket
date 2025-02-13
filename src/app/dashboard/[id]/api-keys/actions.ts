@@ -5,7 +5,8 @@ import { z } from 'zod';
 import { API_KEY_PERMISSIONS, type ApiKeyPermissions } from '~/lib/constants';
 import { extractPermissions } from '~/lib/utils';
 import { validatedActionWithPermissions, validatedActionWithUser } from '~/server/auth/middleware';
-import { MUTATIONS, QUERIES } from '~/server/db/queries';
+import { MUTATIONS } from '~/server/db/mutations';
+import { QUERIES } from '~/server/db/queries';
 
 const createApiKeySchema = z.object({
   projectId: z.string(),
@@ -39,7 +40,7 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
     return { error: 'Cannot create another API key with same permissions' };
   }
 
-  await MUTATIONS.createApiKey({
+  await MUTATIONS.apiKeys.create({
     projectId,
     name,
     permissions,
@@ -72,7 +73,7 @@ export const editApiKey = validatedActionWithUser(editApiKeySchema, async data =
     }
   }
 
-  await MUTATIONS.editApiKey({
+  await MUTATIONS.apiKeys.edit({
     projectId,
     name,
     currentName,
@@ -96,7 +97,7 @@ export const revokeApiKeys = validatedActionWithPermissions(
     try {
       const { projectId, selectedKey } = data;
 
-      await MUTATIONS.deleteApiKey({ projectId, apiKey: selectedKey });
+      await MUTATIONS.apiKeys.delete({ projectId, apiKey: selectedKey });
 
       revalidatePath(`/dashboard/${projectId}/api-keys`);
       return { success: 'API keys revoked successfully' };

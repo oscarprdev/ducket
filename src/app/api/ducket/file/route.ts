@@ -1,7 +1,8 @@
 import { Bucket } from 'ducket';
 import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
-import { MUTATIONS, QUERIES } from '~/server/db/queries';
+import { MUTATIONS } from '~/server/db/mutations';
+import { QUERIES } from '~/server/db/queries';
 
 const PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.write];
 
@@ -95,18 +96,18 @@ export async function POST(request: Request) {
      * Create file in database
      */
     await Promise.all([
-      MUTATIONS.createFile({
+      MUTATIONS.files.create({
         projectId: project.id,
         fileName,
         type,
         fileUrl,
         size: file.size,
       }),
-      MUTATIONS.updateApiKeyUsage({
+      MUTATIONS.apiKeys.updateUsage({
         projectId: project.id,
         apiKey: apiKey,
       }),
-      MUTATIONS.createActivityLog({
+      MUTATIONS.activityLogs.create({
         projectId: project.id,
         userId: project.ownerId,
         fileName: file.name,

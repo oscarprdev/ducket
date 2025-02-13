@@ -1,5 +1,4 @@
 import { db } from '.';
-import generateApiKey from '../utils/generate-api-key';
 import {
   type ActivityLogs,
   type ApiKeys,
@@ -15,7 +14,6 @@ import {
   users,
 } from './schema';
 import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
-import { type ApiKeyPermissions } from '~/lib/constants';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
   user: string;
@@ -31,7 +29,7 @@ export const QUERIES = {
       return db.select().from(projects).where(eq(projects.ownerId, ownerId)).limit(10).offset(0);
     },
     getById: async ({ projectId }: { projectId: string }) => {
-      return await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
+      return db.select().from(projects).where(eq(projects.id, projectId));
     },
     getByApiKey: async ({ apiKey }: { apiKey: string }): Promise<Projects[]> => {
       const response = await db
@@ -269,166 +267,5 @@ export const QUERIES = {
 
       return { maxSize: response[0].maxSize };
     },
-  },
-};
-
-export const MUTATIONS = {
-  // PROJECTS
-  createProject: async function (input: {
-    ownerId: string;
-    title: string;
-    apiKey: string;
-  }): Promise<Projects[]> {
-    const { ownerId, title, apiKey } = input;
-    const [project] = await db
-      .insert(projects)
-      .values({
-        ownerId,
-        title,
-      })
-      .returning();
-
-    if (!project) {
-      throw new Error('Failed to create project');
-    }
-    try {
-      await db.insert(apiKeys).values({
-        projectId: project.id,
-        name: title,
-        secret: apiKey,
-      });
-    } catch {
-      await db.delete(projects).where(eq(projects.id, project.id));
-      throw new Error('Failed to create api key on project creation process');
-    }
-
-    try {
-      await db.insert(projectUsers).values({
-        projectId: project.id,
-        userId: ownerId,
-        permissions: ['all'],
-      });
-    } catch {
-      await Promise.all([
-        db.delete(apiKeys).where(eq(apiKeys.projectId, project.id)),
-        db.delete(projects).where(eq(projects.id, project.id)),
-      ]);
-      throw new Error('Failed to insert project user on project creation process');
-    }
-
-    return [project];
-  },
-  // FILES
-  createFile: function (input: {
-    projectId: string;
-    fileName: string;
-    type: string;
-    fileUrl: string;
-    size: number;
-  }): Promise<Projects[]> {
-    const { projectId, fileName, type, fileUrl, size } = input;
-    return db.insert(files).values({
-      projectId,
-      fileName,
-      type,
-      fileUrl,
-      size,
-    });
-  },
-  deleteFileByName: function (input: { name: string }): Promise<Files[]> {
-    const { name } = input;
-    return db.delete(files).where(eq(files.fileName, name));
-  },
-  // API KEYS
-  updateApiKeyUsage: function (input: { projectId: string; apiKey: string }): Promise<ApiKeys[]> {
-    const { projectId, apiKey } = input;
-    return db
-      .update(apiKeys)
-      .set({
-        lastUsed: sql`CURRENT_TIMESTAMP`,
-      })
-      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
-  },
-  createApiKey: function (input: {
-    projectId: string;
-    name: string;
-    permissions: ApiKeyPermissions[];
-  }) {
-    const { projectId, name, permissions } = input;
-    return db.insert(apiKeys).values({
-      name,
-      projectId,
-      permissions,
-      secret: generateApiKey(),
-    });
-  },
-  editApiKey: function (input: {
-    projectId: string;
-    name: string;
-    currentName: string;
-    permissions: ApiKeyPermissions[];
-  }) {
-    const { projectId, name, permissions } = input;
-    return db
-      .update(apiKeys)
-      .set({ name, permissions })
-      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.name, input.currentName)));
-  },
-  deleteApiKey: async ({ projectId, apiKey }: { projectId: string; apiKey: string }) => {
-    return await db
-      .delete(apiKeys)
-      .where(and(eq(apiKeys.projectId, projectId), eq(apiKeys.secret, apiKey)));
-  },
-  // ACTIVITY LOGS
-  createActivityLog: function (input: {
-    projectId: string;
-    userId: string;
-    fileName: string;
-    action: string;
-  }): Promise<ActivityLogs[]> {
-    const { projectId, userId, fileName, action } = input;
-    return db.insert(activityLogs).values({
-      projectId,
-      userId,
-      fileName,
-      action,
-    });
-  },
-  updateProject: function (input: { projectId: string; title: string }): Promise<Projects[]> {
-    const { projectId, title } = input;
-    return db.update(projects).set({ title }).where(eq(projects.id, projectId)).returning();
-  },
-  deleteProject: function (input: { projectId: string }): Promise<Projects[]> {
-    const { projectId } = input;
-    return db.delete(projects).where(eq(projects.id, projectId)).returning();
-  },
-  editUserPermissions: function (input: {
-    projectId: string;
-    userId: string;
-    permissions: ApiKeyPermissions[];
-  }) {
-    const { projectId, userId, permissions } = input;
-    return db
-      .update(projectUsers)
-      .set({ permissions })
-      .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
-  },
-  removeUser: function (input: { projectId: string; userId: string }): Promise<ProjectUsers[]> {
-    const { projectId, userId } = input;
-    return db
-      .delete(projectUsers)
-      .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
-  },
-  inviteUser: function (input: {
-    projectId: string;
-    userId: string;
-    permissions: string[];
-  }): Promise<ProjectUsers[]> {
-    const { projectId, userId, permissions } = input;
-    return db.insert(projectUsers).values({
-      projectId,
-      userId,
-      permissions,
-    });
   },
 };

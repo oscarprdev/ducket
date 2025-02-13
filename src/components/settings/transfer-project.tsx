@@ -27,7 +27,7 @@ export function TransferProjectCard() {
   };
 
   return (
-    <Card>
+    <Card className="max-w-[800px] bg-background">
       <CardHeader>
         <CardTitle>Transfer Project</CardTitle>
         <CardDescription>Transfer this project to another account or organization.</CardDescription>
