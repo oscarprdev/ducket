@@ -18,7 +18,7 @@ export function ApiKeyDeleteForm({
   onActionFinished,
 }: ApiKeyDeleteFormProps) {
   const { toast } = useToast();
-  const { state, formAction, pending } = useFormAction({
+  const { formAction, pending } = useFormAction({
     action,
     onSuccess: (message?: string) => {
       toast({
@@ -49,7 +49,6 @@ export function ApiKeyDeleteForm({
   return (
     <form action={handleAction} className="space-y-4">
       <div className="space-y-2">
-        {state.error && <p className="text-xs text-destructive">{state.error}</p>}
         <SubmitButton
           pending={pending}
           disabled={!projectId || !apiKey || pending}

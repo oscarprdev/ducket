@@ -43,13 +43,6 @@ export function EditUserForm({
         variant: 'success',
       });
     },
-    onError: () => {
-      toast({
-        title: 'Error',
-        description: state.error,
-        variant: 'destructive',
-      });
-    },
   });
 
   const handleAction = (formData: FormData) => {

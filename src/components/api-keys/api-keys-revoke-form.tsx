@@ -101,7 +101,6 @@ export default function ApiKeysRevokeForm({
       </div>
 
       <div className="space-y-2">
-        {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
         <div className="flex items-center gap-2">
           {children}
           <SubmitButton

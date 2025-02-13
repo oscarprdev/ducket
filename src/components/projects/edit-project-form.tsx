@@ -33,13 +33,6 @@ export function EditProjectForm({
         variant: 'success',
       });
     },
-    onError: () => {
-      toast({
-        title: 'Error',
-        description: state.error,
-        variant: 'destructive',
-      });
-    },
   });
 
   const handleSubmit = async (formData: FormData) => {
