@@ -1,5 +1,6 @@
 import { ACTIVITY_ACTIONS } from '~/lib/constants';
-import { MUTATIONS, QUERIES } from '~/server/db/queries';
+import { MUTATIONS } from '~/server/db/mutations';
+import { QUERIES } from '~/server/db/queries';
 
 async function validateBearerAuth(request: Request): Promise<string | undefined> {
   const bearer = request.headers.get('Authorization');
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
      */
     const [files] = await Promise.all([
       QUERIES.files.getByProjectId({ projectId: project.id }),
-      MUTATIONS.updateApiKeyUsage({
+      MUTATIONS.apiKeys.updateUsage({
         projectId: project.id,
         apiKey: apiKey,
       }),
@@ -50,7 +51,7 @@ export async function GET(request: Request) {
 
     await Promise.all(
       files.map(file =>
-        MUTATIONS.createActivityLog({
+        MUTATIONS.activityLogs.create({
           projectId: project.id,
           userId: project.ownerId,
           fileName: file.fileName ?? '-',
