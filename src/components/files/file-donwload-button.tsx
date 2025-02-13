@@ -1,6 +1,8 @@
 'use client';
 
+import LoaderCircle from '../icons/loader-circle';
 import { Download } from 'lucide-react';
+import { useState } from 'react';
 import { downloadFile } from '~/app/dashboard/[id]/files/actions';
 import { Button } from '~/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
@@ -18,9 +20,11 @@ export default function FileDownloadButton({
   projectId,
   fileName,
 }: FileDownloadButtonProps) {
+  const [pending, setPending] = useState(false);
   const { toast } = useToast();
 
   const handleDownload = async () => {
+    setPending(true);
     try {
       const formData = new FormData();
       formData.append('projectId', projectId);
@@ -34,6 +38,7 @@ export default function FileDownloadButton({
       const actionResponse = await downloadFile(prevState, formData);
 
       if (actionResponse.error) {
+        setPending(false);
         return toast({
           title: 'Download Failed',
           description: actionResponse.error,
@@ -56,7 +61,9 @@ export default function FileDownloadButton({
         title: 'Download Successful',
         description: actionResponse.success,
       });
+      setPending(false);
     } catch (error: unknown) {
+      setPending(false);
       toast({
         title: 'Download Failed',
         description:
@@ -71,7 +78,13 @@ export default function FileDownloadButton({
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="size-8" onClick={handleDownload}>
-            <Download className="h-3 w-3" />
+            {pending ? (
+              <span className="animate-spin">
+                <LoaderCircle />
+              </span>
+            ) : (
+              <Download className="h-3 w-3" />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent>
