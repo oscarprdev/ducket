@@ -99,9 +99,9 @@ export const revokeApiKeys = validatedActionWithPermissions(
   async data => {
     try {
       const { projectId, selectedKey } = data;
-      const { apiKeys } = await QUERIES.apiKeys.getByProject({ projectId });
+      const [apiKey] = await QUERIES.apiKeys.getBySecret({ apiKey: selectedKey });
 
-      if (apiKeys.some(key => key.permissions.includes(API_KEY_PERMISSIONS.all))) {
+      if (apiKey?.permissions.some(key => key.includes(API_KEY_PERMISSIONS.all))) {
         return { error: 'Cannot revoke API key with all permissions' };
       }
 
