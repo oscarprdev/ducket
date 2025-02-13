@@ -10,6 +10,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/comp
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
+async function VisibilityIconSSR({ projectId }: { projectId: string }) {
+  const { isShared } = await QUERIES.projectUsers.getVisibility({ projectId });
+  return <Badge className="mt-2 font-medium capitalize">{isShared ? 'shared' : 'private'}</Badge>;
+}
+
 async function UsageIconSSR({ projectId }: { projectId: string }) {
   const [[project], allFiles] = await Promise.all([
     QUERIES.projects.getById({ projectId }),
@@ -134,6 +139,11 @@ export default async function Dashboard() {
                   </div>
                 }>
                 <NumberOfFilesSSR projectId={project.id} />
+              </Suspense>
+            }
+            visibilityIcon={
+              <Suspense fallback={<Badge className="mt-2 font-medium capitalize">Private</Badge>}>
+                <VisibilityIconSSR projectId={project.id} />
               </Suspense>
             }
           />

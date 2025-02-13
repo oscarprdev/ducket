@@ -160,6 +160,15 @@ export const QUERIES = {
     getByUserId: ({ userId }: { userId: string }): Promise<ProjectUsers[]> => {
       return db.select().from(projectUsers).where(eq(projectUsers.userId, userId));
     },
+    getVisibility: async ({ projectId }: { projectId: string }): Promise<{ isShared: boolean }> => {
+      const projectsUsers = await db
+        .select()
+        .from(projectUsers)
+        .where(eq(projectUsers.projectId, projectId));
+      return {
+        isShared: projectsUsers.length > 1,
+      };
+    },
   },
   apiKeys: {
     getBySecret: ({ apiKey }: { apiKey: string }): Promise<ApiKeys[]> => {

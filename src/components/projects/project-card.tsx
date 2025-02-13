@@ -5,7 +5,6 @@ import { EditProjectDialog } from './edit-project-dialog';
 import { Clock, Folder, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import {
@@ -22,11 +21,12 @@ interface ProjectCardProps {
     title: string;
     owner: string;
     lastUpdate: string;
-    visibility: 'public' | 'private';
+    visibility: 'shared' | 'private';
   };
   usageIcon: React.ReactNode;
   numberOfFiles: React.ReactNode;
   owner: React.ReactNode;
+  visibilityIcon: React.ReactNode;
 }
 
 export default function ProjectCard({
@@ -34,6 +34,7 @@ export default function ProjectCard({
   usageIcon,
   numberOfFiles,
   owner,
+  visibilityIcon,
 }: ProjectCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -69,7 +70,7 @@ export default function ProjectCard({
               </TooltipProvider>
               {numberOfFiles}
             </div>
-            <Badge className="mt-2 font-medium capitalize">{project.visibility}</Badge>
+            {visibilityIcon}
             <div className="absolute right-2 top-2 flex items-center">
               {usageIcon}
               <DropdownMenu>

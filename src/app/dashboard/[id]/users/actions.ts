@@ -81,7 +81,7 @@ export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data,
 
   const [userResponse] = await QUERIES.users.getByEmail({ email });
   if (!userResponse) {
-    return { error: 'User does not exist' };
+    return { error: 'User does not exist within the Ducket app yet' };
   }
 
   // TODO: Send invitation email with resend
