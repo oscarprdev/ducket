@@ -9,7 +9,7 @@ async function validateBearerAuth(request: Request): Promise<string | undefined>
   return bearer?.split(' ')[1];
 }
 
-async function deleteFileFromBucket(name: string, project: string): Promise<string | void> {
+async function deleteFileFromBucket(name: string, projectId: string): Promise<string | void> {
   const bucket = new Bucket({
     apiUrl: env.S3_API_URL,
     accessId: env.S3_ACCESS_KEY_ID,
@@ -17,7 +17,7 @@ async function deleteFileFromBucket(name: string, project: string): Promise<stri
     bucketName: env.S3_BUCKET,
   });
 
-  return await bucket.deleteFile({ name, project });
+  return await bucket.deleteFile({ name, project: projectId });
 }
 const GET_PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.read];
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -137,7 +137,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     /**
      * Delete file from bucket
      */
-    await deleteFileFromBucket(name, project.title);
+    await deleteFileFromBucket(name, project.id);
 
     /**
      * Delete file in database

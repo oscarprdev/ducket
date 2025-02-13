@@ -29,7 +29,7 @@ async function uploadFileToBucket(
   buffer: Buffer,
   type: string,
   name: string,
-  project: string
+  projectId: string
 ): Promise<string | void> {
   const bucket = new Bucket({
     apiUrl: env.S3_API_URL,
@@ -38,7 +38,7 @@ async function uploadFileToBucket(
     bucketName: env.S3_BUCKET,
   });
 
-  return await bucket.uploadFile({ file: buffer, type, name, project });
+  return await bucket.uploadFile({ file: buffer, type, name, project: projectId });
 }
 
 export async function POST(request: Request) {
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
      */
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const bucketResponse = await uploadFileToBucket(buffer, type, fileName, project.title);
+    const bucketResponse = await uploadFileToBucket(buffer, type, fileName, project.id);
     if (!bucketResponse) {
       return new Response('Error uploading file', { status: 500 });
     }
