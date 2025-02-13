@@ -29,9 +29,6 @@ export function FileUploadForm({ projectId, action, onActionFinished }: FileUplo
       toast({ title: 'Files uploaded', description: 'Your files have been uploaded successfully' });
       onActionFinished?.();
     },
-    onError: () => {
-      toast({ title: 'Error', description: state.error, variant: 'destructive' });
-    },
   });
 
   const onDrop = useCallback(

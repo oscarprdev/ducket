@@ -6,6 +6,7 @@ import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS, VALID_FILE_TYPES } from '~/lib/constants';
 import { validatedActionWithPermissions } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
+import { QUERIES } from '~/server/db/queries';
 
 const uploadFileSchema = z.object({
   file: z
@@ -31,6 +32,13 @@ export const uploadFile = validatedActionWithPermissions(
   async (_, formData, __, secret) => {
     try {
       const projectId = formData.get('projectId') as string;
+      const name = formData.get('name') as string;
+
+      const [file] = await QUERIES.files.getByName({ fileName: name, projectId });
+
+      if (file) {
+        return { error: 'File already exists, try with a different name' };
+      }
 
       const response = await fetch(`${env.API_URL}/api/ducket/file`, {
         method: 'POST',
@@ -45,7 +53,6 @@ export const uploadFile = validatedActionWithPermissions(
 
       return { success: 'File uploaded successfully' };
     } catch (error: unknown) {
-      console.log(error);
       return { error: error instanceof Error ? error.message : 'Error uploading file' };
     }
   }
