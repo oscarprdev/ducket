@@ -2,7 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { validatedActionWithUser } from '~/server/auth/middleware';
+import { env } from '~/env';
+import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { validatedActionWithPermissions, validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
 import { QUERIES } from '~/server/db/queries';
 import generateApiKey from '~/server/utils/generate-api-key';
@@ -57,19 +59,59 @@ const deleteProjectSchema = z.object({
   projectId: z.string({ message: 'Project ID is required' }),
 });
 
-export const deleteProject = validatedActionWithUser(deleteProjectSchema, async (data, _, user) => {
-  const { projectId } = data;
+export const deleteProject = validatedActionWithPermissions(
+  deleteProjectSchema,
+  [API_KEY_PERMISSIONS.delete, API_KEY_PERMISSIONS.all],
+  async (data, _, user, secret) => {
+    try {
+      const { projectId } = data;
 
-  const project = await QUERIES.projects.getById({ projectId });
-  if (!project[0] || project[0].ownerId !== user.id) {
-    throw new Error('Unauthorized');
+      const project = await QUERIES.projects.getById({ projectId });
+      if (!project[0] || project[0].ownerId !== user.id) {
+        throw new Error('Unauthorized');
+      }
+
+      const allFiles = await QUERIES.files.getByProjectId({ projectId });
+
+      const deletePromise = (fileName: string) =>
+        fetch(`${env.API_URL}/api/ducket/file/${fileName}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${secret}`,
+          },
+        });
+
+      try {
+        await Promise.all(allFiles.map(file => deletePromise(file.fileName ?? '')));
+      } catch {
+        throw new Error('Failed to delete files from bucket');
+      }
+
+      try {
+        await Promise.all(
+          allFiles.map(file =>
+            MUTATIONS.files.delete({
+              name: file.fileName ?? '',
+            })
+          )
+        );
+      } catch {
+        throw new Error('Failed to delete files from database');
+      }
+
+      try {
+        await MUTATIONS.projects.delete({
+          projectId,
+        });
+      } catch {
+        throw new Error('Failed to delete project from database');
+      }
+
+      revalidatePath('/dashboard', 'page');
+
+      return { success: 'Project deleted successfully' };
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : 'Failed to delete project' };
+    }
   }
-
-  await MUTATIONS.projects.delete({
-    projectId,
-  });
-
-  revalidatePath('/dashboard', 'page');
-
-  return { success: 'Project deleted successfully' };
-});
+);
