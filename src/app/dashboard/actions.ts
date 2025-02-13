@@ -57,6 +57,7 @@ export const editProject = validatedActionWithUser(editProjectSchema, async (dat
 
 const deleteProjectSchema = z.object({
   projectId: z.string({ message: 'Project ID is required' }),
+  projectName: z.string({ message: 'Project Name is required' }),
 });
 
 export const deleteProject = validatedActionWithPermissions(
@@ -64,11 +65,15 @@ export const deleteProject = validatedActionWithPermissions(
   [API_KEY_PERMISSIONS.delete, API_KEY_PERMISSIONS.all],
   async (data, _, user, secret) => {
     try {
-      const { projectId } = data;
+      const { projectId, projectName } = data;
 
       const project = await QUERIES.projects.getById({ projectId });
       if (!project[0] || project[0].ownerId !== user.id) {
         throw new Error('Unauthorized');
+      }
+
+      if (project[0].title.toLowerCase() !== projectName.toLowerCase()) {
+        throw new Error('Project name does not match');
       }
 
       const allFiles = await QUERIES.files.getByProjectId({ projectId });
@@ -107,7 +112,9 @@ export const deleteProject = validatedActionWithPermissions(
         throw new Error('Failed to delete project from database');
       }
 
-      revalidatePath('/dashboard', 'page');
+      revalidatePath('/dashboard');
+      revalidatePath(`/dashboard/${projectId}`);
+      revalidatePath(`/dashboard/${projectId}/settings`);
 
       return { success: 'Project deleted successfully' };
     } catch (error) {

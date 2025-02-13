@@ -14,22 +14,16 @@ interface DeleteProjectDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   projectId: string;
-  projectTitle: string;
 }
 
-export function DeleteProjectDialog({
-  isOpen,
-  onOpenChange,
-  projectId,
-  projectTitle,
-}: DeleteProjectDialogProps) {
+export function DeleteProjectDialog({ isOpen, onOpenChange, projectId }: DeleteProjectDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete Project</DialogTitle>
           <DialogDescription>
-            {`Are you sure you want to delete project "${projectTitle}"? This action cannot be undone.`}
+            {`Are you sure you want to delete project? This action cannot be undone.`}
           </DialogDescription>
         </DialogHeader>
         <DeleteProjectForm

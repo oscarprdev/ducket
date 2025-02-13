@@ -56,7 +56,7 @@ export function ActivityChartSkeleton() {
 
 export function ActivityTableSkeleton() {
   return (
-    <Card>
+    <Card className="bg-background">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Activity Logs</CardTitle>

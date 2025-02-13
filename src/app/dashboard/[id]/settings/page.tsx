@@ -1,4 +1,5 @@
 import { editProject } from '../../actions';
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { DangerZone } from '~/components/settings/danger-zone';
 import { ProjectTitleCard } from '~/components/settings/project-title';
@@ -12,7 +13,7 @@ import { QUERIES } from '~/server/db/queries';
 async function ProjectTitleCardSSR({ projectId }: { projectId: string }) {
   const [project] = await QUERIES.projects.getById({ projectId });
   if (!project) {
-    return <div>Project not found</div>;
+    return redirect('/dashboard');
   }
   return <ProjectTitleCard project={project} action={editProject} />;
 }
@@ -35,10 +36,10 @@ export default async function SettingsPage({ params }: { params: Promise<{ id: s
       </Suspense>
 
       <Suspense fallback={<TransferProjectCardSkeleton />}>
-        <TransferProjectCard />
+        <TransferProjectCard projectId={id} />
       </Suspense>
 
-      <DangerZone />
+      <DangerZone projectId={id} />
     </section>
   );
 }

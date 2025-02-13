@@ -68,6 +68,10 @@ export const MUTATIONS = {
       const { projectId } = input;
       return db.delete(projects).where(eq(projects.id, projectId)).returning();
     },
+    transfer: function (input: { projectId: string; ownerId: string }): Promise<Projects[]> {
+      const { projectId, ownerId } = input;
+      return db.update(projects).set({ ownerId }).where(eq(projects.id, projectId)).returning();
+    },
   },
   files: {
     create: function (input: {

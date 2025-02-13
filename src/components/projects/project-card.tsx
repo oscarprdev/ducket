@@ -1,6 +1,6 @@
 'use client';
 
-import { DeleteProjectDialog } from './delete-project-dialog';
+import { DeleteProjectDialog } from '../delete-project-dialog';
 import { EditProjectDialog } from './edit-project-dialog';
 import { Clock, Folder, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
@@ -110,7 +110,6 @@ export default function ProjectCard({
         isOpen={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         projectId={project.id}
-        projectTitle={project.title}
       />
     </>
   );

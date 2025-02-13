@@ -10,7 +10,7 @@ import {
 
 export function ApiKeysTableSkeleton() {
   return (
-    <Table>
+    <Table className="bg-background">
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>

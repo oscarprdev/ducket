@@ -1,5 +1,6 @@
 'use client';
 
+import { Input } from './ui/input';
 import SubmitButton from '~/components/submit-button';
 import { Button } from '~/components/ui/button';
 import { useFormAction } from '~/hooks/use-form-action';
@@ -17,19 +18,12 @@ export function DeleteProjectForm({ action, onActionFinished, projectId }: Delet
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      onActionFinished?.();
       toast({
         title: 'Project deleted',
         description: 'Your project has been deleted successfully',
         variant: 'success',
       });
-    },
-    onError: () => {
-      toast({
-        title: 'Error',
-        description: state.error,
-        variant: 'destructive',
-      });
+      onActionFinished?.();
     },
   });
 
@@ -40,20 +34,31 @@ export function DeleteProjectForm({ action, onActionFinished, projectId }: Delet
 
   return (
     <form action={handleSubmit} className="flex w-full flex-col gap-4">
-      <div className="flex items-center gap-2">
-        <Button
-          type="button"
-          className="w-full focus:border-inherit"
-          variant="outline"
-          onClick={onActionFinished}>
-          Cancel
-        </Button>
-        <SubmitButton
-          pending={pending}
-          disabled={pending}
-          text="Delete Project"
-          variant={{ variant: 'destructive' }}
+      <div className="flex flex-col items-start gap-4">
+        <Input
+          name="projectName"
+          className="col-span-3"
+          placeholder="Enter the Project Name to confirm deletion"
+          required
         />
+      </div>
+      <div className="space-y-2">
+        {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
+        <div className="flex w-full items-center gap-2">
+          <Button
+            type="button"
+            className="w-full focus:border-inherit"
+            variant="outline"
+            onClick={onActionFinished}>
+            Cancel
+          </Button>
+          <SubmitButton
+            pending={pending}
+            disabled={pending}
+            text="Delete Project"
+            variant={{ variant: 'destructive' }}
+          />
+        </div>
       </div>
     </form>
   );
