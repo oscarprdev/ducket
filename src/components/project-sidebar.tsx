@@ -31,7 +31,7 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
       href: `/dashboard/${projectId}/activity`,
     },
     {
-      title: 'API Keys',
+      title: 'API keys',
       icon: <Key className="h-5 w-5" />,
       href: `/dashboard/${projectId}/api-keys`,
     },
@@ -46,7 +46,7 @@ export default function ProjectSidebar({ projectId }: ProjectSidebarProps) {
     <Sidebar className="fixed">
       <SidebarSection title="Project">
         {items.map(item => (
-          <Link key={item.href} href={item.href} className="block w-full">
+          <Link key={item.href} href={item.href} className="mr-auto block w-full">
             <SidebarItem icon={item.icon} title={item.title} href={item.href} />
           </Link>
         ))}

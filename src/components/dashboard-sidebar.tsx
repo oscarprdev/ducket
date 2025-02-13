@@ -27,7 +27,7 @@ export default function DashboardSidebar() {
     <Sidebar>
       <SidebarSection title="Menu">
         {items.map(item => (
-          <Link key={item.href} href={item.href} className="block w-full">
+          <Link key={item.href} href={item.href} className="mr-auto block w-full">
             <SidebarItem icon={item.icon} title={item.title} href={item.href} />
           </Link>
         ))}

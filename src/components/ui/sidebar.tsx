@@ -19,7 +19,6 @@ const SidebarContext = createContext<SidebarContextValue>({
 export function Sidebar({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
   const [collapsed, setCollapsed] = useState(false);
 
-  // Update CSS variable when sidebar collapses/expands
   useEffect(() => {
     document.documentElement.style.setProperty('--sidebar-width', collapsed ? '4rem' : '16rem');
     document.documentElement.style.setProperty(
@@ -37,18 +36,13 @@ export function Sidebar({ className, children }: React.HTMLAttributes<HTMLDivEle
             className
           )}
           data-collapsed={collapsed}>
-          <div
-            className={cn(
-              'flex h-full flex-col gap-4 overflow-y-auto p-2',
-              collapsed && 'items-center'
-            )}>
+          <div className={cn('flex h-full w-full flex-col gap-4 overflow-y-auto py-2')}>
             {children}
           </div>
           <button
             onClick={() => setCollapsed(c => !c)}
             className={cn(
-              'absolute -right-4 top-7 flex h-8 w-8 items-center justify-center rounded-full border bg-background text-muted-foreground shadow-sm hover:text-foreground',
-              collapsed && '-right-4'
+              'absolute -right-4 top-7 flex h-8 w-8 items-center justify-center rounded-full border bg-background text-muted-foreground shadow-sm hover:text-foreground'
             )}>
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
@@ -71,14 +65,14 @@ export function SidebarItem({
   const content = (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-md px-3 py-2 transition-colors',
+        'flex w-full items-center gap-3 rounded-md px-3 py-2 transition-colors',
         'border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground',
         isActive && 'border-border bg-muted text-foreground',
-        collapsed ? 'justify-center' : 'justify-start',
+        collapsed ? 'justify-start' : 'justify-start',
         className
       )}>
       <div className="h-5 w-5 flex-shrink-0">{icon}</div>
-      {!collapsed && <span className="text-sm font-medium">{title}</span>}
+      <span className="w-full text-nowrap text-sm font-medium">{!collapsed && title}</span>
     </div>
   );
 
@@ -98,7 +92,7 @@ export function SidebarItem({
 
 export function SidebarSection({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('mr-auto flex w-full flex-col items-start gap-1 p-2 pt-4', className)}>
+    <div className={cn('flex w-full flex-col items-start gap-1 p-2 pt-4', className)}>
       {children}
     </div>
   );
