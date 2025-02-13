@@ -28,7 +28,7 @@ async function UsageIconSSR({ projectId }: { projectId: string }) {
           <Badge
             className={`grid h-8 w-8 place-items-center rounded-sm p-0 ${
               isNearLimit
-                ? 'bg-red-500/20 text-red-500'
+                ? 'bg-red-500/20 text-destructive'
                 : 'bg-transparent text-muted-foreground hover:bg-muted'
             }`}>
             <DatabaseZap className="size-4" />

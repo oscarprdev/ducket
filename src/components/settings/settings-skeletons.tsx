@@ -1,3 +1,5 @@
+import { Button } from '../ui/button';
+import { Pencil } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Skeleton } from '~/components/ui/skeleton';
 
@@ -13,7 +15,10 @@ export function ProjectTitleCardSkeleton() {
       <CardContent>
         <div className="flex items-center justify-between">
           <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-9 w-16" />
+          <Button variant="ghost" size="sm" disabled>
+            <Pencil className="mr-2 h-4 w-4" />
+            Edit
+          </Button>
         </div>
       </CardContent>
     </Card>

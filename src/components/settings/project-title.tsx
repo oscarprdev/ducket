@@ -1,5 +1,6 @@
 'use client';
 
+import LoaderCircle from '../icons/loader-circle';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '~/components/ui/button';
@@ -54,10 +55,23 @@ export function ProjectTitleCard({ project, action }: ProjectTitleCardProps) {
       <CardContent>
         {isEditingTitle ? (
           <form action={handleFormAction} className="flex items-center justify-between">
-            <Input defaultValue={project.title} required disabled={pending} className="max-w-sm" />
+            <Input
+              name="title"
+              defaultValue={project.title}
+              required
+              disabled={pending}
+              className="max-w-sm"
+            />
             <div className="flex items-center gap-2">
               <Button type="submit" disabled={pending}>
-                Save
+                {pending ? (
+                  <span className="flex items-center gap-2">
+                    <LoaderCircle />
+                    Saving...
+                  </span>
+                ) : (
+                  'Save'
+                )}
               </Button>
               <Button
                 type="button"
