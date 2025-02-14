@@ -1,15 +1,15 @@
 'use client';
 
-import { CopyUrlButton } from '../copy-url-button';
-import { TablePagination } from '../table-pagination';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Checkbox } from '../ui/checkbox';
 import { ApiKeysEditDialog } from './api-keys-edit-dialog';
 import ApiKeysRevokeDialog from './api-keys-revoke-dialog';
 import { Eye, EyeOff, Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { CopyUrlButton } from '~/components/dashboard/copy-url-button';
+import { TablePagination } from '~/components/dashboard/table-pagination';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Checkbox } from '~/components/ui/checkbox';
 import {
   Table,
   TableBody,

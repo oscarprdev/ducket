@@ -2,6 +2,8 @@ import { ArrowRight } from 'lucide-react';
 import { AnimatedCounter } from '~/components/animated-counter';
 import { Header } from '~/components/header';
 import { HomeCopyButton } from '~/components/home-copy-button';
+import { PublicFileUpload } from '~/components/public-file-upload';
+import { PublicFilesList } from '~/components/public-files-list';
 import { ShimmerBadge } from '~/components/shimmer-badge';
 
 export default async function HomePage() {
@@ -49,11 +51,11 @@ export default async function HomePage() {
               <p className="text-muted-foreground">
                 Upload and share files instantly. No account required.
               </p>
-              {/* <PublicFileUpload /> */}
+              <PublicFileUpload />
             </div>
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Recently Shared Files</h3>
-              {/* <PublicFilesList /> */}
+              <PublicFilesList />
             </div>
           </div>
         </div>

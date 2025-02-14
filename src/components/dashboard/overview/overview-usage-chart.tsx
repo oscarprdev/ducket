@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '../ui/button';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '~/components/ui/chart';
 import { useActivityChart } from '~/hooks/use-activity-chart';

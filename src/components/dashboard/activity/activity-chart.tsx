@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '../ui/button';
 import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis } from 'recharts';
+import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '~/components/ui/chart';
 import { useActivityChart } from '~/hooks/use-activity-chart';

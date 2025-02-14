@@ -1,8 +1,8 @@
 'use client';
 
-import LoaderCircle from '../icons/loader-circle';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
+import LoaderCircle from '~/components/icons/loader-circle';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';

@@ -1,8 +1,8 @@
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
 import { CloudDownload, EyeIcon, FileIcon, Trash2Icon, UploadIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback } from 'react';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { useBadgeVariant } from '~/hooks/use-badge-variant';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';

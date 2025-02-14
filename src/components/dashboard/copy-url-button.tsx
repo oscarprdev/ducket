@@ -1,8 +1,7 @@
-import { Button } from '../ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { Copy } from 'lucide-react';
-import { Check } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '~/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { useToast } from '~/hooks/use-toast';
 
 export function CopyUrlButton({ url }: { url: string }) {

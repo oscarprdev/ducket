@@ -1,13 +1,12 @@
 'use client';
 
-import { CopyUrlButton } from '../copy-url-button';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { EditUserDialog } from './edit-user-dialog';
-import { DeleteUserDialog } from './remove-user-dialog';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
+import { CopyUrlButton } from '~/components/dashboard/copy-url-button';
+import { EditUserDialog } from '~/components/dashboard/users/edit-user-dialog';
+import { DeleteUserDialog } from '~/components/dashboard/users/remove-user-dialog';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { useBadgeVariant } from '~/hooks/use-badge-variant';
 
 export interface UserData {

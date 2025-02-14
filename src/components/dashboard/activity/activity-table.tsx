@@ -1,9 +1,8 @@
 'use client';
 
-import { CopyUrlButton } from '../copy-url-button';
-import { TablePagination } from '../table-pagination';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { useRouter } from 'next/navigation';
+import { CopyUrlButton } from '~/components/dashboard/copy-url-button';
+import { TablePagination } from '~/components/dashboard/table-pagination';
 import { Badge } from '~/components/ui/badge';
 import { CardHeader, CardTitle } from '~/components/ui/card';
 import {
@@ -14,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { useBadgeVariant } from '~/hooks/use-badge-variant';
 import { formatDate } from '~/lib/utils';
 import { type ActivityLogsWithUserAndURL } from '~/server/db/queries';

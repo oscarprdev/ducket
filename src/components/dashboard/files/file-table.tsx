@@ -1,12 +1,11 @@
 'use client';
 
-import { CopyUrlButton } from '../copy-url-button';
-import { TablePagination } from '../table-pagination';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import FileDeleteDialog from './file-delete-dialog';
 import FileDownloadButton from './file-donwload-button';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
+import { CopyUrlButton } from '~/components/dashboard/copy-url-button';
+import { TablePagination } from '~/components/dashboard/table-pagination';
 import { Checkbox } from '~/components/ui/checkbox';
 import {
   Table,
@@ -16,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 
 export interface FileData {

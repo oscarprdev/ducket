@@ -1,6 +1,6 @@
-import { Button } from '../ui/button';
 import { FileIcon, ImageIcon, VideoIcon } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { formatDate, formatFileSize, formatRelativeTime } from '~/lib/utils';
 import { type Files } from '~/server/db/schema';

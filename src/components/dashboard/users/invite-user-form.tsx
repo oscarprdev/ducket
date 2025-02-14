@@ -1,8 +1,8 @@
 'use client';
 
-import { PermissionsSelect } from '../permissions-select';
 import { useState } from 'react';
 import { type PropsWithChildren } from 'react';
+import { PermissionsSelect } from '~/components/dashboard/permissions-select';
 import SubmitButton from '~/components/submit-button';
 import { DialogFooter } from '~/components/ui/dialog';
 import { Input } from '~/components/ui/input';

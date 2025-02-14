@@ -3,7 +3,7 @@
 import { PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import { createProject } from '~/app/dashboard/actions';
-import { CreateProjectForm } from '~/components/projects/create-project-form';
+import { CreateProjectForm } from '~/components/dashboard/projects/create-project-form';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,

@@ -1,9 +1,9 @@
 'use client';
 
-import { PermissionsSelect } from '../permissions-select';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
+import { PermissionsSelect } from '~/components/dashboard/permissions-select';
 import SubmitButton from '~/components/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
