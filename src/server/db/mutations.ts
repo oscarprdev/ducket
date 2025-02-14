@@ -5,16 +5,28 @@ import {
   type Files,
   type ProjectUsers,
   type Projects,
+  type Users,
   activityLogs,
   apiKeys,
   files,
   projectUsers,
   projects,
+  users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
 import { type ApiKeyPermissions } from '~/lib/constants';
 
 export const MUTATIONS = {
+  users: {
+    create: async function (input: {
+      email: string;
+      name: string;
+      passwordHash: string;
+    }): Promise<Users[]> {
+      const { email, name, passwordHash } = input;
+      return db.insert(users).values({ email, name, passwordHash });
+    },
+  },
   projects: {
     create: async function (input: {
       ownerId: string;
@@ -45,9 +57,12 @@ export const MUTATIONS = {
       }
 
       try {
+        const [user] = await db.select().from(users).where(eq(users.id, ownerId));
+        if (!user) throw new Error('User not found');
+
         await db.insert(projectUsers).values({
           projectId: project.id,
-          userId: ownerId,
+          email: user.email,
           permissions: ['all'],
         });
       } catch {
@@ -154,32 +169,36 @@ export const MUTATIONS = {
   projectUsers: {
     editPermissions: function (input: {
       projectId: string;
-      userId: string;
+      email: string;
       permissions: ApiKeyPermissions[];
     }) {
-      const { projectId, userId, permissions } = input;
+      const { projectId, email, permissions } = input;
       return db
         .update(projectUsers)
         .set({ permissions })
-        .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
+        .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.email, email)));
     },
-    remove: function (input: { projectId: string; userId: string }): Promise<ProjectUsers[]> {
-      const { projectId, userId } = input;
+    remove: function (input: { projectId: string; email: string }): Promise<ProjectUsers[]> {
+      const { projectId, email } = input;
       return db
         .delete(projectUsers)
-        .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.userId, userId)));
+        .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.email, email)));
     },
     invite: function (input: {
       projectId: string;
-      userId: string;
+      email: string;
       permissions: string[];
     }): Promise<ProjectUsers[]> {
-      const { projectId, userId, permissions } = input;
+      const { projectId, email, permissions } = input;
       return db.insert(projectUsers).values({
         projectId,
-        userId,
+        email,
         permissions,
       });
+    },
+    acceptInvitation: async function (input: { email: string }): Promise<void> {
+      const { email } = input;
+      await db.update(projectUsers).set({ confirmed: true }).where(eq(projectUsers.email, email));
     },
   },
 };

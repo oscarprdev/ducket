@@ -1,6 +1,6 @@
 'use client';
 
-import { CopyUrlButton } from '../copy-url-buttont';
+import { CopyUrlButton } from '../copy-url-button';
 import { TablePagination } from '../table-pagination';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import FileDeleteDialog from './file-delete-dialog';

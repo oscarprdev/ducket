@@ -2,14 +2,16 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { env } from '~/env';
 import { extractPermissions } from '~/lib/utils';
 import { validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
 import { QUERIES } from '~/server/db/queries';
+import { sendInvitationEmail } from '~/server/email';
 
 const editUserPermissionsSchema = z.object({
   projectId: z.string(),
-  userId: z.string(),
+  email: z.string(),
   read: z.string().optional(),
   write: z.string().optional(),
   delete: z.string().optional(),
@@ -17,20 +19,20 @@ const editUserPermissionsSchema = z.object({
 export const editUserPermissions = validatedActionWithUser(
   editUserPermissionsSchema,
   async data => {
-    const { projectId, userId, read, write, delete: deletePermission } = data;
+    const { projectId, email, read, write, delete: deletePermission } = data;
     const permissions = extractPermissions(read, write, deletePermission);
     if (permissions.length === 0) {
       return { error: 'Please select at least one permission' };
     }
 
-    const [user] = await QUERIES.projectUsers.getByUserId({ userId });
+    const [user] = await QUERIES.projectUsers.getByUserEmail({ email });
     if (user?.projectId !== projectId) {
       return { error: 'User is not in this project' };
     }
 
     await MUTATIONS.projectUsers.editPermissions({
       projectId,
-      userId,
+      email,
       permissions,
     });
 
@@ -53,9 +55,14 @@ export const removeUser = validatedActionWithUser(removeUserSchema, async (data,
     throw new Error('Unauthorized');
   }
 
+  const [userResponse] = await QUERIES.users.getById({ id: userId });
+  if (!userResponse) {
+    throw new Error('User not found');
+  }
+
   await MUTATIONS.projectUsers.remove({
     projectId,
-    userId,
+    email: userResponse.email,
   });
 
   revalidatePath(`/dashboard/${projectId}/users`);
@@ -79,16 +86,13 @@ export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data,
     throw new Error('Unauthorized');
   }
 
-  const [userResponse] = await QUERIES.users.getByEmail({ email });
-  if (!userResponse) {
-    return { error: 'User does not exist within the Ducket app yet' };
-  }
-
-  // TODO: Send invitation email with resend
-
+  await sendInvitationEmail({
+    to: email,
+    link: `${env.API_URL}/invitation/${email}`,
+  });
   await MUTATIONS.projectUsers.invite({
     projectId,
-    userId: userResponse.id,
+    email,
     permissions,
   });
 

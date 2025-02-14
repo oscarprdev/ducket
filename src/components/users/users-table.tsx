@@ -1,6 +1,6 @@
 'use client';
 
-import { CopyUrlButton } from '../copy-url-buttont';
+import { CopyUrlButton } from '../copy-url-button';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';

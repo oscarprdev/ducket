@@ -1,3 +1,4 @@
+import { CredentialsProvider } from './auth-providers';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { type DefaultSession, type NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
@@ -13,7 +14,7 @@ declare module 'next-auth' {
 }
 
 export const authConfig = {
-  providers: [GitHub],
+  providers: [GitHub, CredentialsProvider],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
@@ -21,12 +22,23 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+    session: ({ session, user, token }) => {
+      const id = (user ? user.id : token.id) as string;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id,
+        },
+      };
+    },
   },
+  session: { strategy: 'jwt' },
 } satisfies NextAuthConfig;

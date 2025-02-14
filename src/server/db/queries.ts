@@ -137,6 +137,18 @@ export const QUERIES = {
     getByEmail: ({ email }: { email: string }): Promise<Users[]> => {
       return db.select().from(users).where(eq(users.email, email));
     },
+    getByCredentials: ({
+      email,
+      passwordHash,
+    }: {
+      email: string;
+      passwordHash: string;
+    }): Promise<Users[]> => {
+      return db
+        .select()
+        .from(users)
+        .where(and(eq(users.email, email), eq(users.passwordHash, passwordHash)));
+    },
   },
   projectUsers: {
     getByProjectId: ({
@@ -157,8 +169,8 @@ export const QUERIES = {
         .offset(offset ?? DEFAULT_OFFSET)
         .limit(limit ?? DEFAULT_LIMIT);
     },
-    getByUserId: ({ userId }: { userId: string }): Promise<ProjectUsers[]> => {
-      return db.select().from(projectUsers).where(eq(projectUsers.userId, userId));
+    getByUserEmail: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
+      return db.select().from(projectUsers).where(eq(projectUsers.email, email));
     },
     getVisibility: async ({ projectId }: { projectId: string }): Promise<{ isShared: boolean }> => {
       const projectsUsers = await db

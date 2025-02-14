@@ -7,16 +7,18 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string() : z.string().optional(),
+    API_URL: z.string().url(),
     DATABASE_URL: z.string().url(),
+    AUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string() : z.string().optional(),
     AUTH_GITHUB_ID: z.string(),
     AUTH_GITHUB_SECRET: z.string(),
+    AUTH_SALT: z.string(),
     S3_PUBLIC_URL: z.string().url(),
     S3_API_URL: z.string().url(),
     S3_ACCESS_KEY_ID: z.string(),
     S3_SECRET_ACCESS_KEY: z.string(),
     S3_BUCKET: z.string(),
-    API_URL: z.string().url(),
+    RESEND_API_KEY: z.string(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   },
 
@@ -34,17 +36,19 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    AUTH_SECRET: process.env.AUTH_SECRET,
+    API_URL: process.env.API_URL,
     DATABASE_URL: process.env.DATABASE_URL,
+    AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
-    NODE_ENV: process.env.NODE_ENV,
+    AUTH_SALT: process.env.AUTH_SALT,
     S3_PUBLIC_URL: process.env.S3_PUBLIC_URL,
     S3_API_URL: process.env.S3_API_URL,
     S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
     S3_BUCKET: process.env.S3_BUCKET,
-    API_URL: process.env.API_URL,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    NODE_ENV: process.env.NODE_ENV,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

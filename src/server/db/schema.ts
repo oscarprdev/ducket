@@ -44,7 +44,7 @@ export const files = createTable('files', {
     .default(sql`gen_random_uuid()`),
   projectId: varchar('project_id', { length: 255 })
     .notNull()
-    .references(() => projects.id),
+    .references(() => projects.id, { onDelete: 'cascade' }),
   fileUrl: text('file_url').notNull(),
   fileName: varchar('file_name', { length: 255 }),
   type: varchar('type', { length: 255 }),
@@ -63,7 +63,7 @@ export const projects = createTable('projects', {
     .default(sql`gen_random_uuid()`),
   ownerId: varchar('owner_id', { length: 255 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   maxSize: integer('max_size').notNull().default(1073741824), // 1 GB in bytes (1024 * 1024 * 1024)
@@ -86,8 +86,9 @@ export const users = createTable('user', {
   emailVerified: timestamp('email_verified', {
     mode: 'date',
     withTimezone: true,
-  }).default(sql`CURRENT_TIMESTAMP`),
+  }),
   image: varchar('image', { length: 255 }),
+  passwordHash: varchar('password_hash', { length: 255 }).default(''),
 });
 
 export type ProjectUsers = typeof projectUsers.$inferSelect;
@@ -99,9 +100,7 @@ export const projectUsers = createTable('project_users', {
   projectId: varchar('project_id', { length: 255 })
     .notNull()
     .references(() => projects.id, { onDelete: 'cascade' }),
-  userId: varchar('user_id', { length: 255 })
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
+  email: varchar('email', { length: 255 }).notNull(),
   permissions: text('permissions')
     .array()
     .notNull()

@@ -1,4 +1,5 @@
 import { DatabaseZap, FileText, User } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import DashboardLayout from '~/components/dashboard-layout';
 import DashboardSidebar from '~/components/dashboard-sidebar';
@@ -87,7 +88,8 @@ async function ProjectOwnerSSR({ userId }: { userId: string }) {
 
 export default async function Dashboard() {
   const session = await auth();
-  if (!session) return null;
+  console.log('session', new Date().toISOString(), session?.expires);
+  if (!session || session.expires < new Date().toISOString()) return redirect('/sign-in');
 
   const projects = await QUERIES.projects.getAll({ ownerId: session?.user.id });
 

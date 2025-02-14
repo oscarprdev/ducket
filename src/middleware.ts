@@ -1,23 +1,10 @@
-import { type NextRequest } from 'next/server';
+// import { signToken, verifyToken } from './server/auth/session';
+// import { type NextRequest, NextResponse } from 'next/server';
+import NextAuth from 'next-auth';
+import { authConfig } from '~/server/auth/config';
 
-const protectedRoutes = ['/dashboard'];
-
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const sessionCookie = request.cookies.get('authjs.session-token');
-  if (protectedRoutes.includes(pathname) && !sessionCookie) {
-    const newUrl = new URL('/', request.nextUrl.origin);
-    return Response.redirect(newUrl);
-  }
-  if (pathname === '/' && sessionCookie) {
-    const url = new URL('/dashboard', request.nextUrl.origin);
-    return Response.redirect(url);
-  }
-}
+export const { auth: middleware } = NextAuth(authConfig);
 
 export const config = {
-  matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/', '/(en|es)/:path*', '/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

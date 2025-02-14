@@ -18,14 +18,15 @@ async function ProjectUsersSSR({
   const users = await QUERIES.projectUsers.getByProjectId({ projectId });
   const usersData = await Promise.all(
     users.map(async user => {
-      const [userData] = await QUERIES.users.getById({ id: user.userId });
+      const [userData] = await QUERIES.users.getByEmail({ email: user.email });
+
       return {
-        id: user.userId,
+        id: userData?.id ?? '-',
         name: userData?.name ?? '-',
         email: userData?.email ?? '-',
         permissions: user.permissions,
         confirmed: user.confirmed,
-        isOwner: ownerId === user.userId,
+        isOwner: ownerId === userData?.id,
       };
     })
   );

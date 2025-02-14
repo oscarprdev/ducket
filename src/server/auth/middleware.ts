@@ -46,7 +46,7 @@ export function validatedActionWithUser<S extends z.ZodType<unknown, z.ZodTypeDe
   return async (prevState: ActionState, formData: FormData): Promise<T> => {
     const session = await auth();
     const user = session?.user;
-    if (!user || !user.id) {
+    if (!user?.id) {
       return {
         error: 'User is not authenticated',
       } as T;
