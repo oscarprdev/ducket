@@ -1,3 +1,5 @@
+'use client';
+
 import { Download } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { useFileIcon } from '~/hooks/use-file-icon';
@@ -6,6 +8,19 @@ import { type PublicFiles } from '~/server/db/schema';
 
 export function PublicFilesList({ files }: { files: PublicFiles[] }) {
   const { getFileIcon } = useFileIcon();
+
+  const handleDownload = async (file: PublicFiles) => {
+    const response = await fetch(file.fileUrl);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.fileName ?? '';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
 
   return (
     <div className="divide-y rounded-lg border">
@@ -22,7 +37,7 @@ export function PublicFilesList({ files }: { files: PublicFiles[] }) {
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => handleDownload(file)}>
               <Download className="size-4" />
             </Button>
           </div>

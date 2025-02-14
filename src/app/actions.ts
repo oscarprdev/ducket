@@ -51,10 +51,12 @@ export const uploadPublicFile = validatedAction(uploadPublicFileSchema, async (_
       return { error: 'Error uploading file' };
     }
 
+    const fileUrl = `${env.S3_PUBLIC_URL}${bucketResponse}`;
+
     await MUTATIONS.publicFiles.create({
       fileName: name,
       type,
-      fileUrl: bucketResponse,
+      fileUrl,
       size: file.size,
     });
 

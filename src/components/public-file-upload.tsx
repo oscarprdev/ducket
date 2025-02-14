@@ -10,16 +10,27 @@ import { useFormAction } from '~/hooks/use-form-action';
 import { toast } from '~/hooks/use-toast';
 import { formatFileSize } from '~/lib/utils';
 import { type ActionState } from '~/server/auth/middleware';
+import { type PublicFiles } from '~/server/db/schema';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILES = 3; // Maximum number of files
 
 interface PublicFileUploadProps {
-  secondsToBeAvailable: number;
+  lastPublicFile?: PublicFiles;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }
 
-export function PublicFileUpload({ action, secondsToBeAvailable }: PublicFileUploadProps) {
+export function PublicFileUpload({ action, lastPublicFile }: PublicFileUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
+  const secondsToBeAvailable = lastPublicFile
+    ? Math.max(
+        0,
+        10 -
+          Math.floor(
+            (Date.now() - new Date(lastPublicFile.createdAt ?? new Date()).getTime()) / 1000
+          )
+      )
+    : 0;
   const [countdown, setCountdown] = useState(secondsToBeAvailable);
 
   useEffect(() => {
@@ -47,20 +58,32 @@ export function PublicFileUpload({ action, secondsToBeAvailable }: PublicFileUpl
     },
   });
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const oversizedFiles = acceptedFiles.filter(file => file.size > MAX_FILE_SIZE);
-    if (oversizedFiles.length > 0) {
-      toast({
-        title: 'Files too large',
-        description: `${oversizedFiles.length} file(s) exceed 5MB limit`,
-        variant: 'destructive',
-      });
-      const validFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
-      setFiles(prev => [...prev, ...validFiles]);
-      return;
-    }
-    setFiles(prev => [...prev, ...acceptedFiles]);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (files.length + acceptedFiles.length > MAX_FILES) {
+        toast({
+          title: 'File limit exceeded',
+          description: `You can only upload a maximum of ${MAX_FILES} files.`,
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const oversizedFiles = acceptedFiles.filter(file => file.size > MAX_FILE_SIZE);
+      if (oversizedFiles.length > 0) {
+        toast({
+          title: 'Files too large',
+          description: `${oversizedFiles.length} file(s) exceed 5MB limit`,
+          variant: 'destructive',
+        });
+        const validFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
+        setFiles(prev => [...prev, ...validFiles]);
+        return;
+      }
+      setFiles(prev => [...prev, ...acceptedFiles]);
+    },
+    [files]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -69,7 +92,7 @@ export function PublicFileUpload({ action, secondsToBeAvailable }: PublicFileUpl
   });
 
   const handleSubmit = async () => {
-    if (secondsToBeAvailable > 0) return;
+    if (countdown > 0) return;
     await Promise.all(
       files.map(async file => {
         const formData = new FormData();

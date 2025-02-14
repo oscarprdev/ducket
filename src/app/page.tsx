@@ -14,15 +14,6 @@ import { QUERIES } from '~/server/db/queries';
 async function PublicFilesSection() {
   const publicFiles = await QUERIES.publicFiles.getAll();
   const lastPublicFile = publicFiles[publicFiles.length - 1];
-  const secondsToBeAvailable = lastPublicFile
-    ? Math.max(
-        0,
-        10 -
-          Math.floor(
-            (Date.now() - new Date(lastPublicFile.createdAt ?? new Date()).getTime()) / 1000
-          )
-      )
-    : 0;
 
   return (
     <div className="space-y-8 rounded-lg border p-6">
@@ -32,7 +23,7 @@ async function PublicFilesSection() {
           Share your files with the world in an instant—no account needed! Everyone can access your
           uploads.
         </p>
-        <PublicFileUpload action={uploadPublicFile} secondsToBeAvailable={secondsToBeAvailable} />
+        <PublicFileUpload action={uploadPublicFile} lastPublicFile={lastPublicFile} />
       </div>
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Recently Shared Files</h3>
@@ -49,7 +40,7 @@ export default async function HomePage() {
       <div className="mx-auto max-w-[1200px] px-4 py-12">
         <div className="grid items-start gap-12 md:grid-cols-2">
           <div className="relative w-full space-y-8">
-            <ShimmerBadge className="-mb-5 text-xs">
+            <ShimmerBadge className="-mb-5 w-fit text-xs">
               <>
                 Incoming features
                 <ArrowRight className="h-3 w-3" />

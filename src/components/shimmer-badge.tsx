@@ -5,7 +5,7 @@ import { cn } from '~/lib/utils';
 
 export function ShimmerBadge({ children, className }: PropsWithChildren<{ className?: string }>) {
   return (
-    <Link href="/last-updates">
+    <Link href="/last-updates" className="block w-fit">
       <Badge
         variant="default"
         className={cn('flex w-fit items-center gap-1 hover:bg-secondary/80', className)}>
