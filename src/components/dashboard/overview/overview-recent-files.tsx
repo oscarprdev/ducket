@@ -1,22 +1,13 @@
-import { FileIcon, ImageIcon, VideoIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { useFileIcon } from '~/hooks/use-file-icon';
 import { formatDate, formatFileSize, formatRelativeTime } from '~/lib/utils';
 import { type Files } from '~/server/db/schema';
 
-function getFileIcon(type: string) {
-  switch (type) {
-    case 'image':
-      return <ImageIcon className="h-4 w-4" />;
-    case 'video':
-      return <VideoIcon className="h-4 w-4" />;
-    default:
-      return <FileIcon className="h-4 w-4" />;
-  }
-}
-
 export function OverviewRecentFiles({ files, projectId }: { files: Files[]; projectId: string }) {
+  const { getFileIcon } = useFileIcon();
+
   return (
     <Card className="col-span-2 col-start-3 row-span-4 row-start-3 -mt-7 overflow-hidden">
       <CardHeader>

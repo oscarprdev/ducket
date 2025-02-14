@@ -5,12 +5,14 @@ import {
   type Files,
   type ProjectUsers,
   type Projects,
+  type PublicFiles,
   type Users,
   activityLogs,
   apiKeys,
   files,
   projectUsers,
   projects,
+  publicFiles,
   users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
@@ -108,6 +110,26 @@ export const MUTATIONS = {
     delete: function (input: { name: string }): Promise<Files[]> {
       const { name } = input;
       return db.delete(files).where(eq(files.fileName, name));
+    },
+  },
+  publicFiles: {
+    create: function (input: {
+      fileName: string;
+      type: string;
+      fileUrl: string;
+      size: number;
+    }): Promise<PublicFiles[]> {
+      const { fileName, type, fileUrl, size } = input;
+      return db.insert(publicFiles).values({
+        fileName,
+        type,
+        fileUrl,
+        size,
+      });
+    },
+    delete: function (input: { name: string }): Promise<PublicFiles[]> {
+      const { name } = input;
+      return db.delete(publicFiles).where(eq(publicFiles.fileName, name));
     },
   },
   apiKeys: {

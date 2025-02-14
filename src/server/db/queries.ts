@@ -5,12 +5,14 @@ import {
   type Files,
   type ProjectUsers,
   type Projects,
+  type PublicFiles,
   type Users,
   activityLogs,
   apiKeys,
   files,
   projectUsers,
   projects,
+  publicFiles,
   users,
 } from './schema';
 import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
@@ -128,6 +130,11 @@ export const QUERIES = {
     },
     getAll: async ({ projectId }: { projectId: string }): Promise<Files[]> => {
       return db.select().from(files).where(eq(files.projectId, projectId));
+    },
+  },
+  publicFiles: {
+    getAll: async (): Promise<PublicFiles[]> => {
+      return db.select().from(publicFiles);
     },
   },
   users: {

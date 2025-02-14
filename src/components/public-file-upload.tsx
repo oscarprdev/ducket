@@ -1,56 +1,169 @@
 'use client';
 
-import { Upload } from 'lucide-react';
-import { useState } from 'react';
+import { X } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import SubmitButton from '~/components/submit-button';
 import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { useToast } from '~/hooks/use-toast';
+import { useFormAction } from '~/hooks/use-form-action';
+import { toast } from '~/hooks/use-toast';
+import { formatFileSize } from '~/lib/utils';
+import { type ActionState } from '~/server/auth/middleware';
 
-export function PublicFileUpload() {
-  const [file, setFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const { toast } = useToast();
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFile(e.target.files[0]);
+interface PublicFileUploadProps {
+  secondsToBeAvailable: number;
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+}
+
+export function PublicFileUpload({ action, secondsToBeAvailable }: PublicFileUploadProps) {
+  const [files, setFiles] = useState<File[]>([]);
+  const [countdown, setCountdown] = useState(secondsToBeAvailable);
+
+  useEffect(() => {
+    setCountdown(secondsToBeAvailable);
+
+    if (secondsToBeAvailable <= 0) return;
+
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [secondsToBeAvailable]);
+
+  const { state, formAction, pending } = useFormAction({
+    action,
+    onSuccess: () => {
+      setFiles([]);
+    },
+  });
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const oversizedFiles = acceptedFiles.filter(file => file.size > MAX_FILE_SIZE);
+    if (oversizedFiles.length > 0) {
+      toast({
+        title: 'Files too large',
+        description: `${oversizedFiles.length} file(s) exceed 5MB limit`,
+        variant: 'destructive',
+      });
+      const validFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
+      setFiles(prev => [...prev, ...validFiles]);
+      return;
     }
+    setFiles(prev => [...prev, ...acceptedFiles]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    maxSize: MAX_FILE_SIZE,
+    multiple: true,
+  });
+
+  const handleSubmit = async () => {
+    if (secondsToBeAvailable > 0) return;
+    await Promise.all(
+      files.map(async file => {
+        const formData = new FormData();
+        formData.append('type', file.type ?? '-');
+        formData.append('name', file.name ?? '-');
+        formData.append('file', file);
+        formAction(formData);
+      })
+    );
   };
 
-  const handleUpload = async () => {
-    if (!file) return;
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
-    setIsUploading(true);
-    // Here you would typically send the file to your API
-    console.log('Uploading file:', file.name);
-
-    // Simulating an API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    setIsUploading(false);
-    setFile(null);
-    toast({
-      title: 'File uploaded successfully',
-      description: 'Your file is now publicly available.',
-    });
+  const getButtonText = () => {
+    if (countdown > 0) {
+      return `Wait ${countdown}s to upload`;
+    }
+    return `Upload File${files.length !== 1 ? 's' : ''}`;
   };
 
   return (
-    <form className="space-y-4">
+    <form action={handleSubmit} className="w-full space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="file-upload">Choose a file to upload</Label>
-        <Input id="file-upload" type="file" onChange={handleFileChange} disabled={isUploading} />
+        <Label htmlFor="file-upload">File Upload</Label>
+        <div
+          {...getRootProps()}
+          className="cursor-pointer rounded-lg border-[1px] border-dashed border-muted-foreground p-6 text-center">
+          <input {...getInputProps()} id="file-upload" name="file" />
+          {isDragActive ? (
+            <p className="text-primary">Drop the files here ...</p>
+          ) : (
+            <p className="text-primary">Drag & drop files here, or click to select files</p>
+          )}
+          <p className="mt-2 text-xs text-muted-foreground">Maximum file size: 5MB per file</p>
+        </div>
       </div>
-      <Button onClick={handleUpload} disabled={!file || isUploading} className="w-full">
-        {isUploading ? (
-          'Uploading...'
-        ) : (
-          <>
-            <Upload className="mr-2 h-4 w-4" /> Upload File
-          </>
-        )}
-      </Button>
+
+      {files.length > 0 && (
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between">
+            <Label className="flex items-center space-x-2">
+              <p className="text-sm">Selected Files</p>
+              <p className="text-xs text-muted-foreground">({files.length})</p>
+            </Label>
+            {files.length > 1 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-muted-foreground"
+                onClick={() => setFiles([])}>
+                Clear all
+              </Button>
+            )}
+          </div>
+
+          <div className="scrollable grid max-h-[200px] w-full gap-0.5 space-y-0.5 px-0">
+            {files.map((file, i) => (
+              <div
+                key={i}
+                className="group flex items-center justify-between rounded-md border border-border bg-muted px-2 py-1.5 text-sm text-foreground transition-colors">
+                <div className="flex flex-col items-start gap-2">
+                  <div className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    {file.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground">{formatFileSize(file.size)}</div>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => removeFile(i)}>
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Remove file</span>
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="w-full space-y-2">
+        {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
+        <div className="flex w-full items-center gap-2">
+          <SubmitButton
+            className="w-full"
+            pending={pending}
+            disabled={files.length === 0 || pending || countdown > 0}
+            text={getButtonText()}
+          />
+        </div>
+      </div>
     </form>
   );
 }

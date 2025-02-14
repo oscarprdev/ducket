@@ -55,6 +55,22 @@ export const files = createTable('files', {
   }).default(sql`CURRENT_TIMESTAMP`),
 });
 
+export type PublicFiles = typeof publicFiles.$inferSelect;
+export const publicFiles = createTable('public_files', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  fileUrl: text('file_url').notNull(),
+  fileName: varchar('file_name', { length: 255 }),
+  type: varchar('type', { length: 255 }),
+  size: integer('size').notNull(),
+  createdAt: timestamp('created_at', {
+    mode: 'date',
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
 export type Projects = typeof projects.$inferSelect;
 export const projects = createTable('projects', {
   id: varchar('id', { length: 255 })
