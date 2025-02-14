@@ -66,19 +66,19 @@ export default async function HomePage() {
             <div className="relative grid grid-cols-4 gap-8">
               <div className="text-center">
                 <p className="mb-1 text-sm text-muted-foreground">Active users</p>
-                <AnimatedCounter end={12} className="text-3xl font-bold" />
+                <AnimatedCounter value={12} className="text-3xl font-bold" />
               </div>
               <div className="text-center">
                 <p className="mb-1 text-sm text-muted-foreground">Files</p>
-                <AnimatedCounter end={150} className="text-3xl font-bold" />
+                <AnimatedCounter value={150} className="text-3xl font-bold" />
               </div>
               <div className="text-center">
                 <p className="mb-1 text-sm text-muted-foreground">Projects</p>
-                <AnimatedCounter end={45} className="text-3xl font-bold" />
+                <AnimatedCounter value={45} className="text-3xl font-bold" />
               </div>
               <div className="text-center">
                 <p className="mb-1 text-sm text-muted-foreground">Downloads</p>
-                <AnimatedCounter end={431} className="text-3xl font-bold" />
+                <AnimatedCounter value={431} className="text-3xl font-bold" />
               </div>
               <div className="absolute bottom-0 left-1/4 top-0 w-px bg-muted-foreground/40"></div>
               <div className="absolute bottom-0 left-1/2 top-0 w-px bg-muted-foreground/40"></div>

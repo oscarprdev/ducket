@@ -1,40 +1,41 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import NumberFlow from '@number-flow/react';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 interface AnimatedCounterProps {
-  end: number;
-  duration?: number;
+  value: number;
   className?: string;
 }
 
-export function AnimatedCounter({ end, duration = 2000, className = '' }: AnimatedCounterProps) {
+export function AnimatedCounter({ value, className }: AnimatedCounterProps) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const step = Math.ceil(end / 100); // Increase step size for smoother animation
+    const step = Math.ceil(value / 100);
     const intervalId = setInterval(() => {
       setCount(c => {
-        if (c >= end) {
+        if (c >= value) {
           clearInterval(intervalId);
-          return end;
+          return value;
         }
-        return Math.min(c + step, end);
+        return Math.min(c + step, value);
       });
-    }, duration / 100);
+    }, 10);
 
     return () => clearInterval(intervalId);
-  }, [end, duration]);
+  }, [value]);
 
   return (
-    <p
-      className={`${className} bg-muted-foreground/20 bg-clip-text text-transparent`}
+    <div
+      className={`${className} flex items-center justify-center gap-1 bg-clip-text text-transparent`}
       style={{
         WebkitTextStroke: '1px white',
         fontWeight: 800,
         letterSpacing: '0.05em',
       }}>
-      +{count.toLocaleString()}
-    </p>
+      <NumberFlow isolate trend={1} value={count} />+
+    </div>
   );
 }
