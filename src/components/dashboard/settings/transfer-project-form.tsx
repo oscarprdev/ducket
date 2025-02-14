@@ -1,4 +1,4 @@
-import SubmitButton from '../submit-button';
+import SubmitButton from '../../submit-button';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';

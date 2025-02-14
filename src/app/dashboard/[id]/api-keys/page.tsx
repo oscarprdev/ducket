@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { ApiKeysCreateDialog } from '~/components/api-keys/api-keys-create-dialog';
-import ApiKeysTable from '~/components/api-keys/api-keys-table';
-import { ApiKeysTableSkeleton } from '~/components/api-keys/api-keys-table-skeleton';
+import { ApiKeysCreateDialog } from '~/components/dashboard/api-keys/api-keys-create-dialog';
+import ApiKeysTable from '~/components/dashboard/api-keys/api-keys-table';
+import { ApiKeysTableSkeleton } from '~/components/dashboard/api-keys/api-keys-table-skeleton';
 import { API_KEY_PERMISSIONS } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';

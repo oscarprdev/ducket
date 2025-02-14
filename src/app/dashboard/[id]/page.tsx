@@ -1,14 +1,14 @@
 import { Suspense } from 'react';
-import { OverviewActivityLog } from '~/components/overview/overview-activity-logs';
-import { OverviewRecentFiles } from '~/components/overview/overview-recent-files';
+import { OverviewActivityLog } from '~/components/dashboard/overview/overview-activity-logs';
+import { OverviewRecentFiles } from '~/components/dashboard/overview/overview-recent-files';
 import {
   OverviewActivityLogSkeleton,
   OverviewRecentFilesSkeleton,
   OverviewStorageBarSkeleton,
   OverviewUsageChartSkeleton,
-} from '~/components/overview/overview-skeletons';
-import { OverviewStorageBar } from '~/components/overview/overview-storage-bar';
-import { OverviewUsageChart } from '~/components/overview/overview-usage-chart';
+} from '~/components/dashboard/overview/overview-skeletons';
+import { OverviewStorageBar } from '~/components/dashboard/overview/overview-storage-bar';
+import { OverviewUsageChart } from '~/components/dashboard/overview/overview-usage-chart';
 import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 

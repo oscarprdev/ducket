@@ -1,10 +1,10 @@
 import { DatabaseZap, FileText, User } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import DashboardLayout from '~/components/dashboard-layout';
-import DashboardSidebar from '~/components/dashboard-sidebar';
-import { CreateProjectDialog } from '~/components/projects/create-project-dialog';
-import ProjectCard from '~/components/projects/project-card';
+import DashboardLayout from '~/components/dashboard/dashboard-layout';
+import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
+import { CreateProjectDialog } from '~/components/dashboard/projects/create-project-dialog';
+import ProjectCard from '~/components/dashboard/projects/project-card';
 import { Badge } from '~/components/ui/badge';
 import { Skeleton } from '~/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';

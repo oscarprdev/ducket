@@ -1,13 +1,13 @@
 import { editProject } from '../../actions';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { DangerZone } from '~/components/settings/danger-zone';
-import { ProjectTitleCard } from '~/components/settings/project-title';
+import { DangerZone } from '~/components/dashboard/settings/danger-zone';
+import { ProjectTitleCard } from '~/components/dashboard/settings/project-title';
 import {
   ProjectTitleCardSkeleton,
   TransferProjectCardSkeleton,
-} from '~/components/settings/settings-skeletons';
-import { TransferProjectCard } from '~/components/settings/transfer-project';
+} from '~/components/dashboard/settings/settings-skeletons';
+import { TransferProjectCard } from '~/components/dashboard/settings/transfer-project';
 import { QUERIES } from '~/server/db/queries';
 
 async function ProjectTitleCardSSR({ projectId }: { projectId: string }) {

@@ -1,5 +1,5 @@
-import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { Button } from '../ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Copy } from 'lucide-react';
 import { Check } from 'lucide-react';
 import { useState } from 'react';

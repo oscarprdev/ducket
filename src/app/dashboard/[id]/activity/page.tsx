@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
-import { ActivityChart } from '~/components/activity/activity-chart';
+import { ActivityChart } from '~/components/dashboard/activity/activity-chart';
 import {
   ActivityChartSkeleton,
   ActivityTableSkeleton,
-} from '~/components/activity/activity-skeletons';
-import { ActivityTable } from '~/components/activity/activity-table';
+} from '~/components/dashboard/activity/activity-skeletons';
+import { ActivityTable } from '~/components/dashboard/activity/activity-table';
 import { QUERIES } from '~/server/db/queries';
 
 async function ActivityChartSSR({ projectId }: { projectId: string }) {

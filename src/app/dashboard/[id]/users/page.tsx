@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { InviteUserDialog } from '~/components/users/invite-user-dialog';
-import { UsersTableSkeleton } from '~/components/users/users-skeletons';
-import UsersTable from '~/components/users/users-table';
+import { InviteUserDialog } from '~/components/dashboard/users/invite-user-dialog';
+import { UsersTableSkeleton } from '~/components/dashboard/users/users-skeletons';
+import UsersTable from '~/components/dashboard/users/users-table';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 

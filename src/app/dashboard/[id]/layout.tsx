@@ -1,6 +1,6 @@
 import type React from 'react';
-import DashboardLayout from '~/components/dashboard-layout';
-import ProjectSidebar from '~/components/project-sidebar';
+import DashboardLayout from '~/components/dashboard/dashboard-layout';
+import ProjectSidebar from '~/components/dashboard/project-sidebar';
 
 export default async function ProjectLayout({
   children,
