@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 export function RotatingText() {
-  const words = ['developers', 'students', 'creators', 'start-ups', 'everyone'];
+  const words = ['developers.', 'students.', 'creators.', 'start-ups.', 'everyone.'];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

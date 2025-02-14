@@ -58,8 +58,8 @@ export default async function HomePage() {
 
             <div className="space-y-6">
               <h1 className="text-pretty text-3xl tracking-tight text-primary/50">
-                Simplify your file storage and management with a secure, efficient, and easy to use
-                app made for <RotatingText />
+                Simplify your file storage management with a secure, efficient, and user-friendly
+                application made for <RotatingText />
               </h1>
             </div>
 
