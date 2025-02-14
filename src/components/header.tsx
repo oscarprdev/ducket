@@ -1,28 +1,42 @@
-import { ThemeToggle } from './theme-toggle';
-import { User } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '~/components/ui/button';
-import { cn } from '~/lib/utils';
 
-export function Header({ className }: { className?: string }) {
+export function Header() {
   return (
-    <header
-      className={cn(
-        'sticky left-0 top-0 z-10 w-screen border-b border-border bg-background px-5',
-        className
-      )}>
-      <div className="flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="inline-block font-bold">Ducket</span>
-        </Link>
-        <div className="flex items-center space-x-4">
-          <ThemeToggle />
-          <Button variant="outline" size="sm">
-            <User className="mr-2 h-4 w-4" />
-            Profile
-          </Button>
-        </div>
+    <div className="pt-8">
+      <div className="mx-auto max-w-[800px] px-4">
+        <header className="rounded-lg border border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="flex h-14 items-center justify-between pl-6 pr-2">
+            <Link href="/" className="text-xl font-bold">
+              Ducket
+            </Link>
+            <nav className="flex items-center gap-8">
+              <div className="hidden items-center gap-6 md:flex">
+                <Link
+                  href="/features"
+                  className="text-sm transition-colors duration-300 hover:text-muted-foreground">
+                  Features
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="text-sm transition-colors duration-300 hover:text-muted-foreground">
+                  Pricing
+                </Link>
+                <Link
+                  href="/docs"
+                  className="text-sm transition-colors duration-300 hover:text-muted-foreground">
+                  Docs
+                </Link>
+              </div>
+              <div className="flex items-center">
+                <Button asChild variant="outline">
+                  <Link href="/sign-in">Sign In</Link>
+                </Button>
+              </div>
+            </nav>
+          </div>
+        </header>
       </div>
-    </header>
+    </div>
   );
 }

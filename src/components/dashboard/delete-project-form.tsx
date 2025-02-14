@@ -1,8 +1,8 @@
 'use client';
 
-import { Input } from './ui/input';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '../submit-button';
 import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import type { ActionState } from '~/server/auth/middleware';

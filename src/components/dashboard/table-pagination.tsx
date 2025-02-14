@@ -1,5 +1,5 @@
-import { Button } from './ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '~/components/ui/button';
 
 interface TablePaginationProps {
   itemsPerPage: number;

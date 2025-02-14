@@ -1,7 +1,7 @@
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Label } from './ui/label';
 import { X } from 'lucide-react';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Label } from '~/components/ui/label';
 import {
   Select,
   SelectContent,
