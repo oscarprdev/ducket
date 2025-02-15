@@ -19,26 +19,32 @@ const editUserPermissionsSchema = z.object({
 export const editUserPermissions = validatedActionWithUser(
   editUserPermissionsSchema,
   async data => {
-    const { projectId, email, read, write, delete: deletePermission } = data;
-    const permissions = extractPermissions(read, write, deletePermission);
-    if (permissions.length === 0) {
-      return { error: 'Please select at least one permission' };
+    try {
+      const { projectId, email, read, write, delete: deletePermission } = data;
+      const permissions = extractPermissions(read, write, deletePermission);
+      if (permissions.length === 0) {
+        throw new Error('Please select at least one permission');
+      }
+
+      const [user] = await QUERIES.projectUsers.getByUserEmail({ email });
+      if (user?.projectId !== projectId) {
+        throw new Error('User is not in this project');
+      }
+
+      await MUTATIONS.projectUsers.editPermissions({
+        projectId,
+        email,
+        permissions,
+      });
+
+      revalidatePath(`/dashboard/${projectId}/users`);
+
+      return { success: 'User permissions edited successfully' };
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error.message : 'Error editing user permissions',
+      };
     }
-
-    const [user] = await QUERIES.projectUsers.getByUserEmail({ email });
-    if (user?.projectId !== projectId) {
-      return { error: 'User is not in this project' };
-    }
-
-    await MUTATIONS.projectUsers.editPermissions({
-      projectId,
-      email,
-      permissions,
-    });
-
-    revalidatePath(`/dashboard/${projectId}/users`);
-
-    return { success: 'User permissions edited successfully' };
   }
 );
 
@@ -48,30 +54,36 @@ const removeUserSchema = z.object({
 });
 
 export const removeUser = validatedActionWithUser(removeUserSchema, async (data, _, user) => {
-  const { projectId, userId } = data;
+  try {
+    const { projectId, userId } = data;
 
-  const [project] = await QUERIES.projects.getById({ projectId });
-  if (!project || project.ownerId !== user.id) {
-    throw new Error('Unauthorized');
+    const [project] = await QUERIES.projects.getById({ projectId });
+    if (!project || project.ownerId !== user.id) {
+      throw new Error('Unauthorized');
+    }
+
+    const [userResponse] = await QUERIES.users.getById({ id: userId });
+    if (!userResponse) {
+      throw new Error('User not found');
+    }
+
+    if (project.ownerId === userResponse.id) {
+      throw new Error('Project owner cannot be deleted');
+    }
+
+    await MUTATIONS.projectUsers.remove({
+      projectId,
+      email: userResponse.email,
+    });
+
+    revalidatePath(`/dashboard/${projectId}/users`);
+
+    return { success: 'User removed successfully' };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : 'Error removing user',
+    };
   }
-
-  const [userResponse] = await QUERIES.users.getById({ id: userId });
-  if (!userResponse) {
-    throw new Error('User not found');
-  }
-
-  if (project.ownerId === userResponse.id) {
-    throw new Error('Project owner cannot be deleted');
-  }
-
-  await MUTATIONS.projectUsers.remove({
-    projectId,
-    email: userResponse.email,
-  });
-
-  revalidatePath(`/dashboard/${projectId}/users`);
-
-  return { success: 'User removed successfully' };
 });
 
 const inviteUserSchema = z.object({
@@ -83,24 +95,30 @@ const inviteUserSchema = z.object({
 });
 
 export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data, _, user) => {
-  const { projectId, email, read, write, delete: deletePermission } = data;
-  const permissions = extractPermissions(read, write, deletePermission);
-  const project = await QUERIES.projects.getById({ projectId });
-  if (!project[0] || project[0].ownerId !== user.id) {
-    throw new Error('Unauthorized');
+  try {
+    const { projectId, email, read, write, delete: deletePermission } = data;
+    const permissions = extractPermissions(read, write, deletePermission);
+    const project = await QUERIES.projects.getById({ projectId });
+    if (!project[0] || project[0].ownerId !== user.id) {
+      throw new Error('Unauthorized');
+    }
+
+    await sendInvitationEmail({
+      to: email,
+      link: `${env.API_URL}/invitation/${email}`,
+    });
+    await MUTATIONS.projectUsers.invite({
+      projectId,
+      email,
+      permissions,
+    });
+
+    revalidatePath(`/dashboard/${projectId}/users`);
+
+    return { success: 'User invited successfully' };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : 'Error inviting user',
+    };
   }
-
-  await sendInvitationEmail({
-    to: email,
-    link: `${env.API_URL}/invitation/${email}`,
-  });
-  await MUTATIONS.projectUsers.invite({
-    projectId,
-    email,
-    permissions,
-  });
-
-  revalidatePath(`/dashboard/${projectId}/users`);
-
-  return { success: 'User invited successfully' };
 });
