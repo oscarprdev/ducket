@@ -42,7 +42,7 @@ export default async function UsersPage({ params }: { params: Promise<{ id: stri
   if (!session?.user?.id) redirect('/dashboard');
 
   const user = session.user;
-  const [projectUser] = await QUERIES.projects.getByOwner({ userId: user.id });
+  const [projectUser] = await QUERIES.projects.getById({ projectId: id });
   if (!projectUser) redirect('/dashboard');
 
   const isOwner = projectUser.ownerId === user.id;

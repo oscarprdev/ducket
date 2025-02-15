@@ -4,23 +4,26 @@ import * as React from 'react';
 import { cn } from '~/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        default: 'text-sm bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
-          'bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 hover:border-destructive/70',
-        outline: 'border border-input bg-background hover:bg-muted hover:text-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'border border-border text-muted-foreground hover:text-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'text-sm bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 hover:border-destructive/70',
+        outline: 'text-sm border border-input bg-background hover:bg-muted hover:text-foreground',
+        secondary: 'text-sm bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'text-sm border border-border text-muted-foreground hover:text-foreground',
+        link: 'text-sm text-primary underline-offset-4 hover:underline',
+        dropdownItem:
+          'w-full items-start justify-start overflow-hidden rounded-md border border-transparent p-1 text-left text-sm text-muted-foreground shadow-md duration-300 hover:border-border hover:bg-muted-foreground/10 hover:text-primary',
       },
       size: {
         default: 'h-10 px-4 py-2',
         sm: 'h-9 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
+        dropdownItem: 'px-2 py-2',
       },
     },
     defaultVariants: {

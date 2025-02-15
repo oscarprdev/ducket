@@ -1,7 +1,7 @@
 'use client';
 
+import { type PropsWithChildren } from 'react';
 import SubmitButton from '~/components/submit-button';
-import { Button } from '~/components/ui/button';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import { type ActionState } from '~/server/auth/middleware';
@@ -18,7 +18,8 @@ export function AcceptInvitationForm({
   email,
   action,
   onActionFinished,
-}: AcceptInvitationFormProps) {
+  children,
+}: PropsWithChildren<AcceptInvitationFormProps>) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
     action,
@@ -42,9 +43,7 @@ export function AcceptInvitationForm({
     <form action={handleSubmit} className="flex w-full flex-col gap-4">
       {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
       <div className="flex items-center gap-2">
-        <Button type="button" className="w-full" variant="outline" onClick={onActionFinished}>
-          Cancel
-        </Button>
+        {children}
         <SubmitButton
           pending={pending}
           disabled={pending}

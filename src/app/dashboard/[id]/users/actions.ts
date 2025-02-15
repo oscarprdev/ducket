@@ -11,8 +11,8 @@ import { QUERIES } from '~/server/db/queries';
 import { sendInvitationEmail } from '~/server/email';
 
 const editUserPermissionsSchema = z.object({
-  projectId: z.string(),
-  email: z.string(),
+  projectId: z.string({ message: 'Project ID is required' }),
+  email: z.string({ message: 'Email is required' }),
   read: z.string().optional(),
   write: z.string().optional(),
   delete: z.string().optional(),

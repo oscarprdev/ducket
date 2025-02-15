@@ -8,6 +8,7 @@ import {
   TransferProjectCardSkeleton,
 } from '~/components/dashboard/settings/settings-skeletons';
 import { TransferProjectCard } from '~/components/dashboard/settings/transfer-project';
+import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
 async function ProjectTitleCardSSR({ projectId }: { projectId: string }) {
@@ -19,7 +20,14 @@ async function ProjectTitleCardSSR({ projectId }: { projectId: string }) {
 }
 
 export default async function SettingsPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) redirect('/dashboard');
+
   const { id } = await params;
+  const [project] = await QUERIES.projects.getById({ projectId: id });
+  const isOwner = project?.ownerId === userId;
+
   return (
     <section className="flex flex-col space-y-6">
       <div className="flex items-center justify-between">
@@ -31,15 +39,21 @@ export default async function SettingsPage({ params }: { params: Promise<{ id: s
         </div>
       </div>
 
-      <Suspense fallback={<ProjectTitleCardSkeleton />}>
-        <ProjectTitleCardSSR projectId={id} />
-      </Suspense>
+      {isOwner ? (
+        <>
+          <Suspense fallback={<ProjectTitleCardSkeleton />}>
+            <ProjectTitleCardSSR projectId={id} />
+          </Suspense>
 
-      <Suspense fallback={<TransferProjectCardSkeleton />}>
-        <TransferProjectCard projectId={id} />
-      </Suspense>
+          <Suspense fallback={<TransferProjectCardSkeleton />}>
+            <TransferProjectCard projectId={id} />
+          </Suspense>
 
-      <DangerZone projectId={id} />
+          <DangerZone projectId={id} />
+        </>
+      ) : (
+        <p>{"You don't have permission to view project settings"}</p>
+      )}
     </section>
   );
 }

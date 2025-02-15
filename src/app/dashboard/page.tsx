@@ -34,10 +34,10 @@ async function SharedProjectsListSSR({ userId }: { userId: string }) {
 
   return (
     <>
-      <h2 className="mt-10 text-xl font-bold text-primary/80">Sharing with your</h2>
+      <h2 className="mt-10 text-xl font-bold text-primary/80">Sharing with you</h2>
       <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {projects.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No projects shared with you</p>
+          <p className="text-sm text-muted-foreground">No projects shared with you yet.</p>
         ) : (
           projects
             .flat()

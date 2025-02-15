@@ -1,5 +1,3 @@
-import { MoreHorizontal } from 'lucide-react';
-import { Button } from '~/components/ui/button';
 import { Skeleton } from '~/components/ui/skeleton';
 import {
   Table,
@@ -38,9 +36,7 @@ export function UsersTableSkeleton() {
               <Skeleton className="h-6 w-[60px]" />
             </TableCell>
             <TableCell className="text-right">
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
+              <Skeleton className="h-6 w-[60px]" />
             </TableCell>
           </TableRow>
         ))}

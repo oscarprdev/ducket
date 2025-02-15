@@ -22,8 +22,6 @@ async function ApiKeysTableSSR({ projectId, page }: { projectId: string; page: s
     QUERIES.apiKeys.getCountByProject({ projectId }),
   ]);
 
-  console.log(apiKeys);
-
   return (
     <ApiKeysTable
       projectId={projectId}

@@ -1,8 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { redirect } from 'next/navigation';
+import { type PropsWithChildren, useState } from 'react';
 import { PermissionsSelect } from '~/components/dashboard/permissions-select';
 import SubmitButton from '~/components/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
@@ -12,19 +11,18 @@ import type { ActionState } from '~/server/auth/middleware';
 
 interface EditUserFormProps {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
-  onActionFinished?: () => void;
   projectId: string;
-  userId: string;
+  email: string;
   permissions: string[];
 }
 
 export function EditUserForm({
   action,
-  onActionFinished,
   projectId,
-  userId,
+  email,
   permissions,
-}: EditUserFormProps) {
+  children,
+}: PropsWithChildren<EditUserFormProps>) {
   const { toast } = useToast();
   const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>(() => {
     if (permissions.includes(API_KEY_PERMISSIONS.all)) {
@@ -36,12 +34,12 @@ export function EditUserForm({
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      onActionFinished?.();
       toast({
         title: 'User permissions updated',
         description: 'User permissions have been updated successfully',
         variant: 'success',
       });
+      redirect(`/dashboard/${projectId}/users`);
     },
   });
 
@@ -50,7 +48,7 @@ export function EditUserForm({
       formData.append(permission.value, 'on');
     });
     formData.append('projectId', projectId);
-    formData.append('userId', userId);
+    formData.append('email', email);
     formAction(formData);
   };
 
@@ -60,22 +58,12 @@ export function EditUserForm({
         selectedPermissions={selectedPermissions}
         setSelectedPermissions={setSelectedPermissions}
       />
-      <div className="flex items-center justify-end space-x-4">
-        <AnimatePresence mode="wait">
-          {state.error && (
-            <motion.div
-              key="error"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center space-x-2 rounded border border-destructive bg-destructive-foreground px-3 py-2 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4" />
-              <span>{state.error}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <SubmitButton pending={pending} disabled={pending} text="Update Project" />
+      <div className="flex w-full flex-col items-start gap-2">
+        {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
+        <div className="flex items-center justify-end space-x-4">
+          {children}
+          <SubmitButton pending={pending} disabled={pending} text="Update Project" />
+        </div>
       </div>
     </form>
   );

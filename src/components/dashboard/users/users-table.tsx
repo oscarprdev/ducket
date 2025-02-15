@@ -1,12 +1,21 @@
 'use client';
 
+import { EditUserForm } from './edit-user-form';
+import { RemoveUserForm } from './remove-user-form';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
+import { editUserPermissions, removeUser } from '~/app/dashboard/[id]/users/actions';
 import { CopyUrlButton } from '~/components/dashboard/copy-url-button';
-import { EditUserDialog } from '~/components/dashboard/users/edit-user-dialog';
-import { DeleteUserDialog } from '~/components/dashboard/users/remove-user-dialog';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,11 +55,6 @@ export default function UsersTable({ projectId, users, isOwner, ownerId }: Users
   const confirmationBadgeVariant = useConfirmationBadge();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
 
   return (
     <>
@@ -118,35 +122,70 @@ export default function UsersTable({ projectId, users, isOwner, ownerId }: Users
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" onClick={handleMenuClick}>
-                          <DropdownMenuItem
-                            onSelect={e => e.preventDefault()}
-                            onClick={() => setIsEditOpen(true)}>
-                            Edit permissions
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                              <DialogTrigger asChild>
+                                <Button variant="dropdownItem" size={'dropdownItem'}>
+                                  Edit permissions
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Edit Project</DialogTitle>
+                                  <DialogDescription>
+                                    Update your project details.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <EditUserForm
+                                  action={editUserPermissions}
+                                  email={user.email}
+                                  projectId={projectId}
+                                  permissions={user.permissions}>
+                                  <Button
+                                    type="button"
+                                    className="w-full"
+                                    variant="outline"
+                                    onClick={() => setIsEditOpen(false)}>
+                                    Cancel
+                                  </Button>
+                                </EditUserForm>
+                              </DialogContent>
+                            </Dialog>
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onSelect={e => e.preventDefault()}
-                            onClick={() => setIsDeleteOpen(true)}>
-                            Remove from project
+                          <DropdownMenuItem asChild>
+                            <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                              <DialogTrigger asChild>
+                                <Button variant="dropdownItem" size={'dropdownItem'}>
+                                  Remove from project
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Remove User</DialogTitle>
+                                  <DialogDescription>
+                                    Remove {user.name} from the project.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <RemoveUserForm
+                                  action={removeUser}
+                                  userId={user.id}
+                                  projectId={projectId}>
+                                  <Button
+                                    type="button"
+                                    className="w-full"
+                                    variant="outline"
+                                    onClick={() => setIsDeleteOpen(false)}>
+                                    Cancel
+                                  </Button>
+                                </RemoveUserForm>
+                              </DialogContent>
+                            </Dialog>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
                   )}
-                  <EditUserDialog
-                    isOpen={isEditOpen}
-                    onOpenChange={setIsEditOpen}
-                    projectId={projectId}
-                    userId={user.id}
-                    permissions={user.permissions}
-                  />
-                  <DeleteUserDialog
-                    isOpen={isDeleteOpen}
-                    onOpenChange={setIsDeleteOpen}
-                    projectId={projectId}
-                    userId={user.id}
-                    userName={user.name}
-                  />
                 </TableRow>
               );
             })
