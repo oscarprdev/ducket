@@ -66,6 +66,15 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
   if (!session || session.expires < new Date().toISOString()) redirect('/sign-in');
 
   const { id } = await params;
+  const [[project], [user]] = await Promise.all([
+    QUERIES.projects.getById({ projectId: id }),
+    QUERIES.users.getById({ id: session.user.id }),
+  ]);
+  if (!user) redirect('/sign-in');
+
+  const [projectUsers] = await QUERIES.projectUsers.getByUserEmail({ email: user.email });
+  if (!project || !projectUsers) redirect('/dashboard');
+
   return (
     <section className="h-full">
       <div className="mb-4 flex items-center justify-between">

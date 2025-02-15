@@ -5,6 +5,7 @@ import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import { CreateProjectDialog } from '~/components/dashboard/projects/create-project-dialog';
 import { ProjectListSkeleton } from '~/components/dashboard/projects/project-card-skeleton';
 import { ProjectCardSSR } from '~/components/dashboard/projects/project-card-ssr';
+import { INVITATION_STATES } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
@@ -28,8 +29,11 @@ async function SharedProjectsListSSR({ userId }: { userId: string }) {
   const [userInfo] = await QUERIES.users.getById({ id: userId });
   if (!userInfo) redirect('/sign-in');
   const projectUsers = await QUERIES.projectUsers.getNoOwned({ email: userInfo.email });
+  const projectsAccepted = projectUsers.filter(
+    projectUser => projectUser.state === INVITATION_STATES.accepted
+  );
   const projects = await Promise.all(
-    projectUsers.map(projectUser => QUERIES.projects.getById({ projectId: projectUser.projectId }))
+    projectsAccepted.map(projectUser => QUERIES.projects.getById({ projectId: projectUser.projectId }))
   );
 
   return (

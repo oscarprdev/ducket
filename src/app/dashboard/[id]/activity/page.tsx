@@ -28,11 +28,15 @@ async function ActivityTableSSR({ projectId, page }: { projectId: string; page: 
   ]);
 
   const logsWithFileUrl = await Promise.all(
-    logs.map(async log => {
-      if (!log.fileName) return { ...log, fileUrl: '-' };
+    logs.map(log => {
+      if (!log.fileName) {
+        return Promise.resolve({ ...log, fileUrl: '-' });
+      }
 
-      const [file] = await QUERIES.files.getByName({ projectId, fileName: log.fileName });
-      return { ...log, fileUrl: file?.fileUrl ?? '-' };
+      return QUERIES.files.getByName({ projectId, fileName: log.fileName }).then(file => ({
+        ...log,
+        fileUrl: file?.[0]?.fileUrl ?? '-',
+      }));
     })
   );
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 import SubmitButton from '~/components/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
@@ -10,26 +11,24 @@ interface AcceptInvitationFormProps {
   projectId: string;
   email: string;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
-  onActionFinished?: () => void;
 }
 
 export function AcceptInvitationForm({
   projectId,
   email,
   action,
-  onActionFinished,
   children,
 }: PropsWithChildren<AcceptInvitationFormProps>) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
     action,
     onSuccess: () => {
-      onActionFinished?.();
       toast({
         title: 'Invitation accepted',
         description: 'You have successfully joined the project',
         variant: 'success',
       });
+      redirect(`/dashboard/invitations`);
     },
   });
 

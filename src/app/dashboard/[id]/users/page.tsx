@@ -17,9 +17,8 @@ async function ProjectUsersSSR({
   ownerId: string;
 }) {
   const users = await QUERIES.projectUsers.getByProjectId({ projectId });
-  const usersData = await Promise.all(
-    users.map(async user => {
-      const [userData] = await QUERIES.users.getByEmail({ email: user.email });
+  const userPromises = users.map(user =>
+    QUERIES.users.getByEmail({ email: user.email }).then(([userData]) => {
       const isValidState = (state: string): state is InvitationState => {
         return Object.values(INVITATION_STATES).includes(state as InvitationState);
       };
@@ -33,6 +32,8 @@ async function ProjectUsersSSR({
       };
     })
   );
+
+  const usersData = await Promise.all(userPromises);
   return <UsersTable projectId={projectId} users={usersData} isOwner={isOwner} ownerId={ownerId} />;
 }
 

@@ -16,29 +16,27 @@ async function InvitationsSSR({ userId }: { userId: string }) {
   const projectsUsers = await QUERIES.projectUsers.getByUserEmail({
     email: userInfo.email,
   });
-  const projects = await Promise.all(
-    projectsUsers.map(async project => {
-      const [projectInfo] = await QUERIES.projects.getById({ projectId: project.projectId });
-
-      return {
-        ...projectInfo,
-        permissions: project.permissions,
-        invitationState: project.state,
-        createdAt: project.createdAt,
-        invitedUserEmail: project.email,
-      };
-    })
+  const projectPromises = projectsUsers.map(project =>
+    QUERIES.projects.getById({ projectId: project.projectId }).then(([projectInfo]) => ({
+      ...projectInfo,
+      permissions: project.permissions,
+      invitationState: project.state,
+      createdAt: project.createdAt,
+      invitedUserEmail: project.email,
+    }))
   );
+  const projects = await Promise.all(projectPromises);
 
   const projectsToDisplay = projects.filter(project => project.ownerId !== userId);
 
-  const projectsWithUsers = await Promise.all(
-    projectsToDisplay.map(async project => {
-      if (!project?.ownerId) return false;
-      const [projectUsers] = await QUERIES.users.getById({ id: project.ownerId });
-      return { ...project, ownerId: projectUsers?.email ?? project.ownerId };
-    })
-  );
+  const projectsToDisplayPromises = projectsToDisplay.map(project => {
+    if (!project?.ownerId) return Promise.resolve(false);
+    return QUERIES.users.getById({ id: project.ownerId }).then(([projectUsers]) => ({
+      ...project,
+      ownerId: projectUsers?.email ?? project.ownerId,
+    }));
+  });
+  const projectsWithUsers = await Promise.all(projectsToDisplayPromises);
 
   return <InvitationsTable projects={projectsWithUsers as ProjectWithUserAndPermissions[]} />;
 }

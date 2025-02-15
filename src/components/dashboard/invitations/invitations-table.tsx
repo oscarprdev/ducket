@@ -1,10 +1,9 @@
 'use client';
 
 import { AcceptInvitationForm } from './accept-invitation-form';
-import { DeclineInvitationForm } from './decline-invitation-form';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
-import { acceptInvitation, declineInvitation } from '~/app/dashboard/invitations/actions';
+import { acceptInvitation } from '~/app/dashboard/invitations/actions';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import {
@@ -77,7 +76,7 @@ export default function InvitationsTable({ projects }: InvitationsTableProps) {
                   {project.title}
                 </TableCell>
                 <TableCell className="max-w-[150px] font-light">{project.ownerId}</TableCell>
-                <TableCell className="max-w-[150px] font-light">
+                <TableCell className="max-w-[150px] space-x-2 font-light">
                   {project.permissions.length === 0 ? (
                     <Badge variant="outline">No permissions</Badge>
                   ) : (
@@ -103,10 +102,15 @@ export default function InvitationsTable({ projects }: InvitationsTableProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      {project.invitationState === INVITATION_STATES.pending && (
+                      {(project.invitationState === INVITATION_STATES.pending ||
+                        project.invitationState === INVITATION_STATES.declined) && (
                         <DropdownMenuItem asChild>
                           <Dialog open={acceptDialogOpen} onOpenChange={setAcceptDialogOpen}>
-                            <DialogTrigger>Accept invitation</DialogTrigger>
+                            <DialogTrigger asChild>
+                              <Button variant="dropdownItem" size="dropdownItem">
+                                Accept invitation
+                              </Button>
+                            </DialogTrigger>
                             <DialogContent>
                               <DialogHeader>
                                 <DialogTitle>Accept Invitation</DialogTitle>
@@ -132,31 +136,18 @@ export default function InvitationsTable({ projects }: InvitationsTableProps) {
                           </Dialog>
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuItem asChild>
-                        <Dialog open={declineDialogOpen} onOpenChange={setDeclineDialogOpen}>
-                          <DialogTrigger>Decline invitation</DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Decline Invitation</DialogTitle>
-                              <DialogDescription>
-                                {`Are you sure you want to decline the invitation to join "${project.title}"?`}
-                              </DialogDescription>
-                            </DialogHeader>
-                            <DeclineInvitationForm
-                              projectId={project.id}
-                              email={project.invitedUserEmail}
-                              action={declineInvitation}>
-                              <Button
-                                type="button"
-                                className="w-full"
-                                variant="outline"
-                                onClick={() => setDeclineDialogOpen(false)}>
-                                Cancel
+                      {(project.invitationState === INVITATION_STATES.accepted ||
+                        project.invitationState === INVITATION_STATES.pending) && (
+                        <DropdownMenuItem asChild>
+                          <Dialog open={declineDialogOpen} onOpenChange={setDeclineDialogOpen}>
+                            <DialogTrigger asChild>
+                              <Button variant="dropdownItem" size="dropdownItem">
+                                Decline invitation
                               </Button>
-                            </DeclineInvitationForm>
-                          </DialogContent>
-                        </Dialog>
-                      </DropdownMenuItem>
+                            </DialogTrigger>
+                          </Dialog>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

@@ -28,7 +28,7 @@ export function DeclineInvitationForm({
         description: 'You have declined the project invitation',
         variant: 'success',
       });
-      redirect(`/dashboard/${projectId}/invitations`);
+      redirect(`/dashboard/invitations`);
     },
   });
 
