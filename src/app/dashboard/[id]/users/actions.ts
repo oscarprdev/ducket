@@ -50,14 +50,18 @@ const removeUserSchema = z.object({
 export const removeUser = validatedActionWithUser(removeUserSchema, async (data, _, user) => {
   const { projectId, userId } = data;
 
-  const project = await QUERIES.projects.getById({ projectId });
-  if (!project[0] || project[0].ownerId !== user.id) {
+  const [project] = await QUERIES.projects.getById({ projectId });
+  if (!project || project.ownerId !== user.id) {
     throw new Error('Unauthorized');
   }
 
   const [userResponse] = await QUERIES.users.getById({ id: userId });
   if (!userResponse) {
     throw new Error('User not found');
+  }
+
+  if (project.ownerId === userResponse.id) {
+    throw new Error('Project owner cannot be deleted');
   }
 
   await MUTATIONS.projectUsers.remove({
