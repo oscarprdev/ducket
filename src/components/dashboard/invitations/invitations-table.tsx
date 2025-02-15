@@ -1,9 +1,10 @@
 'use client';
 
 import { AcceptInvitationForm } from './accept-invitation-form';
+import { DeclineInvitationForm } from './decline-invitation-form';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
-import { acceptInvitation } from '~/app/dashboard/invitations/actions';
+import { acceptInvitation, declineInvitation } from '~/app/dashboard/invitations/actions';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import {
@@ -145,6 +146,28 @@ export default function InvitationsTable({ projects }: InvitationsTableProps) {
                                 Decline invitation
                               </Button>
                             </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Accept Invitation</DialogTitle>
+                                <DialogDescription>
+                                  {`Are you sure you want to accept the invitation to join "${project.title}"?`}
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DeclineInvitationForm
+                                projectId={project.id}
+                                email={project.invitedUserEmail}
+                                action={declineInvitation}>
+                                <Button
+                                  type="button"
+                                  className="w-full"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setDeclineDialogOpen(false);
+                                  }}>
+                                  Cancel
+                                </Button>
+                              </DeclineInvitationForm>
+                            </DialogContent>
                           </Dialog>
                         </DropdownMenuItem>
                       )}
