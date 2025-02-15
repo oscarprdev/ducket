@@ -103,14 +103,15 @@ export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data,
       throw new Error('Unauthorized');
     }
 
-    await sendInvitationEmail({
-      to: email,
-      link: `${env.API_URL}/invitation/${email}`,
-    });
     await MUTATIONS.projectUsers.invite({
       projectId,
       email,
       permissions,
+    });
+
+    await sendInvitationEmail({
+      to: email,
+      link: `${env.API_URL}/sign-in?email=${email}`,
     });
 
     revalidatePath(`/dashboard/${projectId}/users`);

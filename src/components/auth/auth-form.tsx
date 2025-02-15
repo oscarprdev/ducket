@@ -24,8 +24,8 @@ interface AuthActionState extends ActionState {
 
 interface AuthFormProps {
   mode: AuthMode;
-  email?: string;
   action: (prevState: AuthActionState, formData: FormData) => Promise<AuthActionState>;
+  email?: string;
 }
 
 export function AuthForm({ mode, action, email }: AuthFormProps) {

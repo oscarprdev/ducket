@@ -6,9 +6,9 @@ import SignInGithub from '~/components/auth/sign-in';
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ id?: string }>;
+  searchParams: Promise<{ email?: string }>;
 }) {
-  const { id: email } = await searchParams;
+  const { email } = await searchParams;
   return (
     <>
       <h1 className="mb-6 text-center text-2xl font-bold">Sign In to Ducket</h1>
