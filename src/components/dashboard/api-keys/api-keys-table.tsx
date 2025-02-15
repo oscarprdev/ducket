@@ -118,7 +118,7 @@ export default function ApiKeysTable({
                     className="border-input disabled:border-muted"
                   />
                 </TableCell>
-                <TableCell className="font-light capitalize">{apiKey.name.split('/')[1]}</TableCell>
+                <TableCell className="font-light capitalize">{apiKey.name}</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <code className="relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm">

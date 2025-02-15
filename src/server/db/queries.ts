@@ -20,9 +20,8 @@ import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
 export interface ActivityLogsWithUser extends ActivityLogs {
   user: string;
 }
-export interface ActivityLogsWithUserAndURL extends ActivityLogs {
+export interface ActivityLogsWithUser extends ActivityLogs {
   user: string;
-  fileUrl: string;
 }
 
 export const QUERIES = {

@@ -27,22 +27,9 @@ async function ActivityTableSSR({ projectId, page }: { projectId: string; page: 
     QUERIES.activityLogs.getCount({ projectId }),
   ]);
 
-  const logsWithFileUrl = await Promise.all(
-    logs.map(log => {
-      if (!log.fileName) {
-        return Promise.resolve({ ...log, fileUrl: '-' });
-      }
-
-      return QUERIES.files.getByName({ projectId, fileName: log.fileName }).then(file => ({
-        ...log,
-        fileUrl: file?.[0]?.fileUrl ?? '-',
-      }));
-    })
-  );
-
   return (
     <ActivityTable
-      logs={logsWithFileUrl}
+      logs={logs}
       totalItems={count}
       projectId={projectId}
       currentPage={currentPage}
