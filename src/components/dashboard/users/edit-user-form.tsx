@@ -1,6 +1,6 @@
 'use client';
 
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
 import { PermissionsSelect } from '~/components/dashboard/permissions-select';
 import SubmitButton from '~/components/submit-button';
@@ -14,6 +14,7 @@ interface EditUserFormProps {
   projectId: string;
   email: string;
   permissions: string[];
+  onActionFinished?: () => void;
 }
 
 export function EditUserForm({
@@ -22,6 +23,7 @@ export function EditUserForm({
   email,
   permissions,
   children,
+  onActionFinished,
 }: PropsWithChildren<EditUserFormProps>) {
   const { toast } = useToast();
   const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>(() => {
@@ -39,7 +41,8 @@ export function EditUserForm({
         description: 'User permissions have been updated successfully',
         variant: 'success',
       });
-      redirect(`/dashboard/${projectId}/users`);
+      onActionFinished?.();
+      // redirect(`/dashboard/${projectId}/users`);
     },
   });
 
@@ -60,7 +63,7 @@ export function EditUserForm({
       />
       <div className="flex w-full flex-col items-start gap-2">
         {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
-        <div className="flex items-center justify-end space-x-4">
+        <div className="flex w-full items-center justify-end space-x-4">
           {children}
           <SubmitButton pending={pending} disabled={pending} text="Update Project" />
         </div>

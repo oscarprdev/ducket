@@ -1,6 +1,5 @@
 'use client';
 
-import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 import SubmitButton from '~/components/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
@@ -11,6 +10,7 @@ interface DeclineInvitationFormProps {
   projectId: string;
   email: string;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  onActionFinished?: () => void;
 }
 
 export function DeclineInvitationForm({
@@ -18,6 +18,7 @@ export function DeclineInvitationForm({
   email,
   action,
   children,
+  onActionFinished,
 }: PropsWithChildren<DeclineInvitationFormProps>) {
   const { toast } = useToast();
   const { state, formAction, pending } = useFormAction({
@@ -28,7 +29,7 @@ export function DeclineInvitationForm({
         description: 'You have declined the project invitation',
         variant: 'success',
       });
-      redirect(`/dashboard/invitations`);
+      onActionFinished?.();
     },
   });
 

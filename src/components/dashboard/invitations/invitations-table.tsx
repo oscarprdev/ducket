@@ -1,20 +1,10 @@
 'use client';
 
-import { AcceptInvitationForm } from './accept-invitation-form';
-import { DeclineInvitationForm } from './decline-invitation-form';
+import { AcceptInvitationDialog } from './accept-invitation-dialog';
+import { DeclineInvitationDialog } from './decline-invitation-dialog';
 import { MoreHorizontal } from 'lucide-react';
-import { useState } from 'react';
-import { acceptInvitation, declineInvitation } from '~/app/dashboard/invitations/actions';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,8 +36,6 @@ interface InvitationsTableProps {
 }
 
 export default function InvitationsTable({ projects }: InvitationsTableProps) {
-  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
-  const [declineDialogOpen, setDeclineDialogOpen] = useState(false);
   const confirmationBadgeVariant = useConfirmationBadge();
 
   return (
@@ -106,69 +94,13 @@ export default function InvitationsTable({ projects }: InvitationsTableProps) {
                       {(project.invitationState === INVITATION_STATES.pending ||
                         project.invitationState === INVITATION_STATES.declined) && (
                         <DropdownMenuItem asChild>
-                          <Dialog open={acceptDialogOpen} onOpenChange={setAcceptDialogOpen}>
-                            <DialogTrigger asChild>
-                              <Button variant="dropdownItem" size="dropdownItem">
-                                Accept invitation
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Accept Invitation</DialogTitle>
-                                <DialogDescription>
-                                  {`Are you sure you want to accept the invitation to join "${project.title}"?`}
-                                </DialogDescription>
-                              </DialogHeader>
-                              <AcceptInvitationForm
-                                projectId={project.id}
-                                email={project.invitedUserEmail}
-                                action={acceptInvitation}>
-                                <Button
-                                  type="button"
-                                  className="w-full"
-                                  variant="outline"
-                                  onClick={() => {
-                                    setAcceptDialogOpen(false);
-                                  }}>
-                                  Cancel
-                                </Button>
-                              </AcceptInvitationForm>
-                            </DialogContent>
-                          </Dialog>
+                          <AcceptInvitationDialog project={project} />
                         </DropdownMenuItem>
                       )}
                       {(project.invitationState === INVITATION_STATES.accepted ||
                         project.invitationState === INVITATION_STATES.pending) && (
                         <DropdownMenuItem asChild>
-                          <Dialog open={declineDialogOpen} onOpenChange={setDeclineDialogOpen}>
-                            <DialogTrigger asChild>
-                              <Button variant="dropdownItem" size="dropdownItem">
-                                Decline invitation
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Accept Invitation</DialogTitle>
-                                <DialogDescription>
-                                  {`Are you sure you want to accept the invitation to join "${project.title}"?`}
-                                </DialogDescription>
-                              </DialogHeader>
-                              <DeclineInvitationForm
-                                projectId={project.id}
-                                email={project.invitedUserEmail}
-                                action={declineInvitation}>
-                                <Button
-                                  type="button"
-                                  className="w-full"
-                                  variant="outline"
-                                  onClick={() => {
-                                    setDeclineDialogOpen(false);
-                                  }}>
-                                  Cancel
-                                </Button>
-                              </DeclineInvitationForm>
-                            </DialogContent>
-                          </Dialog>
+                          <DeclineInvitationDialog project={project} />
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>
