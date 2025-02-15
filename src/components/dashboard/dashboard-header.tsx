@@ -12,7 +12,7 @@ export function DashboardHeader({ className }: { className?: string }) {
         className
       )}>
       <div className="flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/dashboard" className="flex items-center space-x-2">
           <span className="inline-block font-bold">Ducket</span>
         </Link>
         <div className="flex items-center space-x-4">

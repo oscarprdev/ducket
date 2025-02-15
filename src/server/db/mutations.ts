@@ -36,6 +36,7 @@ export const MUTATIONS = {
       apiKey: string;
     }): Promise<Projects[]> {
       const { ownerId, title, apiKey } = input;
+      console.log(input);
       const [project] = await db
         .insert(projects)
         .values({
@@ -50,7 +51,7 @@ export const MUTATIONS = {
       try {
         await db.insert(apiKeys).values({
           projectId: project.id,
-          name: title,
+          name: `${ownerId}/${title}/${apiKey}`,
           secret: apiKey,
         });
       } catch {
@@ -66,6 +67,7 @@ export const MUTATIONS = {
           projectId: project.id,
           email: user.email,
           permissions: ['all'],
+          confirmed: true,
         });
       } catch {
         await Promise.all([
