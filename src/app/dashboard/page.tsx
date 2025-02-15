@@ -1,97 +1,50 @@
-import { DatabaseZap, FileText, User } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import DashboardLayout from '~/components/dashboard/dashboard-layout';
 import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import { CreateProjectDialog } from '~/components/dashboard/projects/create-project-dialog';
-import ProjectCard from '~/components/dashboard/projects/project-card';
-import { Badge } from '~/components/ui/badge';
-import { Skeleton } from '~/components/ui/skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import { ProjectListSkeleton } from '~/components/dashboard/projects/project-card-skeleton';
+import { ProjectCardSSR } from '~/components/dashboard/projects/project-card-ssr';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
-async function VisibilityIconSSR({ projectId }: { projectId: string }) {
-  const { isShared } = await QUERIES.projectUsers.getVisibility({ projectId });
-  return <Badge className="mt-2 font-medium capitalize">{isShared ? 'shared' : 'private'}</Badge>;
-}
-
-async function UsageIconSSR({ projectId }: { projectId: string }) {
-  const [[project], allFiles] = await Promise.all([
-    QUERIES.projects.getById({ projectId }),
-    QUERIES.files.getByProjectId({ projectId }),
-  ]);
-
-  if (!project) return null;
-
-  const usage = allFiles.reduce((acc, file) => acc + file.size, 0);
-  const isNearLimit = usage + 1000 >= project.maxSize;
+async function ProjectsListSSR({ userId }: { userId: string }) {
+  const projects = await QUERIES.projects.getAll({ ownerId: userId });
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild className="">
-          <Badge
-            className={`grid h-8 w-8 place-items-center rounded-sm p-0 ${
-              isNearLimit
-                ? 'bg-red-500/20 text-destructive'
-                : 'bg-transparent text-muted-foreground hover:bg-muted'
-            }`}>
-            <DatabaseZap className="size-4" />
-          </Badge>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{Math.round((usage / project.maxSize) * 100)}% used</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {projects.map(project => (
+        <ProjectCardSSR key={project.id} project={project} />
+      ))}
+    </div>
   );
 }
 
-async function NumberOfFilesSSR({ projectId }: { projectId: string }) {
-  const files = await QUERIES.files.getByProjectId({ projectId });
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="flex w-fit items-center space-x-1">
-            <FileText className="h-4 w-4 fill-muted text-muted-foreground" />
-            <p className="text-xs text-muted-foreground">{files.length}</p>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Files uploaded</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+async function SharedProjectsListSSR({ userId }: { userId: string }) {
+  const [userInfo] = await QUERIES.users.getById({ id: userId });
+  if (!userInfo) redirect('/sign-in');
+  const projectUsers = await QUERIES.projectUsers.getNoOwned({ email: userInfo.email });
+  const projects = await Promise.all(
+    projectUsers.map(projectUser => QUERIES.projects.getById({ projectId: projectUser.projectId }))
   );
-}
 
-async function ProjectOwnerSSR({ userId }: { userId: string }) {
-  const [user] = await QUERIES.users.getById({ id: userId });
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="flex w-fit items-center space-x-1">
-            <User className="h-4 w-4 fill-muted text-muted-foreground" />
-            <p className="text-xs text-muted-foreground">{user?.name}</p>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Owner</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <>
+      <h2 className="text-xl font-bold text-primary/80">Shared</h2>
+      <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {projects.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No shared projects</p>
+        ) : (
+          projects.flat().map(project => <ProjectCardSSR key={project.id} project={project} />)
+        )}
+      </div>
+    </>
   );
 }
 
 export default async function Dashboard() {
   const session = await auth();
-  console.log('session', new Date().toISOString(), session?.expires);
   if (!session || session.expires < new Date().toISOString()) return redirect('/sign-in');
-
-  const projects = await QUERIES.projects.getAll({ ownerId: session?.user.id });
 
   return (
     <DashboardLayout sidebarContent={<DashboardSidebar />}>
@@ -99,58 +52,13 @@ export default async function Dashboard() {
         <h1 className="text-2xl font-bold">Projects</h1>
         <CreateProjectDialog />
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map(project => (
-          <ProjectCard
-            key={project.id}
-            project={{
-              id: project.id,
-              title: project.title,
-              owner: project.ownerId,
-              lastUpdate: project.updatedAt.toLocaleDateString('en-GB'),
-              visibility: 'private',
-            }}
-            owner={
-              <Suspense
-                fallback={
-                  <div className="flex w-fit items-center space-x-1">
-                    <User className="h-4 w-4 fill-muted text-muted-foreground" />
-                    <Skeleton className="h-3 w-12 bg-muted-foreground/50" />
-                  </div>
-                }>
-                <ProjectOwnerSSR userId={project.ownerId} />
-              </Suspense>
-            }
-            usageIcon={
-              <Suspense
-                fallback={
-                  <Badge
-                    className={`grid h-8 w-8 place-items-center rounded-sm bg-transparent p-0 text-muted-foreground hover:bg-muted`}>
-                    <DatabaseZap className="size-4" />
-                  </Badge>
-                }>
-                <UsageIconSSR projectId={project.id} />
-              </Suspense>
-            }
-            numberOfFiles={
-              <Suspense
-                fallback={
-                  <div className="flex w-fit items-center space-x-1">
-                    <FileText className="h-4 w-4 fill-muted text-muted-foreground" />
-                    <Skeleton className="h-3 w-12 bg-muted-foreground/50" />
-                  </div>
-                }>
-                <NumberOfFilesSSR projectId={project.id} />
-              </Suspense>
-            }
-            visibilityIcon={
-              <Suspense fallback={<Badge className="mt-2 font-medium capitalize">Private</Badge>}>
-                <VisibilityIconSSR projectId={project.id} />
-              </Suspense>
-            }
-          />
-        ))}
-      </div>
+      <Suspense fallback={<ProjectListSkeleton />}>
+        <ProjectsListSSR userId={session.user.id} />
+      </Suspense>
+
+      <Suspense fallback={<ProjectListSkeleton />}>
+        <SharedProjectsListSSR userId={session.user.id} />
+      </Suspense>
     </DashboardLayout>
   );
 }

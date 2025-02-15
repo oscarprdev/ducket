@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import {
+  boolean,
   index,
   integer,
   pgTableCreator,
@@ -125,6 +126,7 @@ export const projectUsers = createTable('project_users', {
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
+  isOwner: boolean('is_owner').notNull().default(false),
 });
 
 export type ActivityLogs = typeof activityLogs.$inferSelect;

@@ -179,6 +179,12 @@ export const QUERIES = {
     getByUserEmail: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
       return db.select().from(projectUsers).where(eq(projectUsers.email, email));
     },
+    getNoOwned: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
+      return db
+        .select()
+        .from(projectUsers)
+        .where(and(eq(projectUsers.email, email), eq(projectUsers.isOwner, false)));
+    },
     getVisibility: async ({ projectId }: { projectId: string }): Promise<{ isShared: boolean }> => {
       const projectsUsers = await db
         .select()
