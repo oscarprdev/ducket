@@ -12,13 +12,13 @@ export const sendInvitationEmail = async ({ to, link }: { to: string; link: stri
   });
 };
 
-export const sendVerificationEmail = async ({ to, link }: { to: string; link: string }) => {
+export const sendRecoverPasswordEmail = async ({ to, url }: { to: string; url: string }) => {
   const resend = new Resend(env.RESEND_API_KEY);
   await resend.emails.send({
     from: 'Ducket <oscarpr@ducket.dev>',
     to: [to],
-    subject: 'Verify your email',
-    html: `<p>Verify your email.</p>
-    <a href="${link}">Click here to verify</a>`,
+    subject: 'Recover your password',
+    html: `<p>Recover your password.</p>
+    <a href="${url}">Click here to recover</a>`,
   });
 };

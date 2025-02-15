@@ -3,6 +3,7 @@ import {
   type ActivityLogs,
   type ApiKeys,
   type Files,
+  type PasswordResetTokens,
   type ProjectUsers,
   type Projects,
   type PublicFiles,
@@ -10,6 +11,7 @@ import {
   activityLogs,
   apiKeys,
   files,
+  passwordResetTokens,
   projectUsers,
   projects,
   publicFiles,
@@ -299,6 +301,11 @@ export const QUERIES = {
       }
 
       return { maxSize: response[0].maxSize };
+    },
+  },
+  passwordResetTokens: {
+    getByToken: async ({ token }: { token: string }): Promise<PasswordResetTokens[]> => {
+      return db.select().from(passwordResetTokens).where(eq(passwordResetTokens.tokenHash, token));
     },
   },
 };

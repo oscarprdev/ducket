@@ -3,6 +3,7 @@ import generateApiKey from '../utils/generate-api-key';
 import {
   type ActivityLogs,
   type Files,
+  type PasswordResetTokens,
   type ProjectUsers,
   type Projects,
   type PublicFiles,
@@ -10,6 +11,7 @@ import {
   activityLogs,
   apiKeys,
   files,
+  passwordResetTokens,
   projectUsers,
   projects,
   publicFiles,
@@ -27,6 +29,10 @@ export const MUTATIONS = {
     }): Promise<Users[]> {
       const { email, name, passwordHash } = input;
       return db.insert(users).values({ email, name, passwordHash });
+    },
+    updatePassword: async function (input: { id: string; passwordHash: string }): Promise<Users[]> {
+      const { id, passwordHash } = input;
+      return db.update(users).set({ passwordHash }).where(eq(users.id, id));
     },
   },
   projects: {
@@ -235,6 +241,24 @@ export const MUTATIONS = {
         .update(projectUsers)
         .set({ state: INVITATION_STATES.declined })
         .where(and(eq(projectUsers.email, email), eq(projectUsers.projectId, projectId)));
+    },
+  },
+  passwordResetTokens: {
+    create: function (input: {
+      userId: string;
+      tokenHash: string;
+      expiresAt: Date;
+    }): Promise<PasswordResetTokens[]> {
+      const { userId, tokenHash, expiresAt } = input;
+      return db.insert(passwordResetTokens).values({ userId, tokenHash, expiresAt }).returning();
+    },
+    update: function (input: { id: string; isUsed: boolean }): Promise<PasswordResetTokens[]> {
+      const { id, isUsed } = input;
+      return db.update(passwordResetTokens).set({ isUsed }).where(eq(passwordResetTokens.id, id));
+    },
+    delete: function (input: { id: string }): Promise<PasswordResetTokens[]> {
+      const { id } = input;
+      return db.delete(passwordResetTokens).where(eq(passwordResetTokens.id, id));
     },
   },
 };

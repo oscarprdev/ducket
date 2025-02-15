@@ -59,15 +59,44 @@ export const signInWithCredentials = validatedAction(signInSchema, async data =>
     });
 
     redirect('/dashboard');
-
-    return {
-      success: 'Signed in successfully',
-      email,
-      password,
-    };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : 'Failed to sign in. Please try again.',
+    };
+  }
+});
+
+const recoverPasswordSchema = z.object({
+  token: z.string({ message: 'Token is required' }),
+  password: z.string({ message: 'Password is required' }).min(8),
+  repeatPassword: z.string({ message: 'Repeat password is required' }).min(8),
+});
+
+export const recoverPassword = validatedAction(recoverPasswordSchema, async data => {
+  try {
+    const { token: tokenHash, password, repeatPassword } = data;
+
+    if (password !== repeatPassword) {
+      return { error: 'Passwords do not match' };
+    }
+
+    const [token] = await QUERIES.passwordResetTokens.getByToken({ token: tokenHash });
+
+    if (!token) {
+      return { error: 'Invalid token' };
+    }
+    const passwordHash = await hashPassword(password);
+
+    await Promise.all([
+      MUTATIONS.users.updatePassword({ id: token.userId, passwordHash }),
+      MUTATIONS.passwordResetTokens.delete({ id: token.id }),
+    ]);
+
+    return { success: 'Password recovered successfully' };
+  } catch (error) {
+    return {
+      error:
+        error instanceof Error ? error.message : 'Failed to recover password. Please try again.',
     };
   }
 });

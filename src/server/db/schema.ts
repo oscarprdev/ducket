@@ -175,6 +175,23 @@ export const accounts = createTable(
   })
 );
 
+export type PasswordResetTokens = typeof passwordResetTokens.$inferSelect;
+export const passwordResetTokens = createTable('password_reset_tokens', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  userId: varchar('user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  tokenHash: varchar('token_hash', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at', { mode: 'date' }).notNull(),
+  isUsed: boolean('is_used').default(false).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const sessions = createTable(
   'session',
   {

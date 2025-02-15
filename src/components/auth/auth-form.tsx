@@ -17,7 +17,7 @@ export const AuthModes = {
   signUp: 'sign-up',
 } as const satisfies Record<string, AuthMode>;
 
-interface AuthActionState extends ActionState {
+export interface AuthActionState extends ActionState {
   email?: string;
   password?: string;
 }

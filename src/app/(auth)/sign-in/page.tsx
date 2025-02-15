@@ -35,6 +35,12 @@ export default async function SignInPage({
             Sign up
           </Link>
         </p>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Forgot your password?{' '}
+          <Link href="/send-recover" className="text-primary hover:underline">
+            Recover password
+          </Link>
+        </p>
       </div>
     </>
   );
