@@ -58,6 +58,7 @@ export default function ApiKeysEditForm({
     });
     formData.append('projectId', apiKey.projectId);
     formData.append('currentName', apiKey.name);
+    formData.append('apiKey', apiKey.secret);
     formAction(formData);
   };
 
@@ -70,7 +71,7 @@ export default function ApiKeysEditForm({
             id="name"
             name="name"
             required
-            value={name}
+            defaultValue={name.split('/')[1]}
             onChange={e => setName(e.target.value)}
             placeholder="Enter key name"
           />

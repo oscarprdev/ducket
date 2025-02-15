@@ -7,6 +7,7 @@ import { extractPermissions } from '~/lib/utils';
 import { validatedActionWithPermissions, validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
 import { QUERIES } from '~/server/db/queries';
+import generateApiKey from '~/server/utils/generate-api-key';
 
 const createApiKeySchema = z.object({
   projectId: z.string(),
@@ -15,7 +16,7 @@ const createApiKeySchema = z.object({
   write: z.string().optional(),
   delete: z.string().optional(),
 });
-export const createApiKey = validatedActionWithUser(createApiKeySchema, async data => {
+export const createApiKey = validatedActionWithUser(createApiKeySchema, async (data, _, user) => {
   const { projectId, name, read, write, delete: deletePermission } = data;
   const permissions = extractPermissions(read, write, deletePermission);
   if (permissions.length === 0) {
@@ -39,11 +40,14 @@ export const createApiKey = validatedActionWithUser(createApiKeySchema, async da
   ) {
     return { error: 'Cannot create another API key with same permissions' };
   }
+  const secret = generateApiKey();
+  const newName = `${user.id}/${name}/${secret}`;
 
   await MUTATIONS.apiKeys.create({
     projectId,
-    name,
+    name: newName,
     permissions,
+    secret,
   });
 
   revalidatePath(`/dashboard/${projectId}/api-keys`);
@@ -55,12 +59,13 @@ const editApiKeySchema = z.object({
   projectId: z.string(),
   name: z.string(),
   currentName: z.string(),
+  apiKey: z.string(),
   read: z.string().optional(),
   write: z.string().optional(),
   delete: z.string().optional(),
 });
-export const editApiKey = validatedActionWithUser(editApiKeySchema, async data => {
-  const { projectId, name, currentName, read, write, delete: deletePermission } = data;
+export const editApiKey = validatedActionWithUser(editApiKeySchema, async (data, _, user) => {
+  const { projectId, name, currentName, apiKey, read, write, delete: deletePermission } = data;
   const permissions = extractPermissions(read, write, deletePermission);
   if (permissions.length === 0) {
     return { error: 'Please select at least one permission' };
@@ -76,9 +81,11 @@ export const editApiKey = validatedActionWithUser(editApiKeySchema, async data =
     return { error: 'Cannot edit API key with all permissions' };
   }
 
+  const newName = `${user.id}/${name}/${apiKey}`;
+
   await MUTATIONS.apiKeys.edit({
     projectId,
-    name,
+    name: newName,
     currentName,
     permissions,
   });

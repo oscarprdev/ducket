@@ -1,5 +1,4 @@
 import { db } from '.';
-import generateApiKey from '../utils/generate-api-key';
 import {
   type ActivityLogs,
   type Files,
@@ -145,13 +144,14 @@ export const MUTATIONS = {
       projectId: string;
       name: string;
       permissions: ApiKeyPermissions[];
+      secret: string;
     }) {
-      const { projectId, name, permissions } = input;
+      const { projectId, name, permissions, secret } = input;
       return db.insert(apiKeys).values({
         name,
         projectId,
         permissions,
-        secret: generateApiKey(),
+        secret,
       });
     },
     edit: function (input: {
