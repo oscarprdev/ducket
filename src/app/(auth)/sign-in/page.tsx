@@ -1,13 +1,19 @@
 import { signInWithCredentials } from '../actions';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { AuthForm } from '~/components/auth/auth-form';
 import SignInGithub from '~/components/auth/sign-in';
+import { auth } from '~/server/auth';
 
 export default async function SignInPage({
   searchParams,
 }: {
   searchParams: Promise<{ email?: string }>;
 }) {
+  const session = await auth();
+  if (session) {
+    redirect('/dashboard');
+  }
   const { email } = await searchParams;
   return (
     <>
