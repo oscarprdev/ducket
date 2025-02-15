@@ -22,6 +22,13 @@ export const ACTIVITY_ACTIONS = {
   read: 'read',
 } as const;
 
+export type InvitationState = 'pending' | 'accepted' | 'declined';
+export const INVITATION_STATES = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+} as const;
+
 export const chartConfig = {
   upload: {
     label: 'Uploads',

@@ -14,7 +14,7 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
-import { useBadgeVariant } from '~/hooks/use-badge-variant';
+import { useActivityBadge } from '~/hooks/use-activity-badge';
 import { formatDate } from '~/lib/utils';
 import { type ActivityLogsWithUserAndURL } from '~/server/db/queries';
 
@@ -34,7 +34,7 @@ export function ActivityTable({
   itemsPerPage,
 }: ActivityTableProps) {
   const router = useRouter();
-  const badgeVariant = useBadgeVariant();
+  const badgeVariant = useActivityBadge();
 
   const handlePageChange = (page: number) => {
     router.push(`/dashboard/${projectId}/activity?page=${page}`, { scroll: false });

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { ACTIVITY_ACTIONS } from '~/lib/constants';
 
-export const useBadgeVariant = () => {
+export const useActivityBadge = () => {
   const badgeVariant = useCallback((action: string) => {
     switch (action) {
       case ACTIVITY_ACTIONS.upload:

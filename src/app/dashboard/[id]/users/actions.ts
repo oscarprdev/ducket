@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { env } from '~/env';
+import { INVITATION_STATES } from '~/lib/constants';
 import { extractPermissions } from '~/lib/utils';
 import { validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
@@ -107,6 +108,7 @@ export const inviteUser = validatedActionWithUser(inviteUserSchema, async (data,
       projectId,
       email,
       permissions,
+      state: INVITATION_STATES.pending,
     });
 
     await sendInvitationEmail({

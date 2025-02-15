@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Settings, User } from 'lucide-react';
+import { LayoutDashboard, Mails, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
@@ -12,14 +12,14 @@ export default function DashboardSidebar() {
       href: '/dashboard',
     },
     {
-      title: 'Account',
-      icon: <User className="h-5 w-5" />,
-      href: '/account',
+      title: 'Invitations',
+      icon: <Mails className="h-5 w-5" />,
+      href: '/dashboard/invitations',
     },
     {
       title: 'Settings',
       icon: <Settings className="h-5 w-5" />,
-      href: '/settings',
+      href: '/dashboard/settings',
     },
   ];
 

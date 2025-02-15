@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { InviteUserDialog } from '~/components/dashboard/users/invite-user-dialog';
 import { UsersTableSkeleton } from '~/components/dashboard/users/users-skeletons';
 import UsersTable from '~/components/dashboard/users/users-table';
+import { INVITATION_STATES, type InvitationState } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
@@ -19,13 +20,15 @@ async function ProjectUsersSSR({
   const usersData = await Promise.all(
     users.map(async user => {
       const [userData] = await QUERIES.users.getByEmail({ email: user.email });
-
+      const isValidState = (state: string): state is InvitationState => {
+        return Object.values(INVITATION_STATES).includes(state as InvitationState);
+      };
       return {
         id: userData?.id ?? '-',
         name: userData?.name ?? '-',
         email: userData?.email ?? '-',
         permissions: user.permissions,
-        confirmed: user.confirmed,
+        state: isValidState(user.state) ? user.state : INVITATION_STATES.pending,
         isOwner: ownerId === userData?.id,
       };
     })

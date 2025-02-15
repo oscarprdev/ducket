@@ -1,6 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
 import {
-  boolean,
   index,
   integer,
   pgTableCreator,
@@ -10,6 +9,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
+import { INVITATION_STATES } from '~/lib/constants';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
@@ -121,7 +121,10 @@ export const projectUsers = createTable('project_users', {
     .array()
     .notNull()
     .default(sql`ARRAY['read']::text[]`),
-  confirmed: boolean('confirmed').notNull().default(false),
+  state: text('state').notNull().default(INVITATION_STATES.accepted),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type ActivityLogs = typeof activityLogs.$inferSelect;

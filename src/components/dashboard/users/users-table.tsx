@@ -22,14 +22,16 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
-import { useBadgeVariant } from '~/hooks/use-badge-variant';
+import { useActivityBadge } from '~/hooks/use-activity-badge';
+import { useConfirmationBadge } from '~/hooks/use-confirmation-badge';
+import { type InvitationState } from '~/lib/constants';
 
 export interface UserData {
   id: string;
   name: string;
   email: string;
   permissions: string[];
-  confirmed: boolean;
+  state: InvitationState;
   isOwner: boolean;
 }
 
@@ -40,7 +42,8 @@ interface UsersTableProps {
   ownerId: string;
 }
 export default function UsersTable({ projectId, users, isOwner, ownerId }: UsersTableProps) {
-  const badgeVariant = useBadgeVariant();
+  const badgeVariant = useActivityBadge();
+  const confirmationBadgeVariant = useConfirmationBadge();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -55,8 +58,8 @@ export default function UsersTable({ projectId, users, isOwner, ownerId }: Users
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Role</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Permissions</TableHead>
             <TableHead>Confirmation</TableHead>
             {isOwner && <TableHead className="text-center">Actions</TableHead>}
@@ -74,7 +77,6 @@ export default function UsersTable({ projectId, users, isOwner, ownerId }: Users
               return (
                 <TableRow key={user.id}>
                   <TableCell className="max-w-[150px] font-light">{user.name}</TableCell>
-                  <TableCell className="font-light">{user.isOwner ? 'Admin' : 'Invited'}</TableCell>
                   <TableCell className="max-w-[250px] font-light text-primary">
                     <div className="flex items-center gap-2 space-x-2">
                       <TooltipProvider>
@@ -90,6 +92,9 @@ export default function UsersTable({ projectId, users, isOwner, ownerId }: Users
                       <CopyUrlButton url={user.email} />
                     </div>
                   </TableCell>
+                  <TableCell className="font-light">
+                    <Badge variant={'outline'}>{user.isOwner ? 'Admin' : 'Invited'}</Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       {user.permissions.map(permission => (
@@ -101,11 +106,7 @@ export default function UsersTable({ projectId, users, isOwner, ownerId }: Users
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      {user.confirmed ? (
-                        <Badge variant={'outline'}>Approved</Badge>
-                      ) : (
-                        <Badge variant={'tertiary'}>Pending</Badge>
-                      )}
+                      <Badge variant={confirmationBadgeVariant(user.state)}>{user.state}</Badge>
                     </div>
                   </TableCell>
                   {isOwner && ownerId !== user.id && (

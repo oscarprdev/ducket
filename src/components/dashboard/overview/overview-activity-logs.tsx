@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { useBadgeVariant } from '~/hooks/use-badge-variant';
+import { useActivityBadge } from '~/hooks/use-activity-badge';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
 import { type ActivityLogsWithUser } from '~/server/db/queries';
@@ -15,7 +15,7 @@ interface OverviewActivityLogProps {
 }
 
 export function OverviewActivityLog({ activityLogs, projectId }: OverviewActivityLogProps) {
-  const badgeVariant = useBadgeVariant();
+  const badgeVariant = useActivityBadge();
 
   const getActivityIcon = useCallback((type: string) => {
     switch (type) {

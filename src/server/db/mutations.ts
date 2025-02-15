@@ -16,7 +16,7 @@ import {
   users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
-import { type ApiKeyPermissions } from '~/lib/constants';
+import { type ApiKeyPermissions, INVITATION_STATES, type InvitationState } from '~/lib/constants';
 
 export const MUTATIONS = {
   users: {
@@ -67,7 +67,7 @@ export const MUTATIONS = {
           projectId: project.id,
           email: user.email,
           permissions: ['all'],
-          confirmed: true,
+          state: INVITATION_STATES.accepted,
         });
       } catch {
         await Promise.all([
@@ -212,17 +212,29 @@ export const MUTATIONS = {
       projectId: string;
       email: string;
       permissions: string[];
+      state: InvitationState;
     }): Promise<ProjectUsers[]> {
-      const { projectId, email, permissions } = input;
+      const { projectId, email, permissions, state } = input;
       return db.insert(projectUsers).values({
         projectId,
         email,
         permissions,
+        state,
       });
     },
-    acceptInvitation: async function (input: { email: string }): Promise<void> {
-      const { email } = input;
-      await db.update(projectUsers).set({ confirmed: true }).where(eq(projectUsers.email, email));
+    acceptInvitation: async function (input: { email: string; projectId: string }): Promise<void> {
+      const { email, projectId } = input;
+      await db
+        .update(projectUsers)
+        .set({ state: INVITATION_STATES.accepted })
+        .where(and(eq(projectUsers.email, email), eq(projectUsers.projectId, projectId)));
+    },
+    declineInvitation: async function (input: { email: string; projectId: string }): Promise<void> {
+      const { email, projectId } = input;
+      await db
+        .update(projectUsers)
+        .set({ state: INVITATION_STATES.declined })
+        .where(and(eq(projectUsers.email, email), eq(projectUsers.projectId, projectId)));
     },
   },
 };
