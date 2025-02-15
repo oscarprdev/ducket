@@ -13,21 +13,12 @@ export default function FileTableSkeleton() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-12">
-            <Skeleton className="h-4 w-4" />
-          </TableHead>
-          <TableHead>
-            <Skeleton className="h-4 w-24" />
-          </TableHead>
-          <TableHead>
-            <Skeleton className="h-4 w-16" />
-          </TableHead>
-          <TableHead>
-            <Skeleton className="h-4 w-16" />
-          </TableHead>
-          <TableHead className="text-right">
-            <Skeleton className="ml-auto h-4 w-8" />
-          </TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead>Size</TableHead>
+          <TableHead>Created At</TableHead>
+          <TableHead>Last Used</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

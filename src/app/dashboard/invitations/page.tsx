@@ -5,6 +5,7 @@ import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import InvitationsTable, {
   type ProjectWithUserAndPermissions,
 } from '~/components/dashboard/invitations/invitations-table';
+import { InvitationsTableSkeleton } from '~/components/dashboard/invitations/invitations-table-skeleton';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
@@ -48,7 +49,7 @@ export default async function InvitationsPage() {
   }
   return (
     <DashboardLayout sidebarContent={<DashboardSidebar />}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<InvitationsTableSkeleton />}>
         <InvitationsSSR userId={session.user.id} />
       </Suspense>
     </DashboardLayout>
