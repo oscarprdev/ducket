@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { env } from '~/env';
 import { API_KEY_PERMISSIONS } from '~/lib/constants';
+import { signOut } from '~/server/auth';
 import { validatedActionWithPermissions, validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
 import { QUERIES } from '~/server/db/queries';
@@ -122,3 +123,9 @@ export const deleteProject = validatedActionWithPermissions(
     }
   }
 );
+
+export const signOutAction = async () => {
+  const response = await signOut({ redirectTo: '/sign-in' });
+
+  console.log(response);
+};

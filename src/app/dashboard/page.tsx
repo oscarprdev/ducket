@@ -30,10 +30,10 @@ async function SharedProjectsListSSR({ userId }: { userId: string }) {
 
   return (
     <>
-      <h2 className="text-xl font-bold text-primary/80">Shared</h2>
+      <h2 className="text-xl font-bold text-primary/80">Sharing with your</h2>
       <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {projects.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No shared projects</p>
+          <p className="text-sm text-muted-foreground">No projects shared with you</p>
         ) : (
           projects.flat().map(project => <ProjectCardSSR key={project.id} project={project} />)
         )}
@@ -49,7 +49,7 @@ export default async function Dashboard() {
   return (
     <DashboardLayout sidebarContent={<DashboardSidebar />}>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Projects</h1>
+        <h1 className="text-2xl font-bold">Your Projects</h1>
         <CreateProjectDialog />
       </div>
       <Suspense fallback={<ProjectListSkeleton />}>

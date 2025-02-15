@@ -1,13 +1,17 @@
-import { signOut } from '~/server/auth';
+'use client';
+
+import { LogOut } from 'lucide-react';
+import { signOutAction } from '~/app/dashboard/actions';
 
 export function SignOut() {
   return (
     <form
       action={async () => {
-        'use server';
-        await signOut({ redirectTo: '/' });
-      }}>
-      <button type="submit">Sign Out</button>
+        await signOutAction();
+      }}
+      className="flex items-center gap-2 p-2">
+      <LogOut className="mr-2 h-4 w-4" />
+      <button type="submit">Logout</button>
     </form>
   );
 }

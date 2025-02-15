@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { OverviewActivityLog } from '~/components/dashboard/overview/overview-activity-logs';
 import { OverviewRecentFiles } from '~/components/dashboard/overview/overview-recent-files';
@@ -9,6 +10,7 @@ import {
 } from '~/components/dashboard/overview/overview-skeletons';
 import { OverviewStorageBar } from '~/components/dashboard/overview/overview-storage-bar';
 import { OverviewUsageChart } from '~/components/dashboard/overview/overview-usage-chart';
+import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 import { type Files } from '~/server/db/schema';
 
@@ -60,6 +62,9 @@ async function UsageChartSSR({ projectId }: { projectId: string }) {
 }
 
 export default async function OverviewPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session || session.expires < new Date().toISOString()) redirect('/sign-in');
+
   const { id } = await params;
   return (
     <section className="h-full">
