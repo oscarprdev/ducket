@@ -13,10 +13,12 @@ async function ProjectFilesSSR({
   projectId,
   isDeleteAllowed,
   page,
+  userId,
 }: {
   projectId: string;
   isDeleteAllowed?: boolean;
   page: number;
+  userId: string;
 }) {
   const currentPage = Number(page) || 1;
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -48,6 +50,7 @@ async function ProjectFilesSSR({
 
   return (
     <FileTable
+      userId={userId}
       projectId={projectId}
       isDeleteAllowed={isDeleteAllowed}
       files={filesMapped}
@@ -75,13 +78,14 @@ export default async function ProjectPage({
   const [projectUser] = await QUERIES.projectUsers.getByUserEmail({
     email: userEmail?.email ?? '',
   });
+  if (!projectUser) redirect('/dashboard');
 
-  const isUploadAllowed = projectUser?.permissions.includes(
-    API_KEY_PERMISSIONS.all || API_KEY_PERMISSIONS.write
-  );
-  const isDeleteAllowed = projectUser?.permissions.includes(
-    API_KEY_PERMISSIONS.all || API_KEY_PERMISSIONS.delete
-  );
+  const isUploadAllowed =
+    projectUser.permissions.includes(API_KEY_PERMISSIONS.all) ||
+    projectUser.permissions.includes(API_KEY_PERMISSIONS.write);
+  const isDeleteAllowed =
+    projectUser.permissions.includes(API_KEY_PERMISSIONS.all) ||
+    projectUser.permissions.includes(API_KEY_PERMISSIONS.delete);
 
   return (
     <section className="relative">
@@ -92,10 +96,15 @@ export default async function ProjectPage({
             Manage and organize your project files in one place.
           </p>
         </div>
-        {isUploadAllowed && <FileUploadDialog projectId={id} />}
+        {isUploadAllowed && <FileUploadDialog userId={user.id} projectId={id} />}
       </div>
       <Suspense fallback={<FileTableSkeleton />}>
-        <ProjectFilesSSR projectId={id} isDeleteAllowed={isDeleteAllowed} page={parseInt(page)} />
+        <ProjectFilesSSR
+          userId={user.id}
+          projectId={id}
+          isDeleteAllowed={isDeleteAllowed}
+          page={parseInt(page)}
+        />
       </Suspense>
     </section>
   );

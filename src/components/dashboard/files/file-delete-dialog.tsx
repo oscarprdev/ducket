@@ -16,12 +16,14 @@ import {
 
 interface FileDeleteDialogProps {
   projectId: string;
+  userId: string;
   selectedFiles: string[];
   cleanSelectedFiles: (files: string[]) => void;
 }
 
 export default function FileDeleteDialog({
   projectId,
+  userId,
   selectedFiles,
   cleanSelectedFiles,
 }: FileDeleteDialogProps) {
@@ -44,6 +46,7 @@ export default function FileDeleteDialog({
         </DialogHeader>
         <FileDeleteForm
           projectId={projectId}
+          userId={userId}
           selectedFiles={selectedFiles}
           action={deleteFile}
           onActionFinished={() => cleanSelectedFiles([])}

@@ -1,4 +1,5 @@
 import { Bucket } from 'ducket';
+import { type NextRequest } from 'next/server';
 import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS } from '~/server/db/mutations';
@@ -41,8 +42,9 @@ async function uploadFileToBucket(
   return await bucket.uploadFile({ file: buffer, type, name, project: projectId });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const updateLogs = request.nextUrl.searchParams.get('updateLogs');
     /**
      * Validate bearer auth
      */
@@ -107,13 +109,16 @@ export async function POST(request: Request) {
         projectId: project.id,
         apiKey: apiKey,
       }),
-      MUTATIONS.activityLogs.create({
+    ]);
+
+    if (updateLogs !== 'false') {
+      await MUTATIONS.activityLogs.create({
         projectId: project.id,
         userId: project.ownerId,
         fileName: file.name,
         action: ACTIVITY_ACTIONS.upload,
-      }),
-    ]);
+      });
+    }
 
     /**
      * Return file url

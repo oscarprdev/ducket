@@ -15,11 +15,17 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 interface FileUploadFormProps {
   projectId: string;
+  userId: string;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   onActionFinished?: () => void;
 }
 
-export function FileUploadForm({ projectId, action, onActionFinished }: FileUploadFormProps) {
+export function FileUploadForm({
+  projectId,
+  userId,
+  action,
+  onActionFinished,
+}: FileUploadFormProps) {
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
 
@@ -62,6 +68,7 @@ export function FileUploadForm({ projectId, action, onActionFinished }: FileUplo
         formData.append('type', file.type ?? '-');
         formData.append('name', file.name ?? '-');
         formData.append('projectId', projectId);
+        formData.append('userId', userId);
         formData.append('file', file);
         formAction(formData);
       })

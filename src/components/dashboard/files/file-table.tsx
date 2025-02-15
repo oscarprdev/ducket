@@ -35,6 +35,7 @@ interface FileTableProps {
   totalItems: number;
   itemsPerPage: number;
   currentPage: number;
+  userId: string;
 }
 export default function FileTable({
   files,
@@ -43,6 +44,7 @@ export default function FileTable({
   totalItems,
   itemsPerPage,
   currentPage,
+  userId,
 }: FileTableProps) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const router = useRouter();
@@ -80,6 +82,7 @@ export default function FileTable({
         <div className="absolute right-40 top-2 mb-4 flex justify-end">
           <FileDeleteDialog
             projectId={projectId}
+            userId={userId}
             selectedFiles={selectedFiles}
             cleanSelectedFiles={handleCleanSelectedFiles}
           />

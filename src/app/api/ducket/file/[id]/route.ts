@@ -1,4 +1,5 @@
 import { Bucket } from 'ducket';
+import { type NextRequest } from 'next/server';
 import { env } from '~/env';
 import { ACTIVITY_ACTIONS, API_KEY_PERMISSIONS } from '~/lib/constants';
 import { MUTATIONS } from '~/server/db/mutations';
@@ -20,8 +21,9 @@ async function deleteFileFromBucket(name: string, projectId: string): Promise<st
   return await bucket.deleteFile({ name, project: projectId });
 }
 const GET_PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.read];
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const updateLogs = request.nextUrl.searchParams.get('updateLogs');
     /**
      * Validate bearer auth
      */
@@ -67,12 +69,14 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       return new Response('File not found', { status: 404 });
     }
 
-    await MUTATIONS.activityLogs.create({
-      projectId: projectResponse.id,
-      userId: projectResponse.ownerId,
-      fileName: file.fileName,
-      action: ACTIVITY_ACTIONS.read,
-    });
+    if (updateLogs !== 'false') {
+      await MUTATIONS.activityLogs.create({
+        projectId: projectResponse.id,
+        userId: projectResponse.ownerId,
+        fileName: file.fileName,
+        action: ACTIVITY_ACTIONS.read,
+      });
+    }
 
     return new Response(JSON.stringify({ fileUrl: file.fileUrl }), { status: 200 });
   } catch (error) {
@@ -82,8 +86,10 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
 }
 
 const DELETE_PERMISSIONS_ALLOWED = [API_KEY_PERMISSIONS.all, API_KEY_PERMISSIONS.delete];
-export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const updateLogs = request.nextUrl.searchParams.get('updateLogs');
+
     /**
      * Validate bearer auth
      */
@@ -150,12 +156,14 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       }),
     ]);
 
-    await MUTATIONS.activityLogs.create({
-      projectId: projectResponse.id,
-      userId: projectResponse.ownerId,
-      fileName: name,
-      action: ACTIVITY_ACTIONS.delete,
-    });
+    if (updateLogs !== 'false') {
+      await MUTATIONS.activityLogs.create({
+        projectId: projectResponse.id,
+        userId: projectResponse.ownerId,
+        fileName: name,
+        action: ACTIVITY_ACTIONS.delete,
+      });
+    }
 
     return new Response(JSON.stringify({ fileDeleted: name, projectId: project.id }), {
       status: 201,

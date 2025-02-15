@@ -21,18 +21,18 @@ const uploadFileSchema = z.object({
         ),
       'File type not valid'
     ),
-  name: z.string(),
-  type: z.string(),
-  projectId: z.string(),
+  name: z.string({ message: 'File name is required' }),
+  type: z.string({ message: 'File type is required' }),
+  projectId: z.string({ message: 'Project ID is required' }),
+  userId: z.string({ message: 'User ID is required' }),
 });
 
 export const uploadFile = validatedActionWithPermissions(
   uploadFileSchema,
   [API_KEY_PERMISSIONS.write],
-  async (_, formData, __, secret) => {
+  async (data, formData, __, secret) => {
     try {
-      const projectId = formData.get('projectId') as string;
-      const name = formData.get('name') as string;
+      const { userId, projectId, name } = data;
 
       const [file] = await QUERIES.files.getByName({ fileName: name, projectId });
 
@@ -40,7 +40,7 @@ export const uploadFile = validatedActionWithPermissions(
         return { error: 'File already exists, try with a different name' };
       }
 
-      const response = await fetch(`${env.API_URL}/api/ducket/file`, {
+      const response = await fetch(`${env.API_URL}/api/ducket/file?updateLogs=false`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -48,7 +48,12 @@ export const uploadFile = validatedActionWithPermissions(
         },
       });
       if (!response.ok) throw new Error(response.statusText);
-
+      await MUTATIONS.activityLogs.create({
+        projectId,
+        userId,
+        fileName: name,
+        action: ACTIVITY_ACTIONS.upload,
+      });
       revalidatePath(`/dashboard/${projectId}`);
 
       return { success: 'File uploaded successfully' };
@@ -59,8 +64,9 @@ export const uploadFile = validatedActionWithPermissions(
 );
 
 const deleteFileSchema = z.object({
-  selectedFile: z.string(),
-  projectId: z.string(),
+  selectedFile: z.string({ message: 'Selected file is required' }),
+  projectId: z.string({ message: 'Project ID is required' }),
+  userId: z.string({ message: 'User ID is required' }),
 });
 
 export const deleteFile = validatedActionWithPermissions(
@@ -68,17 +74,26 @@ export const deleteFile = validatedActionWithPermissions(
   [API_KEY_PERMISSIONS.delete],
   async (data, _, __, secret) => {
     try {
-      const { selectedFile } = data;
+      const { selectedFile, projectId, userId } = data;
 
-      const response = await fetch(`${env.API_URL}/api/ducket/file/${selectedFile}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${secret}`,
-        },
-      });
+      const response = await fetch(
+        `${env.API_URL}/api/ducket/file/${selectedFile}?updateLogs=false`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${secret}`,
+          },
+        }
+      );
       if (!response.ok) throw new Error(response.statusText);
 
       const json = (await response.json()) as { fileDeleted: string; projectId: string };
+      await MUTATIONS.activityLogs.create({
+        projectId,
+        userId,
+        fileName: selectedFile,
+        action: ACTIVITY_ACTIONS.delete,
+      });
 
       revalidatePath(`/dashboard/${json.projectId}`);
 
@@ -103,11 +118,13 @@ export const downloadFile = validatedActionWithPermissions(
       const userId = user.id;
 
       await MUTATIONS.activityLogs.create({
-        projectId: projectId,
-        userId: userId,
+        projectId,
+        userId,
         fileName: selectedFile,
         action: ACTIVITY_ACTIONS.download,
       });
+
+      revalidatePath(`/dashboard/${projectId}`);
 
       return { success: 'File downloaded successfully' };
     } catch (error) {

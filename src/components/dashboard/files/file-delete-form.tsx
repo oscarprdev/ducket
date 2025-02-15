@@ -10,6 +10,7 @@ import { type ActionState } from '~/server/auth/middleware';
 
 interface FileDeleteFormProps {
   projectId: string;
+  userId: string;
   selectedFiles: string[];
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   onActionFinished?: () => void;
@@ -19,6 +20,7 @@ interface FileDeleteFormProps {
 export default function FileDeleteForm({
   children,
   projectId,
+  userId,
   selectedFiles,
   action,
   onActionFinished,
@@ -46,6 +48,7 @@ export default function FileDeleteForm({
         const formData = new FormData();
         formData.append('selectedFile', fileName);
         formData.append('projectId', projectId);
+        formData.append('userId', userId);
         formAction(formData);
       })
     );

@@ -6,13 +6,13 @@ export const VALID_FILE_TYPES = {
   text: ['text/plain', 'text/csv'],
 };
 
-export type ApiKeyPermissions = 'read' | 'write' | 'delete' | 'all';
+export type ApiKeyPermissions = (typeof API_KEY_PERMISSIONS)[keyof typeof API_KEY_PERMISSIONS];
 export const API_KEY_PERMISSIONS = {
   read: 'read',
   write: 'write',
   delete: 'delete',
   all: 'all',
-} as const as Record<ApiKeyPermissions, ApiKeyPermissions>;
+} as const;
 
 export type ActivityAction = (typeof ACTIVITY_ACTIONS)[keyof typeof ACTIVITY_ACTIONS];
 export const ACTIVITY_ACTIONS = {
