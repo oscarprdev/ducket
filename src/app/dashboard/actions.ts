@@ -73,7 +73,10 @@ export const deleteProject = validatedActionWithPermissions(
         throw new Error('Unauthorized');
       }
 
-      if (project[0].title.toLowerCase() !== projectName.toLowerCase()) {
+      if (
+        project[0].title.replaceAll(' ', '').toLowerCase() !==
+        projectName.replaceAll(' ', '').toLowerCase()
+      ) {
         throw new Error('Project name does not match');
       }
 

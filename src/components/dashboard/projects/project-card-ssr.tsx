@@ -91,10 +91,17 @@ async function ProjectOwnerSSR({ userId }: { userId: string }) {
   );
 }
 
-export async function ProjectCardSSR({ project }: { project: Projects }) {
+export async function ProjectCardSSR({
+  project,
+  isOwned,
+}: {
+  project: Projects;
+  isOwned: boolean;
+}) {
   return (
     <ProjectCard
       key={project.id}
+      isOwned={isOwned}
       project={{
         id: project.id,
         title: project.title,

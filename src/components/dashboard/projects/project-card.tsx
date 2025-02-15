@@ -16,6 +16,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 
 interface ProjectCardProps {
+  isOwned: boolean;
   project: {
     id: string;
     title: string;
@@ -30,6 +31,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({
+  isOwned,
   project,
   usageIcon,
   numberOfFiles,
@@ -73,29 +75,31 @@ export default function ProjectCard({
             {visibilityIcon}
             <div className="absolute right-2 top-2 flex items-center">
               {usageIcon}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="h-8 w-8 p-0 focus:border-none"
-                    onClick={handleMenuClick}>
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" onClick={handleMenuClick}>
-                  <DropdownMenuItem
-                    onSelect={e => e.preventDefault()}
-                    onClick={() => setIsEditOpen(true)}>
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onSelect={e => e.preventDefault()}
-                    onClick={() => setIsDeleteOpen(true)}>
-                    Delete
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>Upgrade plan</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {isOwned && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="h-8 w-8 p-0 focus:border-none"
+                      onClick={handleMenuClick}>
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" onClick={handleMenuClick}>
+                    <DropdownMenuItem
+                      onSelect={e => e.preventDefault()}
+                      onClick={() => setIsEditOpen(true)}>
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={e => e.preventDefault()}
+                      onClick={() => setIsDeleteOpen(true)}>
+                      Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>Upgrade plan</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
         </Card>

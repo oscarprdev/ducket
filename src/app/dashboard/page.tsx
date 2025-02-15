@@ -13,9 +13,13 @@ async function ProjectsListSSR({ userId }: { userId: string }) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {projects.map(project => (
-        <ProjectCardSSR key={project.id} project={project} />
-      ))}
+      {projects.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No projects created yet</p>
+      ) : (
+        projects.map(project => (
+          <ProjectCardSSR key={project.id} project={project} isOwned={true} />
+        ))
+      )}
     </div>
   );
 }
@@ -30,12 +34,14 @@ async function SharedProjectsListSSR({ userId }: { userId: string }) {
 
   return (
     <>
-      <h2 className="text-xl font-bold text-primary/80">Sharing with your</h2>
+      <h2 className="mt-10 text-xl font-bold text-primary/80">Sharing with your</h2>
       <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {projects.length === 0 ? (
           <p className="text-sm text-muted-foreground">No projects shared with you</p>
         ) : (
-          projects.flat().map(project => <ProjectCardSSR key={project.id} project={project} />)
+          projects
+            .flat()
+            .map(project => <ProjectCardSSR key={project.id} project={project} isOwned={false} />)
         )}
       </div>
     </>
