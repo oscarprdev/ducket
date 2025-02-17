@@ -129,6 +129,11 @@ export const projectUsers = createTable('project_users', {
   isOwner: boolean('is_owner').notNull().default(false),
 });
 
+export interface TransferRequestsWithUsers extends TransferRequests {
+  project: Projects;
+  fromUser: Users;
+  toUser: Users;
+}
 export type TransferRequests = typeof transferRequests.$inferSelect;
 export const transferRequests = createTable('transfer_requests', {
   id: varchar('id', { length: 255 })

@@ -19,7 +19,7 @@ export default function DashboardSidebar() {
     {
       title: 'Transfers',
       icon: <ArrowLeftRight className="h-5 w-5" />,
-      href: '/dashboard/transfers',
+      href: '/dashboard/transfers/outgoing',
     },
     {
       title: 'Settings',

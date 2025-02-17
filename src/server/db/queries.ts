@@ -7,7 +7,7 @@ import {
   type ProjectUsers,
   type Projects,
   type PublicFiles,
-  type TransferRequests,
+  type TransferRequestsWithUsers,
   type Users,
   activityLogs,
   apiKeys,
@@ -20,6 +20,7 @@ import {
   users,
 } from './schema';
 import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
   user: string;
@@ -311,11 +312,49 @@ export const QUERIES = {
     },
   },
   transferRequests: {
-    getByProjectId: async ({ projectId }: { projectId: string }): Promise<TransferRequests[]> => {
-      return db.select().from(transferRequests).where(eq(transferRequests.projectId, projectId));
+    getOutgoing: async ({ userId }: { userId: string }): Promise<TransferRequestsWithUsers[]> => {
+      const fromUsers = alias(users, 'fromUsers');
+      const toUsers = alias(users, 'toUsers');
+
+      return await db
+        .select({
+          id: transferRequests.id,
+          projectId: transferRequests.projectId,
+          state: transferRequests.state,
+          createdAt: transferRequests.createdAt,
+          fromUserId: transferRequests.fromUserId,
+          toUserId: transferRequests.toUserId,
+          fromUser: fromUsers,
+          toUser: toUsers,
+          project: projects,
+        })
+        .from(transferRequests)
+        .innerJoin(fromUsers, eq(transferRequests.fromUserId, fromUsers.id))
+        .innerJoin(toUsers, eq(transferRequests.toUserId, toUsers.id))
+        .innerJoin(projects, eq(transferRequests.projectId, projects.id))
+        .where(eq(transferRequests.fromUserId, userId));
     },
-    getByUserId: async ({ userId }: { userId: string }): Promise<TransferRequests[]> => {
-      return db.select().from(transferRequests).where(eq(transferRequests.toUserId, userId));
+    getIncoming: async ({ userId }: { userId: string }): Promise<TransferRequestsWithUsers[]> => {
+      const fromUsers = alias(users, 'fromUsers');
+      const toUsers = alias(users, 'toUsers');
+
+      return await db
+        .select({
+          id: transferRequests.id,
+          projectId: transferRequests.projectId,
+          state: transferRequests.state,
+          createdAt: transferRequests.createdAt,
+          fromUserId: transferRequests.fromUserId,
+          toUserId: transferRequests.toUserId,
+          fromUser: fromUsers,
+          toUser: toUsers,
+          project: projects,
+        })
+        .from(transferRequests)
+        .innerJoin(fromUsers, eq(transferRequests.fromUserId, fromUsers.id))
+        .innerJoin(toUsers, eq(transferRequests.toUserId, toUsers.id))
+        .innerJoin(projects, eq(transferRequests.projectId, projects.id))
+        .where(eq(transferRequests.toUserId, userId));
     },
   },
 };

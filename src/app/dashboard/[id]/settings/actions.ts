@@ -61,14 +61,21 @@ export const transferProject = validatedActionWithUser(transferProjectSchema, as
       }
     }
 
-    await sendTransferEmail({
-      from: {
-        name: userName,
-        project: project.title,
-      },
-      to: user.email,
-      url: `${env.API_URL}/sign-in`,
-    });
+    await Promise.all([
+      sendTransferEmail({
+        from: {
+          name: userName,
+          project: project.title,
+        },
+        to: user.email,
+        url: `${env.API_URL}/sign-in`,
+      }),
+      MUTATIONS.transferRequests.create({
+        projectId,
+        fromUserId: project.ownerId,
+        toUserId: user.id,
+      }),
+    ]);
 
     revalidatePath(`/dashboard/${projectId}/settings`);
 
