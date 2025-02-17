@@ -52,6 +52,13 @@ export const transferProject = validatedActionWithUser(transferProjectSchema, as
       return { error: 'You cannot transfer the project to yourself' };
     }
 
+    const projectUsers = await QUERIES.projectUsers.getByProjectId({ projectId });
+    const isUserOnProject = projectUsers.some(p => p.email === user.email);
+
+    if (!isUserOnProject) {
+      return { error: 'You cannot transfer the project to a user that is not on the project' };
+    }
+
     let userName: string = user.name ?? '';
 
     if (!userName) {

@@ -28,9 +28,12 @@ async function ProjectsListSSR({ userId }: { userId: string }) {
 async function SharedProjectsListSSR({ userId }: { userId: string }) {
   const [userInfo] = await QUERIES.users.getById({ id: userId });
   if (!userInfo) redirect('/sign-in');
+  const ownedProjects = await QUERIES.projects.getByOwner({ userId });
   const projectUsers = await QUERIES.projectUsers.getNoOwned({ email: userInfo.email });
   const projectsAccepted = projectUsers.filter(
-    projectUser => projectUser.state === INVITATION_STATES.accepted
+    projectUser =>
+      projectUser.state === INVITATION_STATES.accepted &&
+      !ownedProjects.map(project => project.id).includes(projectUser.projectId)
   );
   const projects = await Promise.all(
     projectsAccepted.map(projectUser =>

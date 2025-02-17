@@ -249,6 +249,23 @@ export const MUTATIONS = {
         .set({ state: INVITATION_STATES.declined })
         .where(and(eq(projectUsers.email, email), eq(projectUsers.projectId, projectId)));
     },
+    updateOwnership: async function (input: {
+      projectId: string;
+      newOwnerEmail: string;
+    }): Promise<void> {
+      const { projectId, newOwnerEmail } = input;
+      await db
+        .update(projectUsers)
+        .set({ permissions: ['all'], isOwner: true })
+        .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.email, newOwnerEmail)));
+    },
+    removeOwnership: async function (input: { projectId: string; email: string }): Promise<void> {
+      const { projectId, email } = input;
+      await db
+        .update(projectUsers)
+        .set({ isOwner: false })
+        .where(and(eq(projectUsers.projectId, projectId), eq(projectUsers.email, email)));
+    },
   },
   transferRequests: {
     create: function (input: {

@@ -1,4 +1,16 @@
+'use client';
+
+import { AcceptTransferDialog } from './accept-transfer-dialog';
+import { DeclineTransferDialog } from './decline-transfer-dialog';
+import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -25,6 +37,7 @@ export function TransfersTable({ transfers }: TransfersTableProps) {
           <TableHead>To</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Date</TableHead>
+          <TableHead className="text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -54,6 +67,24 @@ export function TransfersTable({ transfers }: TransfersTableProps) {
                 </Badge>
               </TableCell>
               <TableCell>{formatRelativeTime(transfer.createdAt)}</TableCell>
+              <TableCell className="text-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <AcceptTransferDialog transfer={transfer} />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <DeclineTransferDialog transfer={transfer} />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
             </TableRow>
           ))
         )}
