@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { ApiKeysCreateDialog } from '~/components/dashboard/api-keys/api-keys-create-dialog';
+import ApiKeysLayout from '~/components/dashboard/api-keys/api-keys-layout';
 import ApiKeysTable from '~/components/dashboard/api-keys/api-keys-table';
 import { ApiKeysTableSkeleton } from '~/components/dashboard/api-keys/api-keys-table-skeleton';
 import { API_KEY_PERMISSIONS } from '~/lib/constants';
@@ -53,16 +53,7 @@ export default async function ApiKeysPage({
   const userIsOwner = projectUser?.permissions.includes(API_KEY_PERMISSIONS.all);
 
   return (
-    <section className="relative">
-      <div className="mb-6 flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">API Keys</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your API keys and their permissions for this project.
-          </p>
-        </div>
-        {userIsOwner && <ApiKeysCreateDialog projectId={id} />}
-      </div>
+    <ApiKeysLayout projectId={id} userIsOwner={userIsOwner}>
       {userIsOwner ? (
         <Suspense fallback={<ApiKeysTableSkeleton />}>
           <ApiKeysTableSSR projectId={id} page={page} />
@@ -70,6 +61,6 @@ export default async function ApiKeysPage({
       ) : (
         <p>{"You don't have permission to view API keys"}</p>
       )}
-    </section>
+    </ApiKeysLayout>
   );
 }

@@ -71,7 +71,7 @@ export default function ApiKeysTable({
   return (
     <>
       {selectedKeys.length > 0 && apiKeys[0]?.projectId && (
-        <div className="absolute right-40 top-[0.65rem] mb-4 flex justify-end">
+        <div className="absolute right-56 top-[0.65rem] mb-4 flex justify-end">
           <ApiKeysRevokeDialog
             selectedKeys={selectedKeys}
             projectId={projectId}
