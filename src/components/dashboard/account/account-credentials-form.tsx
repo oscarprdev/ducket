@@ -25,7 +25,8 @@ export function AccountCredentialsForm({
     action,
     onSuccess: () => {
       toast({
-        title: 'Password updated successfully',
+        title: 'Password update',
+        description: 'Your password has been updated successfully',
       });
       onActionFinished?.();
     },

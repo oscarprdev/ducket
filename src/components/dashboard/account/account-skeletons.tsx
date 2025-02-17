@@ -1,23 +1,13 @@
-import { AlertTriangle, ImageIcon, Lock, User } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Skeleton } from '~/components/ui/skeleton';
-
-export function OAuthCardSkeleton() {
-  return (
-    <div>
-      <Skeleton className="mb-2 h-9 w-64" />
-      <Skeleton className="h-5 w-96" />
-    </div>
-  );
-}
 
 export function ProfileImageSkeleton() {
   return (
     <Card className="max-w-[800px] bg-background">
       <CardHeader>
         <CardTitle className="flex items-center">
-          <ImageIcon className="mr-2 h-5 w-5" />
-          <Skeleton className="h-6 w-32" />
+          <Skeleton className="mr-2 h-5 w-5" />
+          Profile Image
         </CardTitle>
         <CardDescription>
           <Skeleton className="h-4 w-72" />
@@ -41,7 +31,7 @@ export function ProfileInfoSkeleton() {
     <Card className="max-w-[800px] bg-background">
       <CardHeader>
         <CardTitle className="flex items-center">
-          <User className="mr-2 h-5 w-5" />
+          <Skeleton className="mr-2 h-5 w-5" />
           <Skeleton className="h-6 w-40" />
         </CardTitle>
         <CardDescription>
@@ -68,7 +58,7 @@ export function CredentialsCardSkeleton() {
     <Card className="max-w-[800px] bg-background">
       <CardHeader>
         <CardTitle className="flex items-center">
-          <Lock className="mr-2 h-5 w-5" />
+          <Skeleton className="mr-2 h-5 w-5" />
           <Skeleton className="h-6 w-32" />
         </CardTitle>
         <CardDescription>
@@ -92,7 +82,7 @@ export function DangerZoneSkeleton() {
     <Card className="max-w-[800px] border-destructive bg-background">
       <CardHeader>
         <CardTitle className="flex items-center text-destructive">
-          <AlertTriangle className="mr-2 h-5 w-5" />
+          <Skeleton className="mr-2 h-5 w-5" />
           <Skeleton className="h-6 w-32" />
         </CardTitle>
         <CardDescription>

@@ -29,7 +29,8 @@ export function ProfileInformationForm({
     action,
     onSuccess: () => {
       toast({
-        title: 'User information updated successfully',
+        title: 'User information update',
+        description: 'Your user information has been updated successfully',
       });
       onActionFinished?.();
     },
