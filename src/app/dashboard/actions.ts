@@ -128,7 +128,5 @@ export const deleteProject = validatedActionWithPermissions(
 );
 
 export const signOutAction = async () => {
-  const response = await signOut({ redirectTo: '/sign-in' });
-
-  console.log(response);
+  await signOut({ redirectTo: '/sign-in' });
 };

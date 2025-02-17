@@ -1,18 +1,8 @@
 'use client';
 
 import { SignOut } from '../auth/sign-out';
-import { Settings, User2 } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '~/components/dashboard/theme-toggle';
-import { Button } from '~/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu';
 import { cn } from '~/lib/utils';
 
 export function DashboardHeader({ className }: { className?: string }) {
@@ -28,30 +18,7 @@ export function DashboardHeader({ className }: { className?: string }) {
         </Link>
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User2 className="h-5 w-5" />
-                <span className="sr-only">User menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => console.log('Profile clicked')}>
-                <User2 className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log('Settings clicked')}>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <SignOut />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <SignOut />
         </div>
       </div>
     </header>

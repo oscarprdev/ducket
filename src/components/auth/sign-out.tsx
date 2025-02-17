@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '../ui/button';
 import { LogOut } from 'lucide-react';
 import { signOutAction } from '~/app/dashboard/actions';
 
@@ -10,8 +11,10 @@ export function SignOut() {
         await signOutAction();
       }}
       className="flex items-center gap-2 p-2">
-      <LogOut className="mr-2 h-4 w-4" />
-      <button type="submit">Logout</button>
+      <Button type="submit" variant="ghost">
+        <LogOut className="mr-2 h-4 w-4" />
+        Logout
+      </Button>
     </form>
   );
 }
