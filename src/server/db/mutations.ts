@@ -36,9 +36,25 @@ export const MUTATIONS = {
       const { email, name, passwordHash } = input;
       return db.insert(users).values({ email, name, passwordHash });
     },
+    delete: async function (input: { id: string }): Promise<Users[]> {
+      const { id } = input;
+      return db.delete(users).where(eq(users.id, id));
+    },
     updatePassword: async function (input: { id: string; passwordHash: string }): Promise<Users[]> {
       const { id, passwordHash } = input;
       return db.update(users).set({ passwordHash }).where(eq(users.id, id));
+    },
+    updateInformation: async function (input: {
+      id: string;
+      name: string;
+      email: string;
+    }): Promise<Users[]> {
+      const { id, name, email } = input;
+      return db.update(users).set({ name, email }).where(eq(users.id, id));
+    },
+    updateImage: async function (input: { id: string; image: string }): Promise<Users[]> {
+      const { id, image } = input;
+      return db.update(users).set({ image }).where(eq(users.id, id));
     },
   },
   projects: {

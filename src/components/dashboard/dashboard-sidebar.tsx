@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeftRight, LayoutDashboard, Mails, Settings } from 'lucide-react';
+import { ArrowLeftRight, CreditCard, LayoutDashboard, Mails, User } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
@@ -22,9 +22,14 @@ export default function DashboardSidebar() {
       href: '/dashboard/transfers/outgoing',
     },
     {
-      title: 'Settings',
-      icon: <Settings className="h-5 w-5" />,
-      href: '/dashboard/settings',
+      title: 'Billing',
+      icon: <CreditCard className="h-5 w-5" />,
+      href: '/dashboard/billing',
+    },
+    {
+      title: 'Account',
+      icon: <User className="h-5 w-5" />,
+      href: '/dashboard/account',
     },
   ];
 
