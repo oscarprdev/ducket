@@ -48,6 +48,7 @@ export function AccountCredentialsForm({
           name="currentPassword"
           className="col-span-3"
           placeholder="********"
+          autoComplete="current-password"
           disabled={isOAuthUser}
           required
         />
@@ -62,6 +63,7 @@ export function AccountCredentialsForm({
           name="newPassword"
           className="col-span-3"
           placeholder="********"
+          autoComplete="new-password"
           disabled={isOAuthUser}
           required
         />
@@ -76,10 +78,25 @@ export function AccountCredentialsForm({
           name="confirmPassword"
           className="col-span-3"
           placeholder="********"
+          autoComplete="new-password"
           disabled={isOAuthUser}
           required
         />
       </div>
+      <div className="sr-only flex flex-col items-start gap-4">
+        <Label htmlFor="username" className="sr-only">
+          Username
+        </Label>
+        <Input
+          id="username"
+          name="username"
+          type="text"
+          autoComplete="username"
+          defaultValue={userId}
+          className="sr-only"
+        />
+      </div>
+
       <div className="space-y-2">
         {state.error && <p className="ml-auto text-xs text-destructive">{state.error}</p>}
         <div className="flex w-full items-center gap-2">
