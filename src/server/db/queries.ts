@@ -35,6 +35,15 @@ export const QUERIES = {
     getAll: ({ ownerId }: { ownerId: string }): Promise<Projects[]> => {
       return db.select().from(projects).where(eq(projects.ownerId, ownerId)).limit(10).offset(0);
     },
+    getShared: async ({ userId }: { userId: string }): Promise<Projects[]> => {
+      const result = await db
+        .select()
+        .from(projects)
+        .innerJoin(projectUsers, eq(projectUsers.projectId, projects.id))
+        .innerJoin(users, eq(users.id, userId))
+        .where(and(eq(projectUsers.email, users.email), eq(projectUsers.isOwner, false)));
+      return result.map(data => data.projects);
+    },
     getById: async ({ projectId }: { projectId: string }) => {
       return db.select().from(projects).where(eq(projects.id, projectId));
     },

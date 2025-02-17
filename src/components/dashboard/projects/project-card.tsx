@@ -21,7 +21,7 @@ interface ProjectCardProps {
     id: string;
     title: string;
     owner: string;
-    lastUpdate: string;
+    createdAt: string;
     visibility: 'shared' | 'private';
   };
   usageIcon: React.ReactNode;
@@ -62,7 +62,7 @@ export default function ProjectCard({
                   <TooltipTrigger asChild>
                     <div className="flex w-fit items-center space-x-1">
                       <Clock className="h-4 w-4 fill-muted text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">{project.lastUpdate}</p>
+                      <p className="text-xs text-muted-foreground">{project.createdAt}</p>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

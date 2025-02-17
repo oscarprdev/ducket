@@ -54,14 +54,15 @@ async function UsageIconSSR({ projectId }: { projectId: string }) {
 }
 
 async function NumberOfFilesSSR({ projectId }: { projectId: string }) {
-  const files = await QUERIES.files.getByProjectId({ projectId });
+  const filesCount = await QUERIES.files.getCount({ projectId });
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex w-fit items-center space-x-1">
             <FileText className="h-4 w-4 fill-muted text-muted-foreground" />
-            <p className="text-xs text-muted-foreground">{files.length}</p>
+            <p className="text-xs text-muted-foreground">{filesCount}</p>
           </div>
         </TooltipTrigger>
         <TooltipContent>
@@ -106,7 +107,7 @@ export async function ProjectCardSSR({
         id: project.id,
         title: project.title,
         owner: project.ownerId,
-        lastUpdate: project.updatedAt.toLocaleDateString('en-GB'),
+        createdAt: project.createdAt.toLocaleDateString('en-GB'),
         visibility: 'private',
       }}
       owner={

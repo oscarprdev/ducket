@@ -5,7 +5,6 @@ import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import { CreateProjectDialog } from '~/components/dashboard/projects/create-project-dialog';
 import { ProjectListSkeleton } from '~/components/dashboard/projects/project-card-skeleton';
 import { ProjectCardSSR } from '~/components/dashboard/projects/project-card-ssr';
-import { INVITATION_STATES } from '~/lib/constants';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
@@ -28,29 +27,19 @@ async function ProjectsListSSR({ userId }: { userId: string }) {
 async function SharedProjectsListSSR({ userId }: { userId: string }) {
   const [userInfo] = await QUERIES.users.getById({ id: userId });
   if (!userInfo) redirect('/sign-in');
-  const ownedProjects = await QUERIES.projects.getByOwner({ userId });
-  const projectUsers = await QUERIES.projectUsers.getNoOwned({ email: userInfo.email });
-  const projectsAccepted = projectUsers.filter(
-    projectUser =>
-      projectUser.state === INVITATION_STATES.accepted &&
-      !ownedProjects.map(project => project.id).includes(projectUser.projectId)
-  );
-  const projects = await Promise.all(
-    projectsAccepted.map(projectUser =>
-      QUERIES.projects.getById({ projectId: projectUser.projectId })
-    )
-  );
+
+  const sharedProjects = await QUERIES.projects.getShared({ userId });
 
   return (
     <>
       <h2 className="mt-10 text-xl font-bold text-primary/80">Sharing with you</h2>
       <div className="mt-5 grid min-h-[200px] gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {projects.length === 0 ? (
+        {sharedProjects.length === 0 ? (
           <p className="text-sm text-muted-foreground">No projects shared with you yet.</p>
         ) : (
-          projects
-            .flat()
-            .map(project => <ProjectCardSSR key={project.id} project={project} isOwned={false} />)
+          sharedProjects.map(project => (
+            <ProjectCardSSR key={project.id} project={project} isOwned={false} />
+          ))
         )}
       </div>
     </>
