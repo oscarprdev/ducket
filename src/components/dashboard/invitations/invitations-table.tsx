@@ -20,19 +20,12 @@ import {
   TableRow,
 } from '~/components/ui/table';
 import { useConfirmationBadge } from '~/hooks/use-confirmation-badge';
-import { INVITATION_STATES, type InvitationState } from '~/lib/constants';
+import { INVITATION_STATES } from '~/lib/constants';
 import { formatDate, formatRelativeTime } from '~/lib/utils';
-import { type Projects } from '~/server/db/schema';
-
-export interface ProjectWithUserAndPermissions extends Projects {
-  ownerId: string;
-  permissions: string[];
-  invitationState: InvitationState;
-  invitedUserEmail: string;
-}
+import { type ProjectsWithPermissions } from '~/server/db/schema';
 
 interface InvitationsTableProps {
-  projects: ProjectWithUserAndPermissions[];
+  projects: ProjectsWithPermissions[];
 }
 
 export default function InvitationsTable({ projects }: InvitationsTableProps) {

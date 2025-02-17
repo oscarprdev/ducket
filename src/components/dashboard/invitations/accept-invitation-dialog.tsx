@@ -1,7 +1,6 @@
 'use client';
 
 import { AcceptInvitationForm } from './accept-invitation-form';
-import { type ProjectWithUserAndPermissions } from './invitations-table';
 import { useState } from 'react';
 import { acceptInvitation } from '~/app/dashboard/invitations/actions';
 import { Button } from '~/components/ui/button';
@@ -13,9 +12,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '~/components/ui/dialog';
+import { type ProjectsWithPermissions } from '~/server/db/schema';
 
 interface AcceptInvitationDialogProps {
-  project: ProjectWithUserAndPermissions;
+  project: ProjectsWithPermissions;
 }
 
 export function AcceptInvitationDialog({ project }: AcceptInvitationDialogProps) {

@@ -6,6 +6,7 @@ import {
   type PasswordResetTokens,
   type ProjectUsers,
   type Projects,
+  type ProjectsWithPermissions,
   type PublicFiles,
   type TransferRequestsWithUsers,
   type Users,
@@ -183,6 +184,14 @@ export const QUERIES = {
     getByUserEmail: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
       return db.select().from(projectUsers).where(eq(projectUsers.email, email));
     },
+    getByUserId: async ({ userId }: { userId: string }): Promise<ProjectUsers[]> => {
+      const result = await db
+        .select()
+        .from(projectUsers)
+        .innerJoin(users, eq(users.id, userId))
+        .where(eq(projectUsers.email, users.email));
+      return result.map(data => data.project_users);
+    },
     getNoOwned: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
       return db
         .select()
@@ -197,6 +206,21 @@ export const QUERIES = {
       return {
         isShared: projectsUsers.length > 1,
       };
+    },
+    getInvitations: async ({ email }: { email: string }): Promise<ProjectsWithPermissions[]> => {
+      const result = await db
+        .select()
+        .from(projects)
+        .innerJoin(projectUsers, eq(projectUsers.projectId, projects.id))
+        .where(and(eq(projectUsers.email, email), eq(projectUsers.isOwner, false)));
+      return result.map(data => ({
+        ...data.projects,
+        ownerId: data.project_users.id,
+        permissions: data.project_users.permissions,
+        invitationState: data.project_users.state,
+        createdAt: data.project_users.createdAt,
+        invitedUserEmail: data.project_users.email,
+      }));
     },
   },
   apiKeys: {

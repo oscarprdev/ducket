@@ -108,6 +108,13 @@ export const users = createTable('user', {
   passwordHash: varchar('password_hash', { length: 255 }).default(''),
 });
 
+export interface ProjectsWithPermissions extends Projects {
+  ownerId: string;
+  permissions: string[];
+  invitationState: string;
+  createdAt: Date;
+  invitedUserEmail: string;
+}
 export type ProjectUsers = typeof projectUsers.$inferSelect;
 export const projectUsers = createTable('project_users', {
   id: varchar('id', { length: 255 })
