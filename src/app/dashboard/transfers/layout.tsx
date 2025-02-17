@@ -6,13 +6,11 @@ import { TransfersTabManager } from '~/components/dashboard/transfers/transfers-
 export default function TransfersLayout({ children }: { children: React.ReactNode }) {
   return (
     <DashboardLayout sidebarContent={<DashboardSidebar />}>
-      <div className="mx-auto max-w-5xl space-y-6 py-6">
-        <div>
-          <h1 className="text-3xl font-bold">Transfers</h1>
-          <p className="mt-2 text-muted-foreground">View and manage your project transfers.</p>
-        </div>
-        <TransfersTabManager>{children}</TransfersTabManager>
+      <div>
+        <h1 className="text-3xl font-bold">Transfers</h1>
+        <p className="mt-2 text-muted-foreground">View and manage your project transfers.</p>
       </div>
+      <TransfersTabManager>{children}</TransfersTabManager>
     </DashboardLayout>
   );
 }

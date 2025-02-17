@@ -10,39 +10,37 @@ import {
 
 export function TransfersSkeleton() {
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Project Name</TableHead>
-            <TableHead>From</TableHead>
-            <TableHead>To</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Date</TableHead>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Project Name</TableHead>
+          <TableHead>From</TableHead>
+          <TableHead>To</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Date</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <TableRow key={index}>
+            <TableCell>
+              <Skeleton className="h-5 w-40" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-5 w-32" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-5 w-32" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-5 w-20" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-5 w-24" />
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 3 }).map((_, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <Skeleton className="h-5 w-40" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-32" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-32" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-20" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-24" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
