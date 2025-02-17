@@ -6,6 +6,7 @@ import {
   type ProjectUsers,
   type Projects,
   type PublicFiles,
+  type TransferRequests,
   type Users,
   activityLogs,
   apiKeys,
@@ -14,10 +15,16 @@ import {
   projectUsers,
   projects,
   publicFiles,
+  transferRequests,
   users,
 } from './schema';
 import { and, eq, sql } from 'drizzle-orm';
-import { type ApiKeyPermissions, INVITATION_STATES, type InvitationState } from '~/lib/constants';
+import {
+  type ApiKeyPermissions,
+  INVITATION_STATES,
+  type InvitationState,
+  TRANSFER_REQUEST_STATES,
+} from '~/lib/constants';
 
 export const MUTATIONS = {
   users: {
@@ -241,6 +248,34 @@ export const MUTATIONS = {
         .update(projectUsers)
         .set({ state: INVITATION_STATES.declined })
         .where(and(eq(projectUsers.email, email), eq(projectUsers.projectId, projectId)));
+    },
+  },
+  transferRequests: {
+    create: function (input: {
+      projectId: string;
+      fromUserId: string;
+      toUserId: string;
+    }): Promise<TransferRequests[]> {
+      const { projectId, fromUserId, toUserId } = input;
+      return db.insert(transferRequests).values({ projectId, fromUserId, toUserId });
+    },
+    accept: function (input: { id: string }): Promise<TransferRequests[]> {
+      const { id } = input;
+      return db
+        .update(transferRequests)
+        .set({ state: TRANSFER_REQUEST_STATES.accepted })
+        .where(eq(transferRequests.id, id));
+    },
+    decline: function (input: { id: string }): Promise<TransferRequests[]> {
+      const { id } = input;
+      return db
+        .update(transferRequests)
+        .set({ state: TRANSFER_REQUEST_STATES.declined })
+        .where(eq(transferRequests.id, id));
+    },
+    delete: function (input: { id: string }): Promise<TransferRequests[]> {
+      const { id } = input;
+      return db.delete(transferRequests).where(eq(transferRequests.id, id));
     },
   },
   passwordResetTokens: {

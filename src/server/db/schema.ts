@@ -10,7 +10,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
-import { INVITATION_STATES } from '~/lib/constants';
+import { INVITATION_STATES, TRANSFER_REQUEST_STATES } from '~/lib/constants';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
@@ -127,6 +127,27 @@ export const projectUsers = createTable('project_users', {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
   isOwner: boolean('is_owner').notNull().default(false),
+});
+
+export type TransferRequests = typeof transferRequests.$inferSelect;
+export const transferRequests = createTable('transfer_requests', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  projectId: varchar('project_id', { length: 255 })
+    .notNull()
+    .references(() => projects.id, { onDelete: 'cascade' }),
+  fromUserId: varchar('from_user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  toUserId: varchar('to_user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  state: text('state').notNull().default(TRANSFER_REQUEST_STATES.pending),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type ActivityLogs = typeof activityLogs.$inferSelect;

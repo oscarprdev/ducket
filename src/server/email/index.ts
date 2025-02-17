@@ -22,3 +22,24 @@ export const sendRecoverPasswordEmail = async ({ to, url }: { to: string; url: s
     <a href="${url}">Click here to recover</a>`,
   });
 };
+
+export const sendTransferEmail = async ({
+  from,
+  to,
+  url,
+}: {
+  from: { name: string; project: string };
+  to: string;
+  url: string;
+}) => {
+  const resend = new Resend(env.RESEND_API_KEY);
+  await resend.emails.send({
+    from: 'Ducket <oscarpr@ducket.dev>',
+    to: [to],
+    subject: 'Transfer ownership of a project',
+    html: `<p>Transfer ownership of a project.</p>
+    <p>From: ${from.name}</p>
+    <p>Project: ${from.project}</p>
+    <a href="${url}">Click here to accept the transfer</a>`,
+  });
+};

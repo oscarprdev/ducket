@@ -29,6 +29,13 @@ export const INVITATION_STATES = {
   declined: 'declined',
 } as const;
 
+export type TransferRequestState = 'pending' | 'accepted' | 'declined';
+export const TRANSFER_REQUEST_STATES = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+} as const;
+
 export const chartConfig = {
   upload: {
     label: 'Uploads',

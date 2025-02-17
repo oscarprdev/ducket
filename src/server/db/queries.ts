@@ -7,6 +7,7 @@ import {
   type ProjectUsers,
   type Projects,
   type PublicFiles,
+  type TransferRequests,
   type Users,
   activityLogs,
   apiKeys,
@@ -15,6 +16,7 @@ import {
   projectUsers,
   projects,
   publicFiles,
+  transferRequests,
   users,
 } from './schema';
 import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
@@ -306,6 +308,14 @@ export const QUERIES = {
   passwordResetTokens: {
     getByToken: async ({ token }: { token: string }): Promise<PasswordResetTokens[]> => {
       return db.select().from(passwordResetTokens).where(eq(passwordResetTokens.tokenHash, token));
+    },
+  },
+  transferRequests: {
+    getByProjectId: async ({ projectId }: { projectId: string }): Promise<TransferRequests[]> => {
+      return db.select().from(transferRequests).where(eq(transferRequests.projectId, projectId));
+    },
+    getByUserId: async ({ userId }: { userId: string }): Promise<TransferRequests[]> => {
+      return db.select().from(transferRequests).where(eq(transferRequests.toUserId, userId));
     },
   },
 };

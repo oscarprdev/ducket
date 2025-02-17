@@ -2,9 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { env } from '~/env';
 import { validatedActionWithUser } from '~/server/auth/middleware';
 import { MUTATIONS } from '~/server/db/mutations';
 import { QUERIES } from '~/server/db/queries';
+import { sendTransferEmail } from '~/server/email';
 
 const updateProjectTitleSchema = z.object({
   projectId: z.string().min(1, { message: 'Project ID is required' }),
@@ -50,9 +52,23 @@ export const transferProject = validatedActionWithUser(transferProjectSchema, as
       return { error: 'You cannot transfer the project to yourself' };
     }
 
-    // TODO: Notify the new owner with resend email
+    let userName: string = user.name ?? '';
 
-    await MUTATIONS.projects.transfer({ projectId, ownerId: user.id });
+    if (!userName) {
+      const [user] = await QUERIES.users.getById({ id: project.ownerId });
+      if (user?.name) {
+        userName = user.name;
+      }
+    }
+
+    await sendTransferEmail({
+      from: {
+        name: userName,
+        project: project.title,
+      },
+      to: user.email,
+      url: `${env.API_URL}/sign-in`,
+    });
 
     revalidatePath(`/dashboard/${projectId}/settings`);
 
