@@ -118,7 +118,7 @@ export function PublicFileUpload({ action, lastPublicFile }: PublicFileUploadPro
   return (
     <form action={handleSubmit} className="w-full space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="file-upload">File Upload</Label>
+        {/* <Label htmlFor="file-upload">File Upload</Label> */}
         <div
           {...getRootProps()}
           className="cursor-pointer rounded-lg border-[1px] border-dashed border-muted-foreground p-6 text-center">

@@ -3,7 +3,7 @@ import { Button } from '~/components/ui/button';
 
 export function Header() {
   return (
-    <div className="pt-8">
+    <div className="pt-5">
       <div className="mx-auto max-w-[800px] px-4">
         <header className="rounded-lg border border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="flex h-14 items-center justify-between pl-6 pr-2">
