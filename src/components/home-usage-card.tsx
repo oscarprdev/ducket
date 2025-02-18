@@ -25,7 +25,7 @@ export function HomeUsageCard() {
             className="relative flex w-full flex-col gap-2 border border-border bg-muted/90 p-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium">Storage Used</p>
-              <p className="text-sm text-muted-foreground">250MB / 1GB</p>
+              <p className="text-sm text-muted-foreground">750MB / 1GB</p>
             </div>
 
             <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
