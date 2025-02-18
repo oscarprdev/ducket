@@ -1,9 +1,11 @@
 import { uploadPublicFile } from './actions';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { HomeDeveloperCard } from '~/components/dashboard/api-keys/home-developer-card';
 import { Header } from '~/components/header';
 import { HomeFilesCard } from '~/components/home-files-card';
 import { HomeMonitoringCard } from '~/components/home-monitoring-card';
+import { HomeTransitioningCard } from '~/components/home-transitioning-card';
 import { HomeUsageCard } from '~/components/home-usage-card';
 import { HomeUsersCard } from '~/components/home-users-card';
 import { PublicFileUpload } from '~/components/public-file-upload';
@@ -34,10 +36,10 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <section className="relative mx-auto mt-16 max-w-[1200px] bg-background px-4 pt-12">
+      <section className="relative mx-auto mt-16 grid h-screen max-w-[1200px] place-items-center bg-background px-4 pt-12">
         <span className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(ellipse_60%_60%_at_50%_-10%,#474747,rgba(54,54,54,0))]"></span>
-        <div className="relative h-screen w-full gap-8">
-          <div className="mx-auto flex w-full max-w-[800px] flex-col items-start justify-center gap-1 bg-clip-text pb-5 pt-0 text-center text-transparent">
+        <div className="relative -mt-20 flex h-screen w-full flex-col items-center justify-center gap-16">
+          <div className="mx-auto flex w-full max-w-[800px] flex-col items-start justify-center gap-1 bg-clip-text text-center text-transparent">
             <Link href="/roadmap" className="block w-fit cursor-pointer">
               <Badge
                 variant="default"
@@ -65,10 +67,11 @@ export default async function HomePage() {
           <PublicFilesSection />
         </div>
       </section>
+      <HomeTransitioningCard />
 
-      <section className="relative mx-auto h-screen max-w-[1200px] space-y-8 bg-background px-4 pt-12">
+      <section className="relative mx-auto h-full max-w-[1200px] space-y-8 bg-background px-4 py-12">
         <div className="space-y-4">
-          <h2 className="text-7xl font-bold">Everything you need</h2>
+          <h2 className="text-7xl font-bold">Features</h2>
           <p className="mt-5 text-muted-foreground">
             Ducket is a simple, secure, and easy-to-use file storage solution.
           </p>
@@ -81,27 +84,7 @@ export default async function HomePage() {
         <HomeMonitoringCard />
       </section>
 
-      {/* <div className="relative grid grid-cols-4 gap-8">
-              <div className="text-center">
-                <p className="mb-1 text-sm text-muted-foreground">Active users</p>
-                <AnimatedCounter value={113} className="text-3xl font-bold" />
-              </div>
-              <div className="text-center">
-                <p className="mb-1 text-sm text-muted-foreground">Files</p>
-                <AnimatedCounter value={451} className="text-3xl font-bold" />
-              </div>
-              <div className="text-center">
-                <p className="mb-1 text-sm text-muted-foreground">Projects</p>
-                <AnimatedCounter value={57} className="text-3xl font-bold" />
-              </div>
-              <div className="text-center">
-                <p className="mb-1 text-sm text-muted-foreground">Downloads</p>
-                <AnimatedCounter value={231} className="text-3xl font-bold" />
-              </div>
-              <div className="absolute bottom-0 left-1/4 top-0 w-px bg-muted-foreground/40"></div>
-              <div className="absolute bottom-0 left-1/2 top-0 w-px bg-muted-foreground/40"></div>
-              <div className="absolute bottom-0 left-3/4 top-0 w-px bg-muted-foreground/40"></div>
-            </div> */}
+      <HomeDeveloperCard />
     </>
   );
 }
