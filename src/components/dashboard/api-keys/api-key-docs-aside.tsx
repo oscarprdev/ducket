@@ -1,4 +1,5 @@
 import { Check, Copy, X } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { ScrollArea } from '~/components/ui/scroll-area';
@@ -49,8 +50,10 @@ export function ApiKeyDocsAside({ onClose }: ApiKeyDocsAsideProps) {
           </section>
 
           <section>
-            <h4 className="mb-2 font-medium">Initializing Bucket</h4>
-
+            <h4 className="mb-2 font-medium">First Steps</h4>
+            <p className="text-sm text-muted-foreground">
+              Install the package and initialize the Bucket object.
+            </p>
             <div className="mt-3 overflow-hidden rounded-lg border bg-zinc-950">
               <div className="border-b border-zinc-800">
                 <div className="flex w-full items-center">
@@ -68,28 +71,28 @@ export function ApiKeyDocsAside({ onClose }: ApiKeyDocsAsideProps) {
                 </div>
               </div>
               <div className="space-y-4 p-4">
-                <code className="block font-mono text-sm">
+                <code className="block font-mono text-xs">
                   <span className="text-zinc-500">import</span>
                   <span className="text-white"> {'{ '}</span>
                   <span className="text-white">Bucket</span>
                   <span className="text-white">{' }'}</span>
                   <span className="text-zinc-500"> from </span>
-                  <span className="text-emerald-300">{`'@bucket'`}</span>
+                  <span className="text-accent">{`'@bucket'`}</span>
                   <span className="text-white">;</span>
                 </code>
-                <code className="block font-mono text-sm">
+                <code className="block font-mono text-xs">
                   <span className="text-zinc-500">const</span>
                   <span className="text-white"> bucket = </span>
                   <span className="text-zinc-500">new</span>
                   <span className="text-white"> Bucket({'{'}</span>
                   <div className="pl-4">
                     <span className="text-white">useDucket:</span>
-                    <span className="text-emerald-300"> true</span>
+                    <span className="text-accent"> true</span>
                     <span className="text-white">,</span>
                   </div>
                   <div className="pl-4">
                     <span className="text-white">apiKey: </span>
-                    <span className="text-emerald-300">gI6ZDBq1GV....fv2t96Xd</span>
+                    <span className="text-accent">gI6ZDBq1GV....fv2t96Xd</span>
                   </div>
                   <span className="text-white">{'})'}</span>
                   <span className="text-white">;</span>
@@ -100,7 +103,15 @@ export function ApiKeyDocsAside({ onClose }: ApiKeyDocsAsideProps) {
 
           <section>
             <h4 className="mb-2 font-medium">Uploading a File</h4>
-            <div className="overflow-hidden rounded-lg border bg-zinc-950">
+            <p className="text-sm text-muted-foreground">
+              This is an example of how to upload a file to the bucket.
+              <br />
+              To see more check{' '}
+              <Link href="/docs" target="_blank" className="text-accent hover:underline">
+                docs.
+              </Link>
+            </p>
+            <div className="mt-3 overflow-hidden rounded-lg border bg-zinc-950">
               <div className="border-b border-zinc-800">
                 <div className="flex w-full items-center">
                   <Button
@@ -117,7 +128,7 @@ export function ApiKeyDocsAside({ onClose }: ApiKeyDocsAsideProps) {
                 </div>
               </div>
               <div className="space-y-4 p-4">
-                <code className="block font-mono text-sm">
+                <code className="block font-mono text-xs">
                   <span className="text-zinc-500">export const</span>
                   <span className="text-white"> uploadFile = </span>
                   <span className="text-zinc-500">async</span>
@@ -128,7 +139,7 @@ export function ApiKeyDocsAside({ onClose }: ApiKeyDocsAsideProps) {
                   <div className="pl-4">
                     <span className="text-zinc-500">const</span>
                     <span className="text-white"> file = formData.get(</span>
-                    <span className="text-emerald-300">&apos;file&apos;</span>
+                    <span className="text-accent">&apos;file&apos;</span>
                     <span className="text-white">) </span>
                     <span className="text-zinc-500">as</span>
                     <span className="text-purple-300"> File</span>
@@ -140,13 +151,13 @@ export function ApiKeyDocsAside({ onClose }: ApiKeyDocsAsideProps) {
                       {' '}
                       fileName = formData.<span>get</span>(
                     </span>
-                    <span className="text-emerald-300">&apos;fileName&apos;</span>
+                    <span className="text-accent">&apos;fileName&apos;</span>
                     <span className="text-white">);</span>
                   </div>
                   <div className="pl-4">
                     <span className="text-zinc-500">const</span>
                     <span className="text-white"> type = formData.get(</span>
-                    <span className="text-emerald-300">&apos;type&apos;</span>
+                    <span className="text-accent">&apos;type&apos;</span>
                     <span className="text-white">);</span>
                   </div>
                   <div className="pl-4">
