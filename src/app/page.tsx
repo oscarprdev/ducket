@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from '~/components/header';
 import { HomeFilesCard } from '~/components/home-files-card';
+import { HomeMonitoringCard } from '~/components/home-monitoring-card';
 import { HomeUsageCard } from '~/components/home-usage-card';
 import { HomeUsersCard } from '~/components/home-users-card';
 import { PublicFileUpload } from '~/components/public-file-upload';
@@ -77,6 +78,7 @@ export default async function HomePage() {
           <HomeUsersCard />
           <HomeUsageCard />
         </div>
+        <HomeMonitoringCard />
       </section>
 
       {/* <div className="relative grid grid-cols-4 gap-8">
