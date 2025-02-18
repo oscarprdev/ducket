@@ -13,7 +13,7 @@ import { type ActionState } from '~/server/auth/middleware';
 import { type PublicFiles } from '~/server/db/schema';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-export const MAX_FILES = 4; // Maximum number of files
+export const MAX_FILES = 3; // Maximum number of files
 
 interface PublicFileUploadProps {
   lastPublicFile?: PublicFiles;
