@@ -2,9 +2,10 @@
 
 import { DeleteProjectDialog } from '../delete-project-dialog';
 import { EditProjectDialog } from './edit-project-dialog';
-import { Clock, Folder, MoreVertical } from 'lucide-react';
+import { Clock, Folder, MoreVertical, User } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import {
@@ -13,33 +14,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
+import { Progress } from '~/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import { formatFileSize } from '~/lib/utils';
+import { type Files, type Users } from '~/server/db/schema';
 
 interface ProjectCardProps {
+  id: string;
+  title: string;
+  owner: Users;
+  createdAt: string;
+  maxSize: number;
   isOwned: boolean;
-  project: {
-    id: string;
-    title: string;
-    owner: string;
-    createdAt: string;
-    visibility: 'shared' | 'private';
-  };
-  usageIcon: React.ReactNode;
-  numberOfFiles: React.ReactNode;
-  owner: React.ReactNode;
-  visibilityIcon: React.ReactNode;
+  files: Files[];
 }
 
 export default function ProjectCard({
-  isOwned,
-  project,
-  usageIcon,
-  numberOfFiles,
+  id,
+  title,
   owner,
-  visibilityIcon,
+  createdAt,
+  maxSize,
+  isOwned,
+  files,
 }: ProjectCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const usage = files.reduce((acc, file) => acc + file.size, 0);
+  const storagePercentage = (usage / maxSize) * 100;
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -48,21 +51,38 @@ export default function ProjectCard({
 
   return (
     <>
-      <Link href={`/dashboard/${project.id}`} key={project.id}>
-        <Card className="mb-4 space-y-2 border-2 border-border p-2 transition-colors hover:border-muted-foreground/40">
-          <div className="relative rounded-sm border border-border p-2">
-            <div className="mb-4 flex items-center space-x-3">
-              <Folder className="h-8 w-8 fill-muted text-muted-foreground" />
-              <h2 className="text-sm font-semibold capitalize">{project.title}</h2>
+      <Link href={`/dashboard/${id}`}>
+        <Card className="border-px mb-4 space-y-2 border-border p-2 shadow-md">
+          <div className="relative rounded-sm p-4 duration-200 hover:bg-muted/50">
+            <div className="mb-4 flex flex-col items-start space-y-3">
+              <div className="flex items-center space-x-2">
+                <Folder className="h-8 w-8 fill-muted text-muted-foreground" />
+                <h2 className="text-sm font-semibold capitalize">{title}</h2>
+              </div>
+              <Badge variant={isOwned ? 'default' : 'outline'}>
+                {isOwned ? 'Owned' : 'Invited'}
+              </Badge>
             </div>
             <div className="mb-4 flex w-fit flex-col space-y-2">
-              {owner}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex w-fit items-center space-x-1">
+                      <User className="h-4 w-4 fill-muted text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">{owner.name}</p>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Owner</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex w-fit items-center space-x-1">
                       <Clock className="h-4 w-4 fill-muted text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">{project.createdAt}</p>
+                      <p className="text-xs text-muted-foreground">{createdAt}</p>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -70,11 +90,29 @@ export default function ProjectCard({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              {numberOfFiles}
             </div>
-            {visibilityIcon}
+
+            <div className="space-y-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-xs text-muted-foreground">Storage</span>
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {formatFileSize(usage)} / {formatFileSize(maxSize)}
+                        </span>
+                      </div>
+                      <Progress value={storagePercentage} className="h-1" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Storage usage: {storagePercentage.toFixed(2)}%</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="absolute right-2 top-2 flex items-center">
-              {usageIcon}
               {isOwned && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -108,14 +146,10 @@ export default function ProjectCard({
       <EditProjectDialog
         isOpen={isEditOpen}
         onOpenChange={setIsEditOpen}
-        projectId={project.id}
-        projectTitle={project.title}
+        projectId={id}
+        projectTitle={title}
       />
-      <DeleteProjectDialog
-        isOpen={isDeleteOpen}
-        onOpenChange={setIsDeleteOpen}
-        projectId={project.id}
-      />
+      <DeleteProjectDialog isOpen={isDeleteOpen} onOpenChange={setIsDeleteOpen} projectId={id} />
     </>
   );
 }

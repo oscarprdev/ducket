@@ -1,4 +1,5 @@
 import { db } from '.';
+import { mapProjectsFilesAndUsers } from '../utils/map-projects-files';
 import {
   type ActivityLogs,
   type ApiKeys,
@@ -30,19 +31,48 @@ export interface ActivityLogsWithUser extends ActivityLogs {
   user: string;
 }
 
+export interface ProjectsWithFilesAndUser extends Projects {
+  files: Files[];
+  user: Users;
+}
+
 export const QUERIES = {
   projects: {
-    getAll: ({ ownerId }: { ownerId: string }): Promise<Projects[]> => {
-      return db.select().from(projects).where(eq(projects.ownerId, ownerId)).limit(10).offset(0);
+    getAll: async ({ ownerId }: { ownerId: string }): Promise<ProjectsWithFilesAndUser[]> => {
+      const projectsWithFiles = await db
+        .select()
+        .from(projects)
+        .innerJoin(users, eq(users.id, ownerId))
+        .leftJoin(files, eq(files.projectId, projects.id))
+        .where(eq(projects.ownerId, ownerId))
+        .orderBy(desc(projects.createdAt));
+
+      return mapProjectsFilesAndUsers(
+        projectsWithFiles.map(data => ({
+          projects: data.projects,
+          files: data.files,
+          user: data.user,
+        }))
+      );
     },
-    getShared: async ({ userId }: { userId: string }): Promise<Projects[]> => {
+    getShared: async ({ userId }: { userId: string }): Promise<ProjectsWithFilesAndUser[]> => {
       const result = await db
         .select()
         .from(projects)
         .innerJoin(projectUsers, eq(projectUsers.projectId, projects.id))
         .innerJoin(users, eq(users.id, userId))
-        .where(and(eq(projectUsers.email, users.email), eq(projectUsers.isOwner, false)));
-      return result.map(data => data.projects);
+        .leftJoin(files, eq(files.projectId, projects.id))
+        .where(
+          and(
+            eq(projectUsers.email, users.email),
+            eq(projectUsers.state, 'accepted'),
+            eq(projectUsers.isOwner, false)
+          )
+        );
+
+      return mapProjectsFilesAndUsers(
+        result.map(data => ({ projects: data.projects, files: data.files, user: data.user }))
+      );
     },
     getById: async ({ projectId }: { projectId: string }) => {
       return db.select().from(projects).where(eq(projects.id, projectId));
