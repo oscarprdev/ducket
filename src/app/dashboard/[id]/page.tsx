@@ -72,7 +72,10 @@ export default async function OverviewPage({ params }: { params: Promise<{ id: s
   ]);
   if (!user) redirect('/sign-in');
 
-  const [projectUsers] = await QUERIES.projectUsers.getByUserEmail({ email: user.email });
+  const [projectUsers] = await QUERIES.projectUsers.getByUserEmail({
+    email: user.email,
+    projectId: id,
+  });
   if (!project || !projectUsers) redirect('/dashboard');
 
   return (

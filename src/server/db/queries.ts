@@ -220,15 +220,42 @@ export const QUERIES = {
         .offset(offset ?? DEFAULT_OFFSET)
         .limit(limit ?? DEFAULT_LIMIT);
     },
-    getByUserEmail: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
-      return db.select().from(projectUsers).where(eq(projectUsers.email, email));
+    getByUserEmail: ({
+      email,
+      projectId,
+    }: {
+      email: string;
+      projectId: string;
+    }): Promise<ProjectUsers[]> => {
+      return db
+        .select()
+        .from(projectUsers)
+        .where(
+          and(
+            eq(projectUsers.email, email),
+            eq(projectUsers.state, 'accepted'),
+            eq(projectUsers.projectId, projectId)
+          )
+        );
     },
-    getByUserId: async ({ userId }: { userId: string }): Promise<ProjectUsers[]> => {
+    getByUserId: async ({
+      userId,
+      projectId,
+    }: {
+      userId: string;
+      projectId: string;
+    }): Promise<ProjectUsers[]> => {
       const result = await db
         .select()
         .from(projectUsers)
         .innerJoin(users, eq(users.id, userId))
-        .where(eq(projectUsers.email, users.email));
+        .where(
+          and(
+            eq(projectUsers.email, users.email),
+            eq(projectUsers.state, 'accepted'),
+            eq(projectUsers.projectId, projectId)
+          )
+        );
       return result.map(data => data.project_users);
     },
     getNoOwned: ({ email }: { email: string }): Promise<ProjectUsers[]> => {
@@ -236,15 +263,6 @@ export const QUERIES = {
         .select()
         .from(projectUsers)
         .where(and(eq(projectUsers.email, email), eq(projectUsers.isOwner, false)));
-    },
-    getVisibility: async ({ projectId }: { projectId: string }): Promise<{ isShared: boolean }> => {
-      const projectsUsers = await db
-        .select()
-        .from(projectUsers)
-        .where(eq(projectUsers.projectId, projectId));
-      return {
-        isShared: projectsUsers.length > 1,
-      };
     },
     getInvitations: async ({ email }: { email: string }): Promise<ProjectsWithPermissions[]> => {
       const result = await db

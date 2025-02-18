@@ -74,7 +74,10 @@ export default async function ProjectPage({
   if (!session?.user?.id) redirect('/dashboard');
 
   const user = session.user;
-  const [projectUser] = await QUERIES.projectUsers.getByUserId({ userId: user.id });
+  const [projectUser] = await QUERIES.projectUsers.getByUserId({
+    userId: user.id,
+    projectId: id,
+  });
   if (!projectUser) redirect('/dashboard');
 
   const isUploadAllowed =

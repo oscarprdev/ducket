@@ -43,10 +43,13 @@ export default async function UsersPage({ params }: { params: Promise<{ id: stri
   if (!session?.user?.id) redirect('/dashboard');
 
   const user = session.user;
-  const [projectUser] = await QUERIES.projects.getById({ projectId: id });
+  const [projectUser] = await QUERIES.projectUsers.getByUserId({
+    userId: user.id,
+    projectId: id,
+  });
   if (!projectUser) redirect('/dashboard');
-
-  const isOwner = projectUser.ownerId === user.id;
+  const [owner] = await QUERIES.users.getByEmail({ email: projectUser.email });
+  const isOwner = projectUser.isOwner;
 
   return (
     <section className="relative">
@@ -60,7 +63,7 @@ export default async function UsersPage({ params }: { params: Promise<{ id: stri
         {isOwner && <InviteUserDialog projectId={id} />}
       </div>
       <Suspense fallback={<UsersTableSkeleton />}>
-        <ProjectUsersSSR projectId={id} isOwner={isOwner} ownerId={projectUser.ownerId} />
+        <ProjectUsersSSR projectId={id} isOwner={isOwner} ownerId={owner?.id ?? ''} />
       </Suspense>
     </section>
   );

@@ -25,8 +25,12 @@ export default async function SettingsPage({ params }: { params: Promise<{ id: s
   if (!userId) redirect('/dashboard');
 
   const { id } = await params;
-  const [project] = await QUERIES.projects.getById({ projectId: id });
-  const isOwner = project?.ownerId === userId;
+  const [projectUser] = await QUERIES.projectUsers.getByUserId({
+    userId: userId,
+    projectId: id,
+  });
+  if (!projectUser) redirect('/dashboard');
+  const isOwner = projectUser.isOwner;
 
   return (
     <section className="flex flex-col space-y-6">

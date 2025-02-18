@@ -49,7 +49,9 @@ export default async function ApiKeysPage({
   const [userEmail] = await QUERIES.users.getById({ id: user.id });
   const [projectUser] = await QUERIES.projectUsers.getByUserEmail({
     email: userEmail?.email ?? '',
+    projectId: id,
   });
+  if (!projectUser) redirect('/dashboard');
   const userIsOwner = projectUser?.permissions.includes(API_KEY_PERMISSIONS.all);
 
   return (
