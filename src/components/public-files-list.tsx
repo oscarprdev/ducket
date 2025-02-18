@@ -23,7 +23,7 @@ export function PublicFilesList({ files }: { files: PublicFiles[] }) {
   };
 
   return (
-    <div className="divide-y rounded-lg border">
+    <section className="divide-y rounded-lg border">
       {files.length > 0 ? (
         files.map(file => (
           <div key={file.id} className="flex items-center justify-between p-4">
@@ -45,6 +45,6 @@ export function PublicFilesList({ files }: { files: PublicFiles[] }) {
       ) : (
         <div className="p-4 text-xs text-muted-foreground">No files uploaded yet</div>
       )}
-    </div>
+    </section>
   );
 }

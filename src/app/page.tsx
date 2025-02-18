@@ -1,8 +1,9 @@
 import { uploadPublicFile } from './actions';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Github } from 'lucide-react';
 import Link from 'next/link';
 import { AnimatedCounter } from '~/components/animated-counter';
 import { Header } from '~/components/header';
+import { HomeCopyButton } from '~/components/home-copy-button';
 import { PublicFileUpload } from '~/components/public-file-upload';
 import { PublicFilesList } from '~/components/public-files-list';
 import { RotatingText } from '~/components/rotating-text';
@@ -32,7 +33,7 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <div className="mx-auto mt-8 max-w-[1200px] px-4">
+      <div className="mx-auto mt-8 max-w-[1200px] px-4 pt-12">
         <div className="grid items-start gap-12 md:grid-cols-2">
           <div className="relative w-full space-y-8">
             <ShimmerBadge className="-mb-5 w-fit text-xs">
@@ -76,7 +77,7 @@ export default async function HomePage() {
               <div className="absolute bottom-0 left-3/4 top-0 w-px bg-muted-foreground/40"></div>
             </div>
 
-            {/* <div className="flex h-12 w-full items-center justify-between gap-2">
+            <div className="flex h-12 w-full items-center justify-between gap-2">
               <div className="flex w-full items-center justify-between rounded-md border-[1px] border-dashed border-muted-foreground/80 p-2 transition-colors duration-300 hover:bg-muted-foreground/10">
                 <HomeCopyButton />
               </div>
@@ -88,7 +89,7 @@ export default async function HomePage() {
                   <Github className="size-full" />
                 </Link>
               </Button>
-            </div> */}
+            </div>
 
             <div className="mt-6 flex gap-4">
               <Button asChild className="flex-1">

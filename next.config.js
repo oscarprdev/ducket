@@ -17,6 +17,13 @@ const config = {
       dynamic: 30,
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'ducket.dev',
+      },
+    ],
+  },
 };
 
 export default config;
