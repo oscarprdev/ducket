@@ -3,6 +3,7 @@
 import { Bucket } from 'ducket';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { MAX_FILES } from '~/components/public-file-upload';
 import { env } from '~/env';
 import { VALID_FILE_TYPES } from '~/lib/constants';
 import { validatedAction } from '~/server/auth/middleware';
@@ -29,7 +30,7 @@ const uploadPublicFileSchema = z.object({
 export const uploadPublicFile = validatedAction(uploadPublicFileSchema, async (_, formData) => {
   try {
     const currentPublicFiles = await QUERIES.publicFiles.getAll();
-    if (currentPublicFiles.length >= 3) {
+    if (currentPublicFiles.length >= MAX_FILES) {
       await MUTATIONS.publicFiles.delete({ name: currentPublicFiles[0]?.fileName ?? '' });
     }
 

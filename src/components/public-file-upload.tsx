@@ -13,7 +13,7 @@ import { type ActionState } from '~/server/auth/middleware';
 import { type PublicFiles } from '~/server/db/schema';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const MAX_FILES = 3; // Maximum number of files
+export const MAX_FILES = 4; // Maximum number of files
 
 interface PublicFileUploadProps {
   lastPublicFile?: PublicFiles;
@@ -124,9 +124,9 @@ export function PublicFileUpload({ action, lastPublicFile }: PublicFileUploadPro
           className="cursor-pointer rounded-lg border-[1px] border-dashed border-muted-foreground p-6 text-center">
           <input {...getInputProps()} id="file-upload" name="file" />
           {isDragActive ? (
-            <p className="text-primary">Drop the files here ...</p>
+            <p className="text-sm text-primary">Drop the files here ...</p>
           ) : (
-            <p className="text-primary">Drag & drop files here, or click to select files</p>
+            <p className="text-sm text-primary">Drag & drop files here, or click to select files</p>
           )}
           <p className="mt-2 text-xs text-muted-foreground">Maximum file size: 5MB per file</p>
         </div>

@@ -1,14 +1,11 @@
 import { uploadPublicFile } from './actions';
-import { ArrowRight, Github } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { AnimatedCounter } from '~/components/animated-counter';
 import { Header } from '~/components/header';
-import { HomeCopyButton } from '~/components/home-copy-button';
 import { PublicFileUpload } from '~/components/public-file-upload';
 import { PublicFilesList } from '~/components/public-files-list';
 import { RotatingText } from '~/components/rotating-text';
-import { ShimmerBadge } from '~/components/shimmer-badge';
-import { Button } from '~/components/ui/button';
+import { Badge } from '~/components/ui/badge';
 import { QUERIES } from '~/server/db/queries';
 
 async function PublicFilesSection() {
@@ -16,12 +13,12 @@ async function PublicFilesSection() {
   const lastPublicFile = publicFiles[publicFiles.length - 1];
 
   return (
-    <div className="space-y-8 rounded-lg border p-6">
-      <div className="space-y-4">
+    <div className="mx-auto flex w-full max-w-[800px] items-start justify-between gap-6 rounded-lg border p-6">
+      <div className="w-full space-y-4">
         <h2 className="text-2xl font-bold">Quick Share</h2>
         <PublicFileUpload action={uploadPublicFile} lastPublicFile={lastPublicFile} />
       </div>
-      <div className="space-y-4">
+      <div className="w-full space-y-4">
         <h3 className="text-lg font-semibold">Recently shared files</h3>
         <PublicFilesList files={publicFiles} />
       </div>
@@ -33,17 +30,48 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <div className="mx-auto mt-8 max-w-[1200px] px-4 pt-12">
-        <div className="grid items-start gap-12 md:grid-cols-2">
-          <div className="relative w-full space-y-8">
-            <ShimmerBadge className="-mb-5 w-fit text-xs">
-              <>
-                Incoming features
-                <ArrowRight className="h-3 w-3" />
-              </>
-            </ShimmerBadge>
+      <section className="relative mx-auto mt-16 max-w-[1200px] bg-background px-4 pt-12">
+        <span className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(ellipse_60%_70%_at_50%_-10%,#474747,rgba(54,54,54,0))]"></span>
+        <div className="relative h-screen w-full gap-8">
+          <div className="mx-auto flex w-full max-w-[800px] flex-col items-start justify-center gap-1 bg-clip-text pb-5 pt-0 text-center text-transparent">
+            <Link href="/roadmap" className="block w-fit cursor-pointer">
+              <Badge
+                variant="default"
+                className={'-mb-2 flex w-fit items-center gap-1 text-xs hover:bg-secondary/80'}>
+                <>
+                  Check Roadmap
+                  <ArrowRight className="h-3 w-3" />
+                </>
+              </Badge>
+            </Link>
+            <h1
+              style={{
+                WebkitTextStroke: '1px white',
+                fontWeight: 800,
+                letterSpacing: '0.05em',
+              }}
+              className="text-[11rem] font-bold leading-none tracking-tighter">
+              DUCKET
+            </h1>
+            <h2 className="w-full text-pretty text-left text-5xl font-bold tracking-tight text-primary">
+              Next generation of file storage made simple for <RotatingText />
+            </h2>
+          </div>
 
-            <div className="space-y-6">
+          {/* <div className="mx-auto flex w-full max-w-[600px] gap-4">
+            <Button asChild className="flex-1">
+              <Link href="/sign-in">Start your project</Link>
+            </Button>
+            <Button variant="outline" className="flex-1">
+              <Link href="/docs">Read documentation</Link>
+            </Button>
+          </div> */}
+
+          <PublicFilesSection />
+        </div>
+      </section>
+
+      {/* <div className="space-y-6">
               <h1 className="text-pretty text-5xl font-bold tracking-tight text-primary">
                 File storage made simple for <RotatingText />
               </h1>
@@ -53,9 +81,9 @@ export default async function HomePage() {
                 Simplify your file storage and management with Ducket. Secure, efficient, and easy
                 to use. Share files instantly without an account or sign up for more features.
               </p>
-            </div>
+            </div> */}
 
-            <div className="relative grid grid-cols-4 gap-8">
+      {/* <div className="relative grid grid-cols-4 gap-8">
               <div className="text-center">
                 <p className="mb-1 text-sm text-muted-foreground">Active users</p>
                 <AnimatedCounter value={113} className="text-3xl font-bold" />
@@ -75,35 +103,21 @@ export default async function HomePage() {
               <div className="absolute bottom-0 left-1/4 top-0 w-px bg-muted-foreground/40"></div>
               <div className="absolute bottom-0 left-1/2 top-0 w-px bg-muted-foreground/40"></div>
               <div className="absolute bottom-0 left-3/4 top-0 w-px bg-muted-foreground/40"></div>
-            </div>
+            </div> */}
 
-            <div className="flex h-12 w-full items-center justify-between gap-2">
-              <div className="flex w-full items-center justify-between rounded-md border-[1px] border-dashed border-muted-foreground/80 p-2 transition-colors duration-300 hover:bg-muted-foreground/10">
-                <HomeCopyButton />
-              </div>
-              <Button variant="ghost" className="h-full">
-                <Link
-                  href="https://www.npmjs.com/package/ducket"
-                  target="_blank"
-                  className="flex h-full w-full items-center justify-center">
-                  <Github className="size-full" />
-                </Link>
-              </Button>
-            </div>
-
-            <div className="mt-6 flex gap-4">
-              <Button asChild className="flex-1">
-                <Link href="/sign-in">Start your project</Link>
-              </Button>
-              <Button variant="outline" className="flex-1">
-                <Link href="/docs">Read documentation</Link>
-              </Button>
-            </div>
+      {/* <div className="flex h-12 w-full items-center justify-between gap-2">
+          <div className="flex w-full items-center justify-between rounded-md border-[1px] border-dashed border-muted-foreground/80 p-2 transition-colors duration-300 hover:bg-muted-foreground/10">
+            <HomeCopyButton />
           </div>
-
-          <PublicFilesSection />
-        </div>
-      </div>
+          <Button variant="ghost" className="h-full">
+            <Link
+              href="https://www.npmjs.com/package/ducket"
+              target="_blank"
+              className="flex h-full w-full items-center justify-center">
+              <Github className="size-full" />
+            </Link>
+          </Button>
+        </div> */}
     </>
   );
 }
