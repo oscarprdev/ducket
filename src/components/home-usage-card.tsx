@@ -36,7 +36,7 @@ export function HomeUsageCard() {
                 viewport={{ once: true }}
                 transition={{
                   duration: 1,
-                  delay: 0.3,
+                  delay: 0.7,
                   ease: 'easeOut',
                 }}
               />

@@ -80,7 +80,7 @@ export function HomeMonitoringCard() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
               className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
               <div className="flex items-center space-x-4">
                 <DownloadIcon className="h-4 w-4" />
@@ -96,7 +96,7 @@ export function HomeMonitoringCard() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.5, delay: 1 }}
               className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
               <div className="flex items-center space-x-4">
                 <UploadIcon className="h-4 w-4" />
@@ -112,7 +112,7 @@ export function HomeMonitoringCard() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 1 }}
+              transition={{ duration: 0.5, delay: 1.5 }}
               className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
               <div className="flex items-center space-x-4">
                 <Trash className="h-4 w-4" />

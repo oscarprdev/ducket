@@ -16,13 +16,13 @@ export function HomeFilesCard() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5 }}
             className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 20, left: -8, top: -8 }}
               whileInView={{ opacity: 1, scale: 1, y: 0, left: -8, top: -8 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.8 }}
+              transition={{ duration: 0.3, delay: 1 }}
               className="absolute">
               <Badge variant="default">Upload</Badge>
             </motion.div>
@@ -42,13 +42,13 @@ export function HomeFilesCard() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
             className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 20, right: -8, top: -8 }}
               whileInView={{ opacity: 1, scale: 1, y: 0, right: -8, top: -8 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.9 }}
+              transition={{ duration: 0.3, delay: 1.5 }}
               className="absolute">
               <Badge variant="tertiary">Download</Badge>
             </motion.div>
@@ -68,13 +68,13 @@ export function HomeFilesCard() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 1 }}
             className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 20, left: -8, top: -8 }}
               whileInView={{ opacity: 1, scale: 1, y: 0, left: -8, top: -8 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 1 }}
+              transition={{ duration: 0.3, delay: 2 }}
               className="absolute">
               <Badge variant="destructive">Delete</Badge>
             </motion.div>
