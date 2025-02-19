@@ -145,7 +145,9 @@ export default function FileTable({
                       <CopyUrlButton url={file.url} />
                     </div>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{file.type}</TableCell>
+                  <TableCell className="max-w-[200px] truncate text-muted-foreground">
+                    {file.type}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">
                     {formatFileSize(file.size)}
                   </TableCell>

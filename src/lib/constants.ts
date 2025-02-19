@@ -1,9 +1,45 @@
 import { type ChartConfig } from '~/components/ui/chart';
 
 export const VALID_FILE_TYPES = {
-  images: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif'],
-  files: ['application/pdf', 'application/json'],
-  text: ['text/plain', 'text/csv'],
+  images: [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/gif',
+    'image/webp',
+    'image/avif',
+    'image/svg+xml',
+    'image/bmp',
+    'image/tiff',
+  ],
+  files: [
+    'application/pdf',
+    'application/json',
+    'application/zip',
+    'application/x-zip-compressed',
+    'application/x-rar-compressed',
+    'application/x-7z-compressed',
+    'application/x-tar',
+    'application/vnd.rar',
+    'application/x-bzip',
+    'application/x-bzip2',
+  ],
+  text: [
+    'text/plain',
+    'text/csv',
+    'text/html',
+    'text/css',
+    'text/javascript',
+    'text/markdown',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/msword',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint',
+    'application/xml',
+    'application/javascript',
+  ],
 };
 
 export type ApiKeyPermissions = (typeof API_KEY_PERMISSIONS)[keyof typeof API_KEY_PERMISSIONS];

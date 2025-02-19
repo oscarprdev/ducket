@@ -49,6 +49,7 @@ export default function FileDownloadButton({
       const response = await fetch(fileUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
+      console.log(url);
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;

@@ -62,6 +62,7 @@ export function FileUploadForm({
   });
 
   const handleSubmit = async () => {
+    console.log(files);
     await Promise.all(
       files.map(async file => {
         const formData = new FormData();
