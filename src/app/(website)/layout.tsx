@@ -1,6 +1,7 @@
 import { GeistSans } from 'geist/font/sans';
 import { type Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
+import { Header } from '~/components/home/header';
 import { Toaster } from '~/components/ui/toaster';
 import '~/styles/globals.css';
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Header />
           {children}
           <Toaster />
         </ThemeProvider>
