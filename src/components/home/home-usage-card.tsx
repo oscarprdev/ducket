@@ -10,13 +10,15 @@ export function HomeUsageCard() {
         <div className="flex h-full w-full flex-col gap-2 pr-5">
           <h3 className="text-2xl font-bold">Usage</h3>
           <p className="text-pretty text-sm text-muted-foreground">
-            Every free account has a bunch of storage space. Up to 1GB of files storage to start
-            your projects now. You can upgrade your account to get more storage space and other
-            features later.
+            Every free account has a bunch of storage space.
+            <br />
+            Up to 1GB of files storage to start your projects now.
+            {/* You can upgrade your account to get more storage space and other
+            features later. */}
           </p>
         </div>
 
-        <div className="flex h-full w-full flex-col gap-3">
+        <div className="mt-5 flex h-full w-full flex-col gap-3">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

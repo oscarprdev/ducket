@@ -2,6 +2,7 @@ import { uploadPublicFile } from './actions';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { HomeDeveloperCard } from '~/components/dashboard/api-keys/home-developer-card';
+import { Footer } from '~/components/home/footer';
 import { Header } from '~/components/home/header';
 import { HomeCommunityCard } from '~/components/home/home-community-card';
 import { HomeFilesCard } from '~/components/home/home-files-card';
@@ -12,6 +13,7 @@ import { PublicFileUpload } from '~/components/home/public-file-upload';
 import { PublicFilesList } from '~/components/home/public-files-list';
 import { RotatingText } from '~/components/home/rotating-text';
 import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader } from '~/components/ui/card';
 import { QUERIES } from '~/server/db/queries';
 
@@ -41,23 +43,27 @@ export default async function HomePage() {
         <span className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(ellipse_60%_60%_at_50%_-10%,#474747,rgba(54,54,54,0))]"></span>
         <div className="relative -mt-20 flex h-screen w-full flex-col items-center justify-center gap-16">
           <div className="mx-auto flex w-full max-w-[800px] flex-col items-start justify-center gap-1 bg-clip-text text-center text-transparent">
-            <Link href="/roadmap" className="block w-fit cursor-pointer">
-              <Badge
-                variant="default"
-                className={'-mb-2 flex w-fit items-center gap-1 text-xs hover:bg-secondary/80'}>
-                <>
-                  Check Roadmap
-                  <ArrowRight className="h-3 w-3" />
-                </>
+            <div className="-mb-2 flex items-center gap-2">
+              <Badge variant="outline" className={'flex w-fit items-center gap-1 text-xs'}>
+                Open source
               </Badge>
-            </Link>
+              <Link href="/roadmap" className="block w-fit cursor-pointer">
+                <Badge
+                  variant="default"
+                  className={'flex w-fit items-center gap-1 text-xs hover:bg-accent-foreground/50'}>
+                  Roadmap
+                  <ArrowRight className="size-3" />
+                </Badge>
+              </Link>
+            </div>
+
             <h1
               style={{
                 WebkitTextStroke: '1px white',
                 fontWeight: 800,
                 letterSpacing: '0.05em',
               }}
-              className="text-[11rem] font-bold leading-none tracking-tighter">
+              className="pointer-events-none text-[11rem] font-bold leading-none tracking-tighter">
               DUCKET
             </h1>
             <h2 className="w-full text-pretty text-left text-5xl font-bold tracking-tight text-primary">
@@ -79,7 +85,7 @@ export default async function HomePage() {
           </p>
         </div>
         <HomeFilesCard />
-        <div className="flex items-center gap-4">
+        <div className="flex h-full items-start gap-4">
           <HomeUsersCard />
           <HomeUsageCard />
         </div>
@@ -87,19 +93,29 @@ export default async function HomePage() {
       </section>
 
       <HomeDeveloperCard />
-      <section className="relative mx-auto h-full max-w-[1200px] space-y-8 bg-background px-4 py-12">
-        <Card className="bg-background">
+      <section className="relative mx-auto mt-10 h-full max-w-[1000px] space-y-8 px-4 py-28">
+        <Card className="space-y-4 py-10">
           <CardHeader>
-            <div className="space-y-4">
-              <h2 className="text-7xl font-bold">Try Ducket now</h2>
+            <div className="space-y-4 text-center">
+              <h2 className="text-5xl font-bold">Try Ducket now</h2>
               <p className="mt-5 text-muted-foreground">
-                Everyday more and more users are transitioning to Ducket. Are you one of them?
+                Start using Ducket today and experience a different file storage solution.
               </p>
             </div>
           </CardHeader>
-          <CardContent></CardContent>
+          <CardContent>
+            <div className="mx-auto flex w-full max-w-[500px] gap-4">
+              <Button asChild className="flex-1">
+                <Link href="/sign-in">Start your project</Link>
+              </Button>
+              <Button variant="outline" className="flex-1">
+                <Link href="/docs">Read documentation</Link>
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       </section>
+      <Footer />
     </>
   );
 }
