@@ -3,7 +3,7 @@
 import { Bucket } from 'ducket';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { MAX_FILES } from '~/components/public-file-upload';
+import { MAX_FILES } from '~/components/home/public-file-upload';
 import { env } from '~/env';
 import { VALID_FILE_TYPES } from '~/lib/constants';
 import { validatedAction } from '~/server/auth/middleware';

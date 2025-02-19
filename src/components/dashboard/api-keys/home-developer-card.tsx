@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Github } from 'lucide-react';
 import Link from 'next/link';
-import { HomeCopyButton } from '~/components/home-copy-button';
+import { HomeCopyButton } from '~/components/home/home-copy-button';
 import { Button } from '~/components/ui/button';
 
 export function HomeDeveloperCard() {

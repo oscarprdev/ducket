@@ -3,7 +3,7 @@
 import { Upload, X } from 'lucide-react';
 import type React from 'react';
 import { useRef, useState } from 'react';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '~/components/shared/submit-button';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import { useFormAction } from '~/hooks/use-form-action';

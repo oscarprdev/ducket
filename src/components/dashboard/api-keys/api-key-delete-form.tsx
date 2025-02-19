@@ -1,4 +1,4 @@
-import SubmitButton from '../../submit-button';
+import SubmitButton from '../../shared/submit-button';
 import { redirect } from 'next/navigation';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';

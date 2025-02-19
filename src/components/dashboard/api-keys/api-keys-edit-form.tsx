@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { type PropsWithChildren } from 'react';
 import { PermissionsSelect } from '~/components/dashboard/permissions-select';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '~/components/shared/submit-button';
 import { DialogFooter } from '~/components/ui/dialog';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';

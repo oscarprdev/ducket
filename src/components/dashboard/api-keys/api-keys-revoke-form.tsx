@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '~/components/shared/submit-button';
 import { Button } from '~/components/ui/button';
 import { Label } from '~/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';

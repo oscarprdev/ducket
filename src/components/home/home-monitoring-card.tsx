@@ -1,8 +1,8 @@
 'use client';
 
-import { Badge } from './ui/badge';
-import { Card } from './ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
+import { Badge } from '../ui/badge';
+import { Card } from '../ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 import { motion } from 'framer-motion';
 import { DownloadIcon, Trash, UploadIcon } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis } from 'recharts';

@@ -1,11 +1,11 @@
 'use client';
 
 import { AnimatedCounter } from './animated-counter';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-export function HomeTransitioningCard() {
+export function HomeCommunityCard() {
   return (
     <section className="relative mx-auto flex h-full max-w-[1200px] flex-col gap-8 space-y-8 bg-background px-4 py-12">
       <div className="space-y-4">

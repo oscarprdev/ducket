@@ -3,7 +3,7 @@
 // import { redirect } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
 import { PermissionsSelect } from '~/components/dashboard/permissions-select';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '~/components/shared/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import { API_KEY_PERMISSIONS, type Permission, availablePermissions } from '~/lib/constants';

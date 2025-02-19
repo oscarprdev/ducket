@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '~/components/shared/submit-button';
 import { useFormAction } from '~/hooks/use-form-action';
 import { useToast } from '~/hooks/use-toast';
 import type { ActionState } from '~/server/auth/middleware';

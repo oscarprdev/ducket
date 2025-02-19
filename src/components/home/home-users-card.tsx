@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge } from './ui/badge';
-import { Card } from './ui/card';
+import { Badge } from '../ui/badge';
+import { Card } from '../ui/card';
 import { motion } from 'framer-motion';
 import { ArrowRight, Lock, Users } from 'lucide-react';
 

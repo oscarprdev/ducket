@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from './ui/card';
+import { Card } from '../ui/card';
 import { motion } from 'framer-motion';
 
 export function HomeUsageCard() {

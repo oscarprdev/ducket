@@ -1,6 +1,6 @@
 'use client';
 
-import SubmitButton from '../submit-button';
+import SubmitButton from '../shared/submit-button';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { useFormAction } from '~/hooks/use-form-action';

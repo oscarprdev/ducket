@@ -2,16 +2,17 @@ import { uploadPublicFile } from './actions';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { HomeDeveloperCard } from '~/components/dashboard/api-keys/home-developer-card';
-import { Header } from '~/components/header';
-import { HomeFilesCard } from '~/components/home-files-card';
-import { HomeMonitoringCard } from '~/components/home-monitoring-card';
-import { HomeTransitioningCard } from '~/components/home-transitioning-card';
-import { HomeUsageCard } from '~/components/home-usage-card';
-import { HomeUsersCard } from '~/components/home-users-card';
-import { PublicFileUpload } from '~/components/public-file-upload';
-import { PublicFilesList } from '~/components/public-files-list';
-import { RotatingText } from '~/components/rotating-text';
+import { Header } from '~/components/home/header';
+import { HomeCommunityCard } from '~/components/home/home-community-card';
+import { HomeFilesCard } from '~/components/home/home-files-card';
+import { HomeMonitoringCard } from '~/components/home/home-monitoring-card';
+import { HomeUsageCard } from '~/components/home/home-usage-card';
+import { HomeUsersCard } from '~/components/home/home-users-card';
+import { PublicFileUpload } from '~/components/home/public-file-upload';
+import { PublicFilesList } from '~/components/home/public-files-list';
+import { RotatingText } from '~/components/home/rotating-text';
 import { Badge } from '~/components/ui/badge';
+import { Card, CardContent, CardHeader } from '~/components/ui/card';
 import { QUERIES } from '~/server/db/queries';
 
 async function PublicFilesSection() {
@@ -67,7 +68,8 @@ export default async function HomePage() {
           <PublicFilesSection />
         </div>
       </section>
-      <HomeTransitioningCard />
+
+      <HomeCommunityCard />
 
       <section className="relative mx-auto h-full max-w-[1200px] space-y-8 bg-background px-4 py-12">
         <div className="space-y-4">
@@ -85,6 +87,19 @@ export default async function HomePage() {
       </section>
 
       <HomeDeveloperCard />
+      <section className="relative mx-auto h-full max-w-[1200px] space-y-8 bg-background px-4 py-12">
+        <Card className="bg-background">
+          <CardHeader>
+            <div className="space-y-4">
+              <h2 className="text-7xl font-bold">Try Ducket now</h2>
+              <p className="mt-5 text-muted-foreground">
+                Everyday more and more users are transitioning to Ducket. Are you one of them?
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent></CardContent>
+        </Card>
+      </section>
     </>
   );
 }

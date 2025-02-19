@@ -1,6 +1,6 @@
 'use client';
 
-import SubmitButton from '../submit-button';
+import SubmitButton from '../shared/submit-button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { type AuthActionState } from './auth-form';

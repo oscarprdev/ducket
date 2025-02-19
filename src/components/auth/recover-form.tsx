@@ -5,7 +5,7 @@ import { type AuthActionState } from './auth-form';
 import { Eye, EyeOff } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { useState } from 'react';
-import SubmitButton from '~/components/submit-button';
+import SubmitButton from '~/components/shared/submit-button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { useFormAction } from '~/hooks/use-form-action';
