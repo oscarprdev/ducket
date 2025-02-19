@@ -42,7 +42,7 @@ export function CommunityCard() {
         <div className="absolute bottom-0 left-3/4 top-0 hidden w-px bg-muted-foreground/40 md:block"></div>
       </motion.div>
 
-      <div className="mx-auto flex w-full max-w-[800px] gap-4">
+      <div className="mx-auto flex w-full max-w-[800px] flex-col gap-4 md:flex-row">
         <Button asChild className="flex-1">
           <Link href="/sign-in">Start your project</Link>
         </Button>
