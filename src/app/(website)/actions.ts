@@ -30,9 +30,6 @@ const uploadPublicFileSchema = z.object({
 export const uploadPublicFile = validatedAction(uploadPublicFileSchema, async (_, formData) => {
   try {
     const currentPublicFiles = await QUERIES.publicFiles.getAll();
-    if (currentPublicFiles.length >= MAX_FILES) {
-      await MUTATIONS.publicFiles.delete({ name: currentPublicFiles[0]?.fileName ?? '' });
-    }
 
     const bucket = new Bucket({
       apiUrl: env.S3_API_URL,
@@ -40,6 +37,15 @@ export const uploadPublicFile = validatedAction(uploadPublicFileSchema, async (_
       secret: env.S3_SECRET_ACCESS_KEY,
       bucketName: env.S3_BUCKET,
     });
+
+    if (currentPublicFiles.length >= MAX_FILES) {
+      await Promise.all(
+        currentPublicFiles.map(async file => {
+          await MUTATIONS.publicFiles.delete({ name: file.fileName ?? '' });
+          await bucket.deleteFile({ name: file.fileName ?? '' });
+        })
+      );
+    }
 
     const file = formData.get('file') as File;
     const arrayBuffer = await file.arrayBuffer();

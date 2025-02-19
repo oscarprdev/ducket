@@ -82,7 +82,7 @@ export default function FooterContent() {
     <div className="flex h-full w-full flex-col justify-between bg-muted/90 px-4 py-6 sm:px-12 sm:py-8">
       <Nav />
       <div className="relative flex items-end justify-between">
-        <h6 className="absolute right-0 text-[14vw] font-bold leading-[0.8] text-muted-foreground/30 sm:-bottom-20">
+        <h6 className="absolute -bottom-10 right-0 text-[6rem] font-bold leading-[0.8] text-muted-foreground/30 sm:-bottom-20 md:text-[14rem]">
           DUCKET
         </h6>
       </div>

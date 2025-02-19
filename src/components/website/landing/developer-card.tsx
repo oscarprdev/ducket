@@ -69,7 +69,7 @@ export function DeveloperCard() {
           whileInView={{ opacity: 1, y: 0, left: '50%', x: '-50%', top: '1/3' }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="absolute mx-auto mt-10 w-[85vw] max-w-[800px] overflow-hidden rounded-xl border bg-zinc-950 sm:mt-20">
+          className="absolute mx-auto mt-20 w-[85vw] max-w-[800px] overflow-hidden rounded-xl border bg-zinc-950">
           <div className="border-b border-zinc-800">
             <div className="flex w-full items-start p-2">
               <span className="size-2.5 rounded-full border bg-destructive"></span>

@@ -111,7 +111,7 @@ export function HeaderNav() {
             Features
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="flex w-[200px] flex-col gap-3 p-4 md:w-[500px] lg:w-[300px]">
+            <ul className="flex w-[500px] flex-col gap-3 p-4">
               {features.map(component => (
                 <ListItem
                   key={component.title}
@@ -129,7 +129,7 @@ export function HeaderNav() {
             Community
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="flex w-[200px] flex-col gap-3 p-4 md:w-[500px] lg:w-[300px]">
+            <ul className="flex w-[500px] flex-col gap-3 p-4">
               {community.map(component => (
                 <ListItem
                   key={component.title}
@@ -147,7 +147,7 @@ export function HeaderNav() {
             Developers
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="flex w-[200px] flex-col gap-3 p-4 md:w-[500px] lg:w-[300px]">
+            <ul className="flex w-[500px] flex-col gap-3 p-4">
               {developers.map(component => (
                 <ListItem
                   key={component.title}
@@ -165,7 +165,7 @@ export function HeaderNav() {
             About
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="flex w-[200px] flex-col gap-3 p-4 md:w-[500px] lg:w-[300px]">
+            <ul className="flex w-[500px] flex-col gap-3 p-4">
               {about.map(component => (
                 <ListItem
                   key={component.title}

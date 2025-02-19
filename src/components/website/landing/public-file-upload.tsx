@@ -118,7 +118,6 @@ export function PublicFileUpload({ action, lastPublicFile }: PublicFileUploadPro
   return (
     <form action={handleSubmit} className="w-full space-y-4">
       <div className="space-y-2">
-        {/* <Label htmlFor="file-upload">File Upload</Label> */}
         <div
           {...getRootProps()}
           className="cursor-pointer rounded-lg border-[1px] border-dashed border-muted-foreground p-6 text-center">
@@ -126,7 +125,12 @@ export function PublicFileUpload({ action, lastPublicFile }: PublicFileUploadPro
           {isDragActive ? (
             <p className="text-sm text-primary">Drop the files here ...</p>
           ) : (
-            <p className="text-sm text-primary">Drag & drop files here, or click to select files</p>
+            <>
+              <p className="hidden text-sm text-primary md:block">
+                Drag & drop files here, or click to select files
+              </p>
+              <p className="block text-sm text-primary md:hidden">Click to select files</p>
+            </>
           )}
           <p className="mt-2 text-xs text-muted-foreground">Maximum file size: 5MB per file</p>
         </div>

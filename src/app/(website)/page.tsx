@@ -42,7 +42,7 @@ export default async function HomePage() {
         <span className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(ellipse_60%_60%_at_50%_-10%,#474747,rgba(54,54,54,0))]"></span>
         <div className="relative -mt-20 flex min-h-screen w-full flex-col items-center justify-center gap-8 sm:gap-16">
           <div className="mx-auto flex w-full max-w-[800px] flex-col items-start justify-center gap-1 bg-clip-text text-center text-transparent">
-            <div className="-mb-2 flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 md:-mb-2">
               <Badge variant="outline" className="flex w-fit items-center gap-1 text-xs">
                 Open source
               </Badge>
@@ -62,7 +62,7 @@ export default async function HomePage() {
                 fontWeight: 800,
                 letterSpacing: '0.05em',
               }}
-              className="pointer-events-none text-7xl font-bold leading-none tracking-tighter md:text-8xl lg:text-[11rem]">
+              className="pointer-events-none text-8xl font-bold leading-none tracking-tighter md:text-8xl lg:text-[11rem]">
               DUCKET
             </h1>
             <h2 className="w-full text-pretty text-left text-2xl font-bold tracking-tight text-primary sm:text-3xl md:text-4xl lg:text-5xl">
@@ -93,7 +93,7 @@ export default async function HomePage() {
 
       <DeveloperCard />
 
-      <section className="relative mx-auto h-full max-w-[1000px] space-y-8 px-4 py-12 sm:mt-10 sm:py-28">
+      <section className="relative mx-auto mt-10 h-full max-w-[1000px] space-y-8 px-4 py-28">
         <Card className="space-y-4 py-10">
           <CardHeader>
             <div className="space-y-4 text-center">
