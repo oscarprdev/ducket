@@ -2,7 +2,7 @@ import { GeistSans } from 'geist/font/sans';
 import { type Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import { DashboardHeader } from '~/components/dashboard/dashboard-header';
-import ProjectSidebar from '~/components/dashboard/project-sidebar';
+import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import { Toaster } from '~/components/ui/toaster';
 import { cn } from '~/lib/utils';
 import '~/styles/globals.css';
@@ -13,11 +13,7 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
-export default async function DashboardLayout({
-  children,
-  params,
-}: Readonly<{ children: React.ReactNode; params: Promise<{ id: string }> }>) {
-  const { id } = await params;
+export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
       <body>
@@ -26,7 +22,7 @@ export default async function DashboardLayout({
             <DashboardHeader className="fixed left-0 right-0 top-0 z-50 border-b" />
             <div className="flex flex-1 pt-16">
               <div className="fixed bottom-0 left-0 top-16">
-                <ProjectSidebar projectId={id} />
+                <DashboardSidebar />
               </div>
               <main
                 className={cn(

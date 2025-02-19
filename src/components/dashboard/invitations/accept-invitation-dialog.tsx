@@ -2,7 +2,7 @@
 
 import { AcceptInvitationForm } from './accept-invitation-form';
 import { useState } from 'react';
-import { acceptInvitation } from '~/app/dashboard/invitations/actions';
+import { acceptInvitation } from '~/app/dashboard/(dashboard)/invitations/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,

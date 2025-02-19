@@ -1,5 +1,5 @@
-import LoaderCircle from '../icons/loader-circle';
 import { Button, type buttonVariants } from '../ui/button';
+import LoaderCircle from './loader-circle';
 import { type VariantProps } from 'class-variance-authority';
 
 export default function SubmitButton({

@@ -2,7 +2,7 @@
 
 import { ProfileInformationForm } from './profile-information-form';
 import { User } from 'lucide-react';
-import { updateUserInformation } from '~/app/dashboard/account/actions';
+import { updateUserInformation } from '~/app/dashboard/(dashboard)/account/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 
 interface AccountProfileInformationProps {

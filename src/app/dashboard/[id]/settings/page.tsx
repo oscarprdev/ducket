@@ -1,4 +1,4 @@
-import { editProject } from '../../actions';
+import { editProject } from '../../(dashboard)/actions';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { DangerZone } from '~/components/dashboard/settings/danger-zone';

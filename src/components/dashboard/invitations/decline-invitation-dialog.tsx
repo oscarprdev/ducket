@@ -2,7 +2,7 @@
 
 import { DeclineInvitationForm } from './decline-invitation-form';
 import { useState } from 'react';
-import { declineInvitation } from '~/app/dashboard/invitations/actions';
+import { declineInvitation } from '~/app/dashboard/(dashboard)/invitations/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,

@@ -1,6 +1,6 @@
 import { AccountCredentialsForm } from './account-credentials-form';
 import { Lock } from 'lucide-react';
-import { updateUserCredentials } from '~/app/dashboard/account/actions';
+import { updateUserCredentials } from '~/app/dashboard/(dashboard)/account/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 
 interface AccountCredentialsProps {

@@ -1,7 +1,7 @@
 'use client';
 
 import { DeleteProjectForm } from './delete-project-form';
-import { deleteProject } from '~/app/dashboard/actions';
+import { deleteProject } from '~/app/dashboard/(dashboard)/actions';
 import {
   Dialog,
   DialogContent,

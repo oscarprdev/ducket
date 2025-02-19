@@ -1,7 +1,5 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import DashboardLayout from '~/components/dashboard/dashboard-layout';
-import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import { CreateProjectDialog } from '~/components/dashboard/projects/create-project-dialog';
 import ProjectCard from '~/components/dashboard/projects/project-card';
 import { ProjectListSkeleton } from '~/components/dashboard/projects/project-card-skeleton';
@@ -44,7 +42,7 @@ export default async function Dashboard() {
   if (!session || session.expires < new Date().toISOString()) return redirect('/sign-in');
 
   return (
-    <DashboardLayout sidebarContent={<DashboardSidebar />}>
+    <>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Projects</h1>
         <CreateProjectDialog />
@@ -52,6 +50,6 @@ export default async function Dashboard() {
       <Suspense fallback={<ProjectListSkeleton />}>
         <ProjectsListSSR userId={session.user.id} />
       </Suspense>
-    </DashboardLayout>
+    </>
   );
 }

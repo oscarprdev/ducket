@@ -10,8 +10,6 @@ import {
   ProfileImageSkeleton,
   ProfileInfoSkeleton,
 } from '~/components/dashboard/account/account-skeletons';
-import DashboardLayout from '~/components/dashboard/dashboard-layout';
-import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert';
 import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
@@ -75,29 +73,27 @@ export default async function AccountPage() {
 
   const isOAuthUser = session.user.image?.includes('github') ?? false;
   return (
-    <DashboardLayout sidebarContent={<DashboardSidebar />}>
-      <section className="flex flex-col space-y-6">
-        {isOAuthUser && (
-          <Alert className="max-w-[800px] bg-background">
-            <Info className="h-4 w-4" />
-            <AlertTitle>OAuth Account</AlertTitle>
-            <AlertDescription>
-              Your account is managed by Github. Some information cannot be changed here.
-            </AlertDescription>
-          </Alert>
-        )}
-        <Suspense fallback={<ProfileImageSkeleton />}>
-          <AccountProfileImageSSR userId={session.user.id} isOAuthUser={isOAuthUser} />
-        </Suspense>
-        <Suspense fallback={<ProfileInfoSkeleton />}>
-          <AccountProfileInformationSSR userId={session.user.id} isOAuthUser={isOAuthUser} />
-        </Suspense>
-        <Suspense fallback={<CredentialsCardSkeleton />}>
-          <AccountCredentialsSSR userId={session.user.id} isOAuthUser={isOAuthUser} />
-        </Suspense>
+    <section className="flex flex-col space-y-6">
+      {isOAuthUser && (
+        <Alert className="max-w-[800px] bg-background">
+          <Info className="h-4 w-4" />
+          <AlertTitle>OAuth Account</AlertTitle>
+          <AlertDescription>
+            Your account is managed by Github. Some information cannot be changed here.
+          </AlertDescription>
+        </Alert>
+      )}
+      <Suspense fallback={<ProfileImageSkeleton />}>
+        <AccountProfileImageSSR userId={session.user.id} isOAuthUser={isOAuthUser} />
+      </Suspense>
+      <Suspense fallback={<ProfileInfoSkeleton />}>
+        <AccountProfileInformationSSR userId={session.user.id} isOAuthUser={isOAuthUser} />
+      </Suspense>
+      <Suspense fallback={<CredentialsCardSkeleton />}>
+        <AccountCredentialsSSR userId={session.user.id} isOAuthUser={isOAuthUser} />
+      </Suspense>
 
-        <AccountDangerZone userId={session.user.id} />
-      </section>
-    </DashboardLayout>
+      <AccountDangerZone userId={session.user.id} />
+    </section>
   );
 }

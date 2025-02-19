@@ -1,7 +1,7 @@
 'use client';
 
 import { DeleteAccountForm } from './delete-account-form';
-import { deleteAccount } from '~/app/dashboard/account/actions';
+import { deleteAccount } from '~/app/dashboard/(dashboard)/account/actions';
 import {
   Dialog,
   DialogContent,

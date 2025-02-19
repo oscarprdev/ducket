@@ -3,7 +3,7 @@
 import { Download } from 'lucide-react';
 import { useState } from 'react';
 import { downloadFile } from '~/app/dashboard/[id]/files/actions';
-import LoaderCircle from '~/components/icons/loader-circle';
+import LoaderCircle from '~/components/shared/loader-circle';
 import { Button } from '~/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { useToast } from '~/hooks/use-toast';

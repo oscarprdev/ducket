@@ -2,7 +2,7 @@
 
 import { DeclineTransferForm } from './decline-transfer-form';
 import { useState } from 'react';
-import { declineTransfer } from '~/app/dashboard/transfers/actions';
+import { declineTransfer } from '~/app/dashboard/(dashboard)/transfers/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,

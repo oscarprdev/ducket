@@ -1,7 +1,5 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import DashboardLayout from '~/components/dashboard/dashboard-layout';
-import DashboardSidebar from '~/components/dashboard/dashboard-sidebar';
 import InvitationsTable from '~/components/dashboard/invitations/invitations-table';
 import { InvitationsTableSkeleton } from '~/components/dashboard/invitations/invitations-table-skeleton';
 import { auth } from '~/server/auth';
@@ -24,10 +22,8 @@ export default async function InvitationsPage() {
     redirect('/sign-in');
   }
   return (
-    <DashboardLayout sidebarContent={<DashboardSidebar />}>
-      <Suspense fallback={<InvitationsTableSkeleton />}>
-        <InvitationsSSR userId={session.user.id} />
-      </Suspense>
-    </DashboardLayout>
+    <Suspense fallback={<InvitationsTableSkeleton />}>
+      <InvitationsSSR userId={session.user.id} />
+    </Suspense>
   );
 }

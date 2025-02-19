@@ -21,11 +21,11 @@ export default function DashboardSidebar() {
       icon: <ArrowLeftRight className="h-5 w-5" />,
       href: '/dashboard/transfers/outgoing',
     },
-    {
-      title: 'Billing',
-      icon: <CreditCard className="h-5 w-5" />,
-      href: '/dashboard/billing',
-    },
+    // {
+    //   title: 'Billing',
+    //   icon: <CreditCard className="h-5 w-5" />,
+    //   href: '/dashboard/billing',
+    // },
     {
       title: 'Account',
       icon: <User className="h-5 w-5" />,

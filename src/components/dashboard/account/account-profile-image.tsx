@@ -1,6 +1,6 @@
 import { ImageUpload } from './image-upload';
 import { ImageIcon } from 'lucide-react';
-import { uploadImage } from '~/app/dashboard/account/actions';
+import { uploadImage } from '~/app/dashboard/(dashboard)/account/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 
 interface AccountProfileImageProps {

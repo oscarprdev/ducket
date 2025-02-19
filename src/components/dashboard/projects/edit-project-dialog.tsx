@@ -1,7 +1,7 @@
 'use client';
 
 import { EditProjectForm } from './edit-project-form';
-import { editProject } from '~/app/dashboard/actions';
+import { editProject } from '~/app/dashboard/(dashboard)/actions';
 import {
   Dialog,
   DialogContent,

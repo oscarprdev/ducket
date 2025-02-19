@@ -1,9 +1,8 @@
 'use client';
 
 import { AcceptTransferForm } from './accept-transfer-form';
-import { type TransferRequestsWithUsers } from '~/server/db/schema';
 import { useState } from 'react';
-import { acceptTransfer } from '~/app/dashboard/transfers/actions';
+import { acceptTransfer } from '~/app/dashboard/(dashboard)/transfers/actions';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -13,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '~/components/ui/dialog';
+import { type TransferRequestsWithUsers } from '~/server/db/schema';
 
 interface AcceptTransferDialogProps {
   transfer: TransferRequestsWithUsers;
@@ -50,4 +50,4 @@ export function AcceptTransferDialog({ transfer }: AcceptTransferDialogProps) {
       </DialogContent>
     </Dialog>
   );
-} 
+}
