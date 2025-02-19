@@ -14,7 +14,6 @@ import {
   File,
   Github,
   HandHelping,
-  Info,
   Mail,
   Route,
   ShieldHalf,

@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeftRight, CreditCard, LayoutDashboard, Mails, User } from 'lucide-react';
+import { ArrowLeftRight, LayoutDashboard, Mails, User } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
