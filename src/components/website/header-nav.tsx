@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Activity,
   Book,
@@ -12,7 +14,8 @@ import {
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useState } from 'react';
+import { Button } from '~/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,7 +28,13 @@ import { cn } from '~/lib/utils';
 
 type HeaderNavItem = { title: string; href: string; description: string; icon: ReactNode };
 
-export function HeaderNav() {
+interface HeaderNavProps {
+  isMobile?: boolean;
+}
+
+export function HeaderNav({ isMobile }: HeaderNavProps) {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
   const features: HeaderNavItem[] = [
     {
       title: 'Files',
@@ -103,6 +112,103 @@ export function HeaderNav() {
       description: 'Contact us',
     },
   ];
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-4 p-4">
+        <div className="space-y-4">
+          <div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'features' ? null : 'features')}
+              className="flex w-full items-center justify-between py-2 text-sm">
+              Features
+            </button>
+            {activeSection === 'features' && (
+              <div className="ml-4 mt-2 flex flex-col gap-2">
+                {features.map(item => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-muted">
+                    {item.icon}
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'community' ? null : 'community')}
+              className="flex w-full items-center justify-between py-2 text-sm">
+              Community
+            </button>
+            {activeSection === 'community' && (
+              <div className="ml-4 mt-2 flex flex-col gap-2">
+                {community.map(item => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-muted">
+                    {item.icon}
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'developers' ? null : 'developers')}
+              className="flex w-full items-center justify-between py-2 text-sm">
+              Developers
+            </button>
+            {activeSection === 'developers' && (
+              <div className="ml-4 mt-2 flex flex-col gap-2">
+                {developers.map(item => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-muted">
+                    {item.icon}
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'about' ? null : 'about')}
+              className="flex w-full items-center justify-between py-2 text-sm">
+              About
+            </button>
+            {activeSection === 'about' && (
+              <div className="ml-4 mt-2 flex flex-col gap-2">
+                {about.map(item => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-muted">
+                    {item.icon}
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <Button asChild className="w-full">
+          <Link href="/sign-in">Sign in</Link>
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
