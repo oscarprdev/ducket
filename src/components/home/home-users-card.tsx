@@ -7,10 +7,10 @@ import { ArrowRight, Lock, Users } from 'lucide-react';
 
 export function HomeUsersCard() {
   return (
-    <Card className="w-full bg-muted/30 p-6 px-6">
-      <section className="flex h-full w-full items-start gap-6">
-        <div className="flex h-full w-1/2 flex-col gap-2 pr-5">
-          <h3 className="text-2xl font-bold">Users</h3>
+    <Card className="w-full bg-muted/30 p-4 sm:p-6">
+      <section className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start">
+        <div className="flex h-full w-full flex-col gap-2 lg:w-1/2">
+          <h3 className="text-xl font-bold sm:text-2xl">Users</h3>
           <p className="text-pretty text-sm text-muted-foreground">
             You can also invite users with different permissions to work with your files in a secure
             way.
@@ -20,7 +20,7 @@ export function HomeUsersCard() {
           </p>
         </div>
 
-        <div className="flex h-full w-1/2 flex-col gap-3">
+        <div className="flex h-full w-full flex-col gap-3 lg:w-1/2">
           {/* Admin item */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

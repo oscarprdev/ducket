@@ -20,23 +20,23 @@ const mockData = [
 
 export function HomeMonitoringCard() {
   return (
-    <Card className="w-full bg-muted/30 p-6 px-6">
+    <Card className="w-full bg-muted/30 p-4 sm:p-6">
       <section className="flex h-full w-full flex-col items-start gap-6">
         <div className="flex h-full w-full flex-col gap-2">
-          <h3 className="text-2xl font-bold">Monitoring</h3>
+          <h3 className="text-xl font-bold sm:text-2xl">Monitoring</h3>
           <p className="text-sm text-muted-foreground">
             Everything on your project is monitored and logged. You can see the activity of your
             project in real time.
           </p>
         </div>
-        <div className="flex h-full w-full gap-6">
+        <div className="flex h-full w-full flex-col gap-6 lg:flex-row">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.1 }}
-            className="relative h-[200px] w-1/2">
-            <ChartContainer config={chartConfig} className="relative h-[200px] w-full">
+            className="relative h-[150px] w-full md:h-[200px] lg:w-1/2">
+            <ChartContainer config={chartConfig} className="h-full w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={mockData}>
                   <CartesianGrid vertical={false} />
@@ -74,30 +74,33 @@ export function HomeMonitoringCard() {
               </ResponsiveContainer>
             </ChartContainer>
           </motion.div>
-          <div className="flex h-full w-1/2 flex-col gap-3">
+
+          <div className="flex h-full w-full flex-col gap-3 lg:w-1/2">
             {/* Item 1 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
-              <div className="flex items-center space-x-4">
-                <DownloadIcon className="h-4 w-4" />
-                <div>
-                  <p className="text-sm font-medium">Example-document.pdf</p>
-                  <p className="text-xs text-muted-foreground">2 min ago • John Doe</p>
+              className="relative flex w-full items-center justify-between gap-2 border border-border bg-muted/90 p-3 sm:p-4">
+              <div className="flex w-full items-center justify-between sm:w-auto">
+                <div className="flex items-center space-x-4">
+                  <DownloadIcon className="h-4 w-4" />
+                  <div>
+                    <p className="text-sm font-medium">Example-document.pdf</p>
+                    <p className="text-xs text-muted-foreground">2 min ago • John Doe</p>
+                  </div>
                 </div>
+                <Badge variant="tertiary">Download</Badge>
               </div>
-              <Badge variant="tertiary">Download</Badge>
             </motion.div>
-            {/* Item 1 */}
+            {/* Item 2 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 1 }}
-              className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
+              className="relative flex w-full flex-row items-center justify-between gap-2 border border-border bg-muted/90 p-3 sm:p-4">
               <div className="flex items-center space-x-4">
                 <UploadIcon className="h-4 w-4" />
                 <div>
@@ -107,13 +110,13 @@ export function HomeMonitoringCard() {
               </div>
               <Badge variant="default">Upload</Badge>
             </motion.div>
-            {/* Item 1 */}
+            {/* Item 3 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 1.5 }}
-              className="relative flex w-full items-center justify-between gap-5 border border-border bg-muted/90 p-4">
+              className="relative flex w-full items-center justify-between gap-2 border border-border bg-muted/90 p-3 sm:p-4">
               <div className="flex items-center space-x-4">
                 <Trash className="h-4 w-4" />
                 <div>

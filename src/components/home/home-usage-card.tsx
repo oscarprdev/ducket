@@ -5,20 +5,20 @@ import { motion } from 'framer-motion';
 
 export function HomeUsageCard() {
   return (
-    <Card className="w-full bg-muted/30 p-6 px-6">
+    <Card className="w-full bg-muted/30 p-4 sm:p-6">
       <section className="flex h-full w-full flex-col items-start gap-6">
-        <div className="flex h-full w-full flex-col gap-2 pr-5">
-          <h3 className="text-2xl font-bold">Usage</h3>
+        <div className="flex h-full w-full flex-col gap-2">
+          <h3 className="text-xl font-bold sm:text-2xl">Usage</h3>
           <p className="text-pretty text-sm text-muted-foreground">
             Every free account has a bunch of storage space.
-            <br />
+            <br className="hidden sm:block" />
             Up to 1GB of files storage to start your projects now.
             {/* You can upgrade your account to get more storage space and other
             features later. */}
           </p>
         </div>
 
-        <div className="mt-5 flex h-full w-full flex-col gap-3">
+        <div className="mt-2 flex h-full w-full flex-col gap-3 sm:mt-5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

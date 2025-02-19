@@ -10,8 +10,8 @@ export function HomeDeveloperCard() {
   return (
     <section className="relative mx-auto h-screen max-w-[1200px] space-y-8 bg-background px-4 py-12">
       <div className="space-y-4">
-        <h2 className="text-7xl font-bold">Developer mode</h2>
-        <p className="mt-5 text-muted-foreground">
+        <h2 className="text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl">Developer mode</h2>
+        <p className="mt-5 text-sm text-muted-foreground sm:text-base">
           Ducket provides a simple API for you to integrate with your existing framework.
           <br />
           Just use the API to list, get, upload, download and delete files usign your API Keys.
@@ -37,7 +37,7 @@ export function HomeDeveloperCard() {
           whileInView={{ opacity: 1, y: 0, left: '50%', x: '-50%', top: '1/3' }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="absolute mx-auto mt-20 w-full max-w-[700px] overflow-hidden rounded-xl border bg-zinc-950">
+          className="absolute mx-auto mt-10 w-full max-w-[800px] overflow-hidden rounded-xl border bg-zinc-950 sm:mt-20">
           <div className="border-b border-zinc-800">
             <div className="flex w-full items-start p-2">
               <span className="size-2.5 rounded-full border bg-destructive"></span>
