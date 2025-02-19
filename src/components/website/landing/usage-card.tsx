@@ -1,9 +1,9 @@
 'use client';
 
-import { Card } from '../ui/card';
 import { motion } from 'framer-motion';
+import { Card } from '~/components/ui/card';
 
-export function HomeUsageCard() {
+export function UsageCard() {
   return (
     <Card className="w-full bg-muted/30 p-4 sm:p-6">
       <section className="flex h-full w-full flex-col items-start gap-6">

@@ -1,8 +1,9 @@
 import { GeistSans } from 'geist/font/sans';
 import { type Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
-import { Header } from '~/components/home/header';
 import { Toaster } from '~/components/ui/toaster';
+import { Footer } from '~/components/website/footer';
+import { Header } from '~/components/website/header';
 import '~/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider attribute="class" defaultTheme="dark">
           <Header />
           {children}
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>

@@ -1,12 +1,4 @@
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '../ui/navigation-menu';
-import {
   Activity,
   Book,
   CircleHelp,
@@ -21,6 +13,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { type ReactNode } from 'react';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '~/components/ui/navigation-menu';
 import { cn } from '~/lib/utils';
 
 type HeaderNavItem = { title: string; href: string; description: string; icon: ReactNode };

@@ -1,20 +1,19 @@
 import { uploadPublicFile } from './actions';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { HomeDeveloperCard } from '~/components/dashboard/api-keys/home-developer-card';
-import { Footer } from '~/components/home/footer';
-import { Header } from '~/components/home/header';
-import { HomeCommunityCard } from '~/components/home/home-community-card';
-import { HomeFilesCard } from '~/components/home/home-files-card';
-import { HomeMonitoringCard } from '~/components/home/home-monitoring-card';
-import { HomeUsageCard } from '~/components/home/home-usage-card';
-import { HomeUsersCard } from '~/components/home/home-users-card';
-import { PublicFileUpload } from '~/components/home/public-file-upload';
-import { PublicFilesList } from '~/components/home/public-files-list';
-import { RotatingText } from '~/components/home/rotating-text';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader } from '~/components/ui/card';
+import { Header } from '~/components/website/header';
+import { CommunityCard } from '~/components/website/landing/community-card';
+import { DeveloperCard } from '~/components/website/landing/developer-card';
+import { FilesCard } from '~/components/website/landing/files-card';
+import { MonitoringCard } from '~/components/website/landing/monitoring-card';
+import { PublicFileUpload } from '~/components/website/landing/public-file-upload';
+import { PublicFilesList } from '~/components/website/landing/public-files-list';
+import { RotatingText } from '~/components/website/landing/rotating-text';
+import { UsageCard } from '~/components/website/landing/usage-card';
+import { UsersCard } from '~/components/website/landing/users-card';
 import { QUERIES } from '~/server/db/queries';
 
 async function PublicFilesSection() {
@@ -75,7 +74,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HomeCommunityCard />
+      <CommunityCard />
 
       <section className="relative mx-auto h-full max-w-[1200px] space-y-8 bg-background px-4 py-12">
         <div className="space-y-4">
@@ -84,15 +83,15 @@ export default async function HomePage() {
             Ducket is a simple, secure, and easy-to-use file storage solution.
           </p>
         </div>
-        <HomeFilesCard />
+        <FilesCard />
         <div className="flex h-full flex-col gap-4 md:flex-row">
-          <HomeUsersCard />
-          <HomeUsageCard />
+          <UsersCard />
+          <UsageCard />
         </div>
-        <HomeMonitoringCard />
+        <MonitoringCard />
       </section>
 
-      <HomeDeveloperCard />
+      <DeveloperCard />
 
       <section className="relative mx-auto h-full max-w-[1000px] space-y-8 px-4 py-12 sm:mt-10 sm:py-28">
         <Card className="space-y-4 py-10">
@@ -116,7 +115,6 @@ export default async function HomePage() {
           </CardContent>
         </Card>
       </section>
-      <Footer />
     </>
   );
 }

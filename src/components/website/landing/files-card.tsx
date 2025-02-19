@@ -1,11 +1,11 @@
 'use client';
 
-import { Card } from '../ui/card';
 import { type BadgeText, FileItem, type FileItemBadgePosition } from './file-item';
 import { CheckIcon, Download, ImageIcon } from 'lucide-react';
 import { FileIcon } from 'lucide-react';
+import { Card } from '~/components/ui/card';
 
-export function HomeFilesCard() {
+export function FilesCard() {
   const filesItems = [
     {
       title: 'Example-file.doc',

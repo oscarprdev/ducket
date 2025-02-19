@@ -1,12 +1,12 @@
 'use client';
 
+import { HomeCopyButton } from './copy-button';
 import { motion } from 'framer-motion';
 import { Github } from 'lucide-react';
 import Link from 'next/link';
-import { HomeCopyButton } from '~/components/home/home-copy-button';
 import { Button } from '~/components/ui/button';
 
-export function HomeDeveloperCard() {
+export function DeveloperCard() {
   return (
     <section className="relative mx-auto h-screen max-w-[1200px] space-y-8 bg-background px-4 py-12">
       <div className="space-y-4">

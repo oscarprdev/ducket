@@ -1,11 +1,11 @@
 'use client';
 
-import { Badge } from '../ui/badge';
-import { Card } from '../ui/card';
 import { motion } from 'framer-motion';
 import { ArrowRight, Lock, Users } from 'lucide-react';
+import { Badge } from '~/components/ui/badge';
+import { Card } from '~/components/ui/card';
 
-export function HomeUsersCard() {
+export function UsersCard() {
   return (
     <Card className="w-full bg-muted/30 p-4 sm:p-6">
       <section className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start">

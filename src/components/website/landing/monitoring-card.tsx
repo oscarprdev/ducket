@@ -1,11 +1,11 @@
 'use client';
 
-import { Badge } from '../ui/badge';
-import { Card } from '../ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 import { motion } from 'framer-motion';
 import { DownloadIcon, Trash, UploadIcon } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis } from 'recharts';
+import { Badge } from '~/components/ui/badge';
+import { Card } from '~/components/ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '~/components/ui/chart';
 import { chartConfig } from '~/lib/constants';
 
 const mockData = [
@@ -18,7 +18,7 @@ const mockData = [
   { date: 'Sun', upload: 5, download: 2, delete: 2, read: 4 },
 ];
 
-export function HomeMonitoringCard() {
+export function MonitoringCard() {
   return (
     <Card className="w-full bg-muted/30 p-4 sm:p-6">
       <section className="flex h-full w-full flex-col items-start gap-6">
