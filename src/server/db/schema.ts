@@ -32,11 +32,9 @@ export const proposalLikes = createTable('proposal_likes', {
 });
 
 export type Proposals = typeof proposals.$inferSelect;
-export interface ProposalsWithLikes extends Proposals {
-  likesCount: number;
-  isLiked: boolean;
-  userImage: string | null;
-  userName: string | null;
+export interface ProposalsPopulated extends Proposals {
+  user: Users;
+  likes: ProposalLikes[];
 }
 export const proposals = createTable('proposals', {
   id: varchar('id', { length: 255 })
@@ -323,8 +321,12 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
 
-export const proposalsRelations = relations(proposals, ({ many }) => ({
+export const proposalsRelations = relations(proposals, ({ many, one }) => ({
   likes: many(proposalLikes),
+  user: one(users, {
+    fields: [proposals.userId],
+    references: [users.id],
+  }),
 }));
 
 export const proposalLikesRelations = relations(proposalLikes, ({ one }) => ({

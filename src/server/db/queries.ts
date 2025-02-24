@@ -10,7 +10,7 @@ import {
   type ProjectsWithPermissions,
   type ProposalLikes,
   type Proposals,
-  type ProposalsWithLikes,
+  type ProposalsPopulated,
   type PublicFiles,
   type TransferRequestsWithUsers,
   type Users,
@@ -26,7 +26,7 @@ import {
   transferRequests,
   users,
 } from './schema';
-import { and, count, desc, eq, gt, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
@@ -444,40 +444,15 @@ export const QUERIES = {
     },
   },
   proposals: {
-    getAll: async ({ userId }: { userId?: string }): Promise<ProposalsWithLikes[]> => {
-      const result = await db
-        .select({
-          id: proposals.id,
-          title: proposals.title,
-          description: proposals.description,
-          userId: proposals.userId,
-          createdAt: proposals.createdAt,
-          likesCount: count(proposalLikes.id).as('likesCount'),
-          isLiked: userId
-            ? sql<boolean>`EXISTS (
-                SELECT 1 FROM ${proposalLikes}
-                WHERE ${eq(proposalLikes.proposalId, proposals.id)}
-                AND ${eq(proposalLikes.userId, userId)}
-              )`
-            : sql<boolean>`false`,
-          userImage: users.image,
-          userName: users.name,
-        })
-        .from(proposals)
-        .leftJoin(proposalLikes, eq(proposals.id, proposalLikes.proposalId))
-        .leftJoin(users, eq(proposals.userId, users.id))
-        .groupBy(
-          proposals.id,
-          proposals.title,
-          proposals.description,
-          proposals.userId,
-          proposals.createdAt,
-          users.image,
-          users.name
-        )
-        .orderBy(desc(count(proposalLikes.id).as('likesCount')));
+    getAll: async (): Promise<ProposalsPopulated[]> => {
+      const result = await db.query.proposals.findMany({
+        with: {
+          likes: true,
+          user: true,
+        },
+      });
 
-      return result;
+      return result.sort((a, b) => b.likes.length - a.likes.length);
     },
     getByUserId: async ({ userId }: { userId: string }): Promise<Proposals[]> => {
       return await db.select().from(proposals).where(eq(proposals.userId, userId));

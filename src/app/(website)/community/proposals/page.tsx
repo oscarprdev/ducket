@@ -8,20 +8,25 @@ import { auth } from '~/server/auth';
 import { QUERIES } from '~/server/db/queries';
 
 async function ProposalsGridSSR({ userId }: { userId?: string }) {
-  const proposals = await QUERIES.proposals.getAll({ userId });
+  const proposals = await QUERIES.proposals.getAll();
+  const proposalsWithLikes = proposals.map(proposal => ({
+    ...proposal,
+    likesCount: proposal.likes.length,
+    isLiked: proposal.likes.some(like => like.userId === userId),
+  }));
 
   return (
     <div className="grid min-h-screen grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {proposals.length > 0 ? (
-        proposals.map(proposal => (
+      {proposalsWithLikes.length > 0 ? (
+        proposalsWithLikes.map(proposal => (
           <ProposalsCard
             key={proposal.id}
             id={proposal.id}
             title={proposal.title}
             description={proposal.description}
             createdAt={proposal.createdAt}
-            userImage={proposal.userImage ?? undefined}
-            userName={proposal.userName ?? undefined}
+            userImage={proposal.user.image ?? undefined}
+            userName={proposal.user.name ?? undefined}
             isLiked={proposal.isLiked}
             likesCount={proposal.likesCount}
             canLike={!!userId && !proposal.isLiked}
