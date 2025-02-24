@@ -460,10 +460,22 @@ export const QUERIES = {
                 AND ${eq(proposalLikes.userId, userId)}
               )`
             : sql<boolean>`false`,
+          userImage: users.image,
+          userName: users.name,
         })
         .from(proposals)
         .leftJoin(proposalLikes, eq(proposals.id, proposalLikes.proposalId))
-        .groupBy(proposals.id);
+        .leftJoin(users, eq(proposals.userId, users.id))
+        .groupBy(
+          proposals.id,
+          proposals.title,
+          proposals.description,
+          proposals.userId,
+          proposals.createdAt,
+          users.image,
+          users.name
+        )
+        .orderBy(desc(count(proposalLikes.id).as('likesCount')));
 
       return result;
     },

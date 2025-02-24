@@ -35,6 +35,8 @@ export type Proposals = typeof proposals.$inferSelect;
 export interface ProposalsWithLikes extends Proposals {
   likesCount: number;
   isLiked: boolean;
+  userImage: string | null;
+  userName: string | null;
 }
 export const proposals = createTable('proposals', {
   id: varchar('id', { length: 255 })

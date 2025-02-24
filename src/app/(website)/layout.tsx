@@ -4,6 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import { Toaster } from '~/components/ui/toaster';
 import { Footer } from '~/components/website/footer';
 import { Header } from '~/components/website/header';
+import { auth } from '~/server/auth';
 import '~/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -13,12 +14,15 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const session = await auth();
+  const userId = session?.user?.id;
+
   return (
     <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark">
-          <Header />
+          <Header userId={userId} />
           {children}
           <Footer />
           <Toaster />

@@ -4,6 +4,7 @@ import { ProposalLikeForm } from './proposal-like-form';
 import Image from 'next/image';
 import React from 'react';
 import { Skeleton } from '~/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
 import { cn, formatRelativeTime } from '~/lib/utils';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -12,6 +13,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string;
   createdAt?: Date;
   userImage?: string;
+  userName?: string;
   isLiked?: boolean;
   likesCount?: number;
   canLike?: boolean;
@@ -35,6 +37,7 @@ const ProposalsCard = React.forwardRef<HTMLDivElement, CardProps>(
       description,
       createdAt,
       userImage,
+      userName,
       isLiked,
       likesCount,
       canLike,
@@ -57,13 +60,22 @@ const ProposalsCard = React.forwardRef<HTMLDivElement, CardProps>(
               <div className="flex items-center gap-2">
                 <div className="h-6 w-6 overflow-hidden rounded-full bg-muted">
                   {userImage ? (
-                    <Image
-                      src={userImage}
-                      alt="User"
-                      className="h-full w-full object-cover"
-                      width={24}
-                      height={24}
-                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Image
+                            src={userImage}
+                            alt="User"
+                            className="h-full w-full object-cover"
+                            width={24}
+                            height={24}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{userName}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-primary/10 text-xs text-primary">
                       U

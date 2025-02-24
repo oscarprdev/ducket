@@ -9,7 +9,6 @@ import { QUERIES } from '~/server/db/queries';
 
 async function ProposalsGridSSR({ userId }: { userId?: string }) {
   const proposals = await QUERIES.proposals.getAll({ userId });
-  const [userInfo] = userId ? await QUERIES.users.getById({ id: userId }) : [null];
 
   return (
     <div className="grid min-h-screen grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -21,7 +20,8 @@ async function ProposalsGridSSR({ userId }: { userId?: string }) {
             title={proposal.title}
             description={proposal.description}
             createdAt={proposal.createdAt}
-            userImage={userInfo?.image ?? undefined}
+            userImage={proposal.userImage ?? undefined}
+            userName={proposal.userName ?? undefined}
             isLiked={proposal.isLiked}
             likesCount={proposal.likesCount}
             canLike={!!userId && !proposal.isLiked}
