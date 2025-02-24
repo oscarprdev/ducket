@@ -14,7 +14,7 @@ export function HeroSection() {
             <Badge variant="outline" className="flex w-fit items-center gap-1 text-xs">
               Open source
             </Badge>
-            <Link href="/roadmap" className="block w-fit cursor-pointer">
+            <Link href="/community/roadmap" className="block w-fit cursor-pointer">
               <Badge
                 variant="default"
                 className="flex w-fit items-center gap-1 text-xs hover:bg-accent-foreground/50">

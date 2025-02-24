@@ -2,13 +2,22 @@
 
 import { HeaderNav } from './header-nav';
 import { Menu, X } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const theme = useTheme();
+
+  useEffect(() => {
+    if (theme.theme !== 'dark') {
+      theme.setTheme('dark');
+    }
+  }, [theme]);
 
   return (
     <div className="fixed top-0 z-50 w-full px-4 pt-4 sm:pt-8">
