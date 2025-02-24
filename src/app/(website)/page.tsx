@@ -5,11 +5,15 @@ import { FeaturesSection } from '~/components/website/landing/sections/features-
 import { HeroSection } from '~/components/website/landing/sections/hero-section';
 import { PricingSection } from '~/components/website/landing/sections/pricing-section';
 import { TryNowSection } from '~/components/website/landing/sections/try-now-section';
+import { auth } from '~/server/auth';
 
 export default async function HomePage() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
   return (
     <>
-      <Header />
+      <Header userId={userId} />
       <HeroSection />
       <CommunitySection />
       <FeaturesSection />

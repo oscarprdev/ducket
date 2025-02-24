@@ -1,11 +1,9 @@
-'use client';
-
 import { SignOut } from '../auth/sign-out';
 import Link from 'next/link';
 import { ThemeToggle } from '~/components/dashboard/theme-toggle';
 import { cn } from '~/lib/utils';
 
-export function DashboardHeader({ className }: { className?: string }) {
+export function DashboardHeader({ id, className }: { id?: string; className?: string }) {
   return (
     <header
       className={cn(
@@ -13,7 +11,7 @@ export function DashboardHeader({ className }: { className?: string }) {
         className
       )}>
       <div className="flex h-16 items-center justify-between">
-        <Link href="/dashboard" className="flex items-center space-x-2">
+        <Link href={id ? '/dashboard' : '/'} className="flex items-center space-x-2">
           <span className="inline-block font-bold">Ducket</span>
         </Link>
         <div className="flex items-center space-x-4">

@@ -8,6 +8,9 @@ import {
   type ProjectUsers,
   type Projects,
   type ProjectsWithPermissions,
+  type ProposalLikes,
+  type Proposals,
+  type ProposalsWithLikes,
   type PublicFiles,
   type TransferRequestsWithUsers,
   type Users,
@@ -17,11 +20,13 @@ import {
   passwordResetTokens,
   projectUsers,
   projects,
+  proposalLikes,
+  proposals,
   publicFiles,
   transferRequests,
   users,
 } from './schema';
-import { and, desc, eq, gt, lt, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gt, lt, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 export interface ActivityLogsWithUser extends ActivityLogs {
@@ -436,6 +441,37 @@ export const QUERIES = {
         .innerJoin(toUsers, eq(transferRequests.toUserId, toUsers.id))
         .innerJoin(projects, eq(transferRequests.projectId, projects.id))
         .where(eq(transferRequests.toUserId, userId));
+    },
+  },
+  proposals: {
+    getAll: async ({ userId }: { userId?: string }): Promise<ProposalsWithLikes[]> => {
+      const result = await db
+        .select({
+          id: proposals.id,
+          title: proposals.title,
+          description: proposals.description,
+          userId: proposals.userId,
+          createdAt: proposals.createdAt,
+          likesCount: count(proposalLikes.id).as('likesCount'),
+          isLiked: userId
+            ? sql<boolean>`EXISTS (
+                SELECT 1 FROM ${proposalLikes}
+                WHERE ${eq(proposalLikes.proposalId, proposals.id)}
+                AND ${eq(proposalLikes.userId, userId)}
+              )`
+            : sql<boolean>`false`,
+        })
+        .from(proposals)
+        .leftJoin(proposalLikes, eq(proposals.id, proposalLikes.proposalId))
+        .groupBy(proposals.id);
+
+      return result;
+    },
+    getByUserId: async ({ userId }: { userId: string }): Promise<Proposals[]> => {
+      return await db.select().from(proposals).where(eq(proposals.userId, userId));
+    },
+    getLikes: async ({ proposalId }: { proposalId: string }): Promise<ProposalLikes[]> => {
+      return await db.select().from(proposalLikes).where(eq(proposalLikes.proposalId, proposalId));
     },
   },
 };

@@ -5,6 +5,7 @@ import {
   type PasswordResetTokens,
   type ProjectUsers,
   type Projects,
+  type Proposals,
   type PublicFiles,
   type TransferRequests,
   type Users,
@@ -14,6 +15,8 @@ import {
   passwordResetTokens,
   projectUsers,
   projects,
+  proposalLikes,
+  proposals,
   publicFiles,
   transferRequests,
   users,
@@ -327,6 +330,47 @@ export const MUTATIONS = {
     delete: function (input: { id: string }): Promise<PasswordResetTokens[]> {
       const { id } = input;
       return db.delete(passwordResetTokens).where(eq(passwordResetTokens.id, id));
+    },
+  },
+  proposals: {
+    create: function (input: {
+      userId: string;
+      title: string;
+      description: string;
+    }): Promise<Proposals[]> {
+      const { userId, title, description } = input;
+      return db.insert(proposals).values({ userId, title, description });
+    },
+    delete: function (input: { id: string }): Promise<Proposals[]> {
+      const { id } = input;
+      return db.delete(proposals).where(eq(proposals.id, id));
+    },
+    toggleLike: async function (input: {
+      proposalId: string;
+      userId: string;
+    }): Promise<{ liked: boolean }> {
+      const { proposalId, userId } = input;
+
+      // Check if user already liked
+      const [existingLike] = await db
+        .select()
+        .from(proposalLikes)
+        .where(and(eq(proposalLikes.proposalId, proposalId), eq(proposalLikes.userId, userId)));
+
+      if (existingLike) {
+        // Unlike
+        await db
+          .delete(proposalLikes)
+          .where(and(eq(proposalLikes.proposalId, proposalId), eq(proposalLikes.userId, userId)));
+        return { liked: false };
+      } else {
+        // Like
+        await db.insert(proposalLikes).values({
+          proposalId,
+          userId,
+        });
+        return { liked: true };
+      }
     },
   },
 };

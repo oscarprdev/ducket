@@ -14,6 +14,43 @@ import { INVITATION_STATES, TRANSFER_REQUEST_STATES } from '~/lib/constants';
 
 export const createTable = pgTableCreator(name => `ducket_${name}`);
 
+export type ProposalLikes = typeof proposalLikes.$inferSelect;
+export const proposalLikes = createTable('proposal_likes', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  proposalId: varchar('proposal_id', { length: 255 })
+    .notNull()
+    .references(() => proposals.id, { onDelete: 'cascade' }),
+  userId: varchar('user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export type Proposals = typeof proposals.$inferSelect;
+export interface ProposalsWithLikes extends Proposals {
+  likesCount: number;
+  isLiked: boolean;
+}
+export const proposals = createTable('proposals', {
+  id: varchar('id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  userId: varchar('user_id', { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
 export type ApiKeys = typeof apiKeys.$inferSelect;
 export const apiKeys = createTable('api_keys', {
   id: varchar('id', { length: 255 })
@@ -282,4 +319,19 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
+
+export const proposalsRelations = relations(proposals, ({ many }) => ({
+  likes: many(proposalLikes),
+}));
+
+export const proposalLikesRelations = relations(proposalLikes, ({ one }) => ({
+  proposal: one(proposals, {
+    fields: [proposalLikes.proposalId],
+    references: [proposals.id],
+  }),
+  user: one(users, {
+    fields: [proposalLikes.userId],
+    references: [users.id],
+  }),
 }));

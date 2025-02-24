@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
-export function Header() {
+export function Header({ userId }: { userId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const theme = useTheme();
@@ -28,7 +28,7 @@ export function Header() {
           </Link>
           <div className="flex items-center gap-4">
             <div className="hidden md:block">
-              <HeaderNav />
+              <HeaderNav userId={userId} />
             </div>
             <Button
               variant="ghost"

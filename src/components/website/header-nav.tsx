@@ -29,10 +29,11 @@ import { cn } from '~/lib/utils';
 type HeaderNavItem = { title: string; href: string; description: string; icon: ReactNode };
 
 interface HeaderNavProps {
+  userId?: string;
   isMobile?: boolean;
 }
 
-export function HeaderNav({ isMobile }: HeaderNavProps) {
+export function HeaderNav({ userId, isMobile }: HeaderNavProps) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const features: HeaderNavItem[] = [
@@ -202,9 +203,15 @@ export function HeaderNav({ isMobile }: HeaderNavProps) {
           </div>
         </div>
 
-        <Button asChild className="w-full">
-          <Link href="/sign-in">Sign in</Link>
-        </Button>
+        {!userId ? (
+          <Button asChild className="w-full">
+            <Link href="/sign-in">Sign in</Link>
+          </Button>
+        ) : (
+          <Button asChild className="w-full">
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
+        )}
       </div>
     );
   }
@@ -284,11 +291,19 @@ export function HeaderNav({ isMobile }: HeaderNavProps) {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <Link
-          href="/sign-in"
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground duration-300 hover:bg-primary/80">
-          Sign in
-        </Link>
+        {!userId ? (
+          <Link
+            href="/sign-in"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground duration-300 hover:bg-primary/80">
+            Sign in
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground duration-300 hover:bg-primary/80">
+            Dashboard
+          </Link>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );

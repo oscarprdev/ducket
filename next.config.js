@@ -23,7 +23,7 @@ const config = {
         hostname: 'ducket.dev',
       },
       {
-        hostname: 'assets.aceternity.com',
+        hostname: 'avatars.githubusercontent.com',
       },
     ],
   },
