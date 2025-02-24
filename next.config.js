@@ -22,6 +22,9 @@ const config = {
       {
         hostname: 'ducket.dev',
       },
+      {
+        hostname: 'assets.aceternity.com',
+      },
     ],
   },
 };

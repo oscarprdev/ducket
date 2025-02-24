@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeCopyButton } from './copy-button';
+import { HomeCopyButton } from '../copy-button';
 import { motion } from 'framer-motion';
 import { Github } from 'lucide-react';
 import Link from 'next/link';
@@ -16,7 +16,7 @@ const tabs = {
   delete: 'delete',
 } as const as Record<TabState, TabState>;
 
-export function DeveloperCard() {
+export function DeveloperSection() {
   const [tabState, setTabState] = useState<TabState>(tabs.upload);
 
   return (
