@@ -27,7 +27,7 @@ export const editUserPermissions = validatedActionWithUser(
         throw new Error('Please select at least one permission');
       }
 
-      const [user] = await QUERIES.projectUsers.getByUserEmail({ email });
+      const [user] = await QUERIES.projectUsers.getByUserEmail({ email, projectId });
       if (user?.projectId !== projectId) {
         throw new Error('User is not in this project');
       }
