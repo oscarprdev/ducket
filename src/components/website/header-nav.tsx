@@ -87,7 +87,7 @@ export function HeaderNav({ userId, isMobile }: HeaderNavProps) {
   const developers: HeaderNavItem[] = [
     {
       title: 'Documentation',
-      href: '/developers/documentation',
+      href: '/developers/docs',
       icon: <Book size={18} />,
       description: 'Learn how to use the API',
     },
