@@ -32,7 +32,7 @@ export function DocsTabs() {
   const [tabState, setTabState] = useState<TabState>(tabs.introduction);
 
   return (
-    <section className="relative h-screen max-w-[1200px] space-y-8 bg-background px-4">
+    <section className="relative max-w-[1200px] space-y-8 bg-background px-4 pb-10">
       <Tabs
         className="mx-auto flex w-full flex-col items-center"
         value={tabState}
