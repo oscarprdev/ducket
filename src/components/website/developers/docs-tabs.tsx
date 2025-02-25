@@ -1,7 +1,11 @@
 'use client';
 
+import { DocsDelete } from './docs-delete';
+import { DocsGet } from './docs-get';
 import { DocsInstallation } from './docs-installation';
 import { DocsIntroduction } from './docs-introduction';
+import { DocsList } from './docs-list';
+import { DocsUpload } from './docs-upload';
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
@@ -47,6 +51,10 @@ export function DocsTabs() {
         <TabsContent value={tabState}>
           {tabState === tabs.introduction && <DocsIntroduction />}
           {tabState === tabs.installation && <DocsInstallation />}
+          {tabState === tabs.upload && <DocsUpload />}
+          {tabState === tabs.get && <DocsGet />}
+          {tabState === tabs.list && <DocsList />}
+          {tabState === tabs.delete && <DocsDelete />}
         </TabsContent>
       </Tabs>
     </section>
