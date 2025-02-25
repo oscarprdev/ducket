@@ -13,34 +13,7 @@ export function DocsList() {
             <span className="size-2.5 rounded-full border bg-accent"></span>
           </div>
         </div>
-        <div className="space-y-4 py-4">
-          <code className="block font-mono text-xs">
-            <span className="text-zinc-500">import</span>
-            <span className="text-white"> {'{ '}</span>
-            <span className="text-white">Bucket</span>
-            <span className="text-white">{' }'}</span>
-            <span className="text-zinc-500"> from </span>
-            <span className="text-accent">{`'@bucket'`}</span>
-            <span className="text-white">;</span>
-          </code>
-          <code className="block font-mono text-xs">
-            <span className="text-zinc-500">const</span>
-            <span className="text-white"> bucket = </span>
-            <span className="text-zinc-500">new</span>
-            <span className="text-white"> Bucket({'{'}</span>
-            <div className="pl-4">
-              <span className="text-white">useDucket:</span>
-              <span className="text-accent"> true</span>
-              <span className="text-white">,</span>
-            </div>
-            <div className="pl-4">
-              <span className="text-white">apiKey: </span>
-              <span className="text-accent">gI6ZDBq1GV....fv2t96Xd</span>
-            </div>
-            <span className="text-white">{'})'}</span>
-            <span className="text-white">;</span>
-          </code>
-        </div>
+
         <code className="block font-mono text-xs">
           <span className="text-zinc-500">export const</span>
           <span className="text-white"> listFiles = </span>

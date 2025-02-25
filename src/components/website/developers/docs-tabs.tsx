@@ -2,6 +2,7 @@
 
 import { DocsDelete } from './docs-delete';
 import { DocsGet } from './docs-get';
+import { DocsInitialize } from './docs-initialize';
 import { DocsInstallation } from './docs-installation';
 import { DocsIntroduction } from './docs-introduction';
 import { DocsList } from './docs-list';
@@ -9,10 +10,18 @@ import { DocsUpload } from './docs-upload';
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
-type TabState = 'introduction' | 'installation' | 'upload' | 'get' | 'list' | 'delete';
+type TabState =
+  | 'introduction'
+  | 'installation'
+  | 'initialize'
+  | 'upload'
+  | 'get'
+  | 'list'
+  | 'delete';
 const tabs = {
   introduction: 'introduction',
   installation: 'installation',
+  initialize: 'initialize',
   upload: 'upload',
   get: 'get',
   list: 'list',
@@ -35,6 +44,9 @@ export function DocsTabs() {
           <TabsTrigger value={tabs.installation} className="capitalize">
             {tabs.installation}
           </TabsTrigger>
+          <TabsTrigger value={tabs.initialize} className="capitalize">
+            {tabs.initialize}
+          </TabsTrigger>
           <TabsTrigger value={tabs.upload} className="capitalize">
             {tabs.upload}
           </TabsTrigger>
@@ -51,6 +63,7 @@ export function DocsTabs() {
         <TabsContent value={tabState}>
           {tabState === tabs.introduction && <DocsIntroduction />}
           {tabState === tabs.installation && <DocsInstallation />}
+          {tabState === tabs.initialize && <DocsInitialize />}
           {tabState === tabs.upload && <DocsUpload />}
           {tabState === tabs.get && <DocsGet />}
           {tabState === tabs.list && <DocsList />}
