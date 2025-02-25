@@ -29,6 +29,7 @@ export const createProposal = validatedActionWithUser(
       });
 
       revalidatePath('/community/proposals');
+      revalidatePath('/dashboard/proposals');
 
       return { success: 'Proposal created successfully' };
     } catch (error) {

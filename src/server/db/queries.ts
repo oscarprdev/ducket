@@ -9,7 +9,6 @@ import {
   type Projects,
   type ProjectsWithPermissions,
   type ProposalLikes,
-  type Proposals,
   type ProposalsPopulated,
   type PublicFiles,
   type TransferRequestsWithUsers,
@@ -454,11 +453,30 @@ export const QUERIES = {
 
       return result.sort((a, b) => b.likes.length - a.likes.length);
     },
-    getByUserId: async ({ userId }: { userId: string }): Promise<Proposals[]> => {
-      return await db.select().from(proposals).where(eq(proposals.userId, userId));
+    getByUserId: async ({ userId }: { userId: string }): Promise<ProposalsPopulated[]> => {
+      const result = await db.query.proposals.findMany({
+        with: {
+          likes: true,
+          user: true,
+        },
+        where: eq(proposals.userId, userId),
+      });
+
+      return result.sort((a, b) => b.likes.length - a.likes.length);
     },
     getLikes: async ({ proposalId }: { proposalId: string }): Promise<ProposalLikes[]> => {
       return await db.select().from(proposalLikes).where(eq(proposalLikes.proposalId, proposalId));
+    },
+    getById: async ({ id }: { id: string }): Promise<ProposalsPopulated | null> => {
+      const result = await db.query.proposals.findFirst({
+        with: {
+          likes: true,
+          user: true,
+        },
+        where: eq(proposals.id, id),
+      });
+
+      return result ?? null;
     },
   },
 };

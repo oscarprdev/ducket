@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeftRight, LayoutDashboard, Mails, User } from 'lucide-react';
+import { ArrowLeftRight, LayoutDashboard, LightbulbIcon, Mails, User } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, SidebarItem, SidebarSection } from '~/components/ui/sidebar';
 
@@ -20,6 +20,11 @@ export default function DashboardSidebar() {
       title: 'Transfers',
       icon: <ArrowLeftRight className="h-5 w-5" />,
       href: '/dashboard/transfers/outgoing',
+    },
+    {
+      title: 'Proposals',
+      icon: <LightbulbIcon className="h-5 w-5" />,
+      href: '/dashboard/proposals',
     },
     // {
     //   title: 'Billing',
