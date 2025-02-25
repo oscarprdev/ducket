@@ -8,9 +8,7 @@ import {
   File,
   Github,
   HandHelping,
-  Mail,
   Route,
-  ShieldHalf,
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -99,21 +97,6 @@ export function HeaderNav({ userId, isMobile }: HeaderNavProps) {
     },
   ];
 
-  const about: HeaderNavItem[] = [
-    {
-      title: 'Team',
-      href: '/about/team',
-      icon: <ShieldHalf size={18} />,
-      description: 'Team behind Ducket',
-    },
-    {
-      title: 'Contact',
-      href: '/about/contact',
-      icon: <Mail size={18} />,
-      description: 'Contact us',
-    },
-  ];
-
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4 p-4">
@@ -169,27 +152,6 @@ export function HeaderNav({ userId, isMobile }: HeaderNavProps) {
             {activeSection === 'developers' && (
               <div className="ml-4 mt-2 flex flex-col gap-2">
                 {developers.map(item => (
-                  <Link
-                    key={item.title}
-                    href={item.href}
-                    className="flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-muted">
-                    {item.icon}
-                    {item.title}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => setActiveSection(activeSection === 'about' ? null : 'about')}
-              className="flex w-full items-center justify-between py-2 text-sm">
-              About
-            </button>
-            {activeSection === 'about' && (
-              <div className="ml-4 mt-2 flex flex-col gap-2">
-                {about.map(item => (
                   <Link
                     key={item.title}
                     href={item.href}
@@ -262,24 +224,6 @@ export function HeaderNav({ userId, isMobile }: HeaderNavProps) {
           <NavigationMenuContent>
             <ul className="flex w-[500px] flex-col gap-3 p-4">
               {developers.map(component => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                  icon={component.icon}>
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="bg-transparent text-sm hover:bg-transparent">
-            About
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-[500px] flex-col gap-3 p-4">
-              {about.map(component => (
                 <ListItem
                   key={component.title}
                   title={component.title}
