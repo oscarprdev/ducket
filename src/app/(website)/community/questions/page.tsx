@@ -33,11 +33,11 @@ export default function QuestionsPage() {
           </CardHeader>
           <CardContent>
             <div className="mx-auto flex w-full max-w-[500px] flex-col gap-4 sm:flex-row">
-              <Button asChild variant="outline" className="flex-1">
-                <Link href="/developers/docs">Read the documentation</Link>
-              </Button>
               <Button asChild className="flex-1">
                 <Link href="/sign-up">Start a project now</Link>
+              </Button>
+              <Button asChild variant="outline" className="flex-1">
+                <Link href="/developers/docs">Read documentation</Link>
               </Button>
             </div>
           </CardContent>
